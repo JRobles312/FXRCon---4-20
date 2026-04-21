@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FXR Construction | The Fix Starts Here – Central Valley & San Jose</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #0A1628; color: #E8EFF8; }
+
+    /* NAV */
+    nav { background: #0A1628; border-bottom: 2px solid #1E3A5F; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 70px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 24px rgba(0,0,0,0.5); flex-wrap: wrap; gap: 10px; }
+    .logo { display: flex; align-items: center; gap: 14px; cursor: pointer; text-decoration: none; }
+    .logo-box { background: #1565C0; border-radius: 8px; padding: 6px 12px; font-weight: 900; font-size: 22px; color: white; letter-spacing: 2px; }
+    .logo-name { color: white; font-weight: 800; font-size: 15px; letter-spacing: 1px; line-height: 1.1; }
+    .logo-lic { color: #2196F3; font-size: 9px; letter-spacing: 2px; font-weight: 600; }
+    .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+    .nav-links a { color: #8A9BC0; text-decoration: none; border-radius: 6px; padding: 7px 13px; font-size: 12px; font-weight: 500; cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s; }
+    .nav-links a:hover, .nav-links a.active { background: #1565C0; color: white; font-weight: 700; }
+
+    /* PAGES */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* HERO */
+    .hero { background: linear-gradient(135deg, #0A1628 0%, #0D2145 50%, #0A1E3D 100%); min-height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 80px 40px; position: relative; overflow: hidden; }
+    .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(21,101,192,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(21,101,192,0.1) 1px, transparent 1px); background-size: 60px 60px; }
+    .hero-glow { position: absolute; top: 30%; left: 50%; transform: translate(-50%,-50%); width: 600px; height: 600px; background: radial-gradient(circle, rgba(33,150,243,0.15) 0%, transparent 70%); pointer-events: none; }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-badge { display: inline-block; background: rgba(33,150,243,0.15); border: 1px solid #2196F3; border-radius: 30px; padding: 6px 20px; font-size: 12px; font-weight: 700; color: #2196F3; letter-spacing: 2px; margin-bottom: 28px; }
+    .hero h1 { font-size: 72px; font-weight: 900; color: white; line-height: 1.0; margin-bottom: 20px; text-transform: uppercase; letter-spacing: -1px; }
+    .hero h1 span { color: #2196F3; }
+    .hero-sub { font-size: 20px; color: #8A9BC0; max-width: 560px; margin: 0 auto 16px; line-height: 1.6; }
+    .hero-sub strong { color: #E8EFF8; }
+    .hero-tagline { font-size: 13px; color: #1565C0; font-weight: 700; letter-spacing: 3px; margin-bottom: 40px; text-transform: uppercase; }
+    .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-gold { background: #FF8F00; color: #0A1628; border: none; border-radius: 8px; padding: 16px 36px; font-size: 15px; font-weight: 900; cursor: pointer; letter-spacing: 1px; box-shadow: 0 8px 32px rgba(255,143,0,0.4); text-transform: uppercase; text-decoration: none; display: inline-block; }
+    .btn-outline { background: transparent; color: white; border: 2px solid #1E3A5F; border-radius: 8px; padding: 16px 36px; font-size: 15px; font-weight: 700; cursor: pointer; text-transform: uppercase; text-decoration: none; display: inline-block; }
+    .hero-stats { display: flex; gap: 48px; justify-content: center; margin-top: 64px; flex-wrap: wrap; }
+    .hero-stat-big { font-size: 13px; font-weight: 900; color: #2196F3; letter-spacing: 2px; }
+    .hero-stat-small { font-size: 11px; color: #8A9BC0; margin-top: 2px; }
+
+    /* SECTIONS */
+    .section-label { color: #2196F3; font-size: 12px; font-weight: 700; letter-spacing: 3px; margin-bottom: 12px; text-transform: uppercase; }
+    .section-title { font-size: 42px; font-weight: 900; color: white; text-transform: uppercase; margin-bottom: 8px; }
+    .section-sub { color: #8A9BC0; font-size: 15px; margin-bottom: 48px; }
+
+    /* WHAT WE FIX */
+    .fix-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3px; }
+    .fix-card { background: #0F2040; padding: 28px; border-left: 4px solid var(--accent); }
+    .fix-icon { font-size: 32px; margin-bottom: 12px; }
+    .fix-title { font-weight: 800; font-size: 15px; color: white; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .fix-text { color: #8A9BC0; font-size: 14px; line-height: 1.6; }
+
+    /* CTA BANNER */
+    .cta-banner { background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%); padding: 60px 40px; text-align: center; }
+    .cta-label { font-size: 12px; font-weight: 700; letter-spacing: 3px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
+    .cta-title { font-size: 42px; font-weight: 900; color: white; text-transform: uppercase; margin-bottom: 12px; }
+    .cta-title span { color: #FF8F00; }
+    .cta-sub { color: rgba(255,255,255,0.8); font-size: 16px; margin-bottom: 32px; }
+
+    /* DID YOU KNOW */
+    .dyk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 20px; }
+    .dyk-card { background: #0F2040; border: 1px solid #1E3A5F; border-radius: 12px; padding: 24px; cursor: pointer; }
+    .dyk-icon { font-size: 32px; margin-bottom: 12px; }
+    .dyk-text { color: #E8EFF8; font-size: 14px; line-height: 1.7; margin-bottom: 12px; }
+    .dyk-link { color: #2196F3; font-weight: 700; font-size: 13px; }
+
+    /* SERVICES */
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 3px; }
+    .service-card { background: #0F2040; padding: 28px; border-left: 4px solid var(--accent); }
+    .service-icon { font-size: 32px; margin-bottom: 12px; }
+    .service-title { font-weight: 800; font-size: 15px; color: white; margin-bottom: 12px; text-transform: uppercase; }
+    .service-card ul { padding-left: 18px; }
+    .service-card li { color: #8A9BC0; font-size: 14px; margin-bottom: 6px; }
+
+    /* PORTFOLIO */
+    .portfolio-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 36px; }
+    .filter-btn { background: transparent; color: #8A9BC0; border: 1px solid #1E3A5F; border-radius: 20px; padding: 6px 18px; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: all 0.2s; }
+    .filter-btn.active { background: #2196F3; color: white; border-color: #2196F3; }
+    .portfolio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 3px; }
+    .portfolio-item { height: 220px; display: flex; flex-direction: column; justify-content: flex-end; padding: 24px; position: relative; overflow: hidden; }
+    .portfolio-emoji { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 64px; opacity: 0.2; }
+    .portfolio-type { background: rgba(0,0,0,0.5); display: inline-block; border-radius: 20px; padding: 3px 12px; font-size: 10px; font-weight: 700; color: white; letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase; }
+    .portfolio-name { font-weight: 800; font-size: 18px; color: white; }
+    .portfolio-city { color: rgba(255,255,255,0.7); font-size: 13px; }
+
+    /* TIPS */
+    .tip { background: #0F2040; border: 1px solid #1E3A5F; border-radius: 10px; padding: 18px 22px; margin-bottom: 12px; cursor: pointer; }
+    .tip-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .tip-q { font-weight: 700; color: white; font-size: 14px; }
+    .tip-toggle { color: #2196F3; font-weight: 900; font-size: 20px; flex-shrink: 0; }
+    .tip-body { color: #8A9BC0; font-size: 14px; line-height: 1.7; margin-top: 12px; display: none; }
+    .tip.open .tip-body { display: block; }
+
+    /* CALC */
+    .calc-box { background: #0F2040; border: 1px solid #1E3A5F; border-radius: 12px; padding: 32px; margin-bottom: 40px; border-top: 4px solid #2196F3; }
+    .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 20px; }
+    .calc-label { color: #8A9BC0; font-size: 11px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 8px; text-transform: uppercase; }
+    .calc-input { width: 100%; padding: 12px 16px; border-radius: 8px; border: 1.5px solid #1E3A5F; font-size: 16px; background: #0A1628; color: white; outline: none; }
+    .btn-calc { background: #2196F3; color: white; border: none; border-radius: 8px; padding: 12px 28px; font-weight: 700; font-size: 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+    .calc-result { margin-top: 24px; background: #0A1628; border-radius: 12px; padding: 24px; text-align: center; border: 1px solid #2196F3; display: none; }
+    .calc-result.show { display: block; }
+    .calc-yards { font-size: 52px; font-weight: 900; color: #2196F3; }
+    .calc-note { margin-top: 16px; background: rgba(33,150,243,0.1); border-radius: 8px; padding: 12px 20px; font-size: 14px; color: #E8EFF8; }
+
+    /* NEWS */
+    .news-card { background: #0F2040; border: 1px solid #1E3A5F; border-radius: 12px; padding: 28px; margin-bottom: 16px; }
+    .news-tag { border-radius: 20px; padding: 3px 14px; font-size: 10px; font-weight: 700; letter-spacing: 1px; display: inline-block; margin-bottom: 14px; color: white; text-transform: uppercase; }
+    .news-title { font-weight: 800; font-size: 18px; color: white; margin-bottom: 8px; }
+    .news-summary { color: #8A9BC0; font-size: 14px; line-height: 1.65; margin-bottom: 14px; }
+    .btn-read { background: none; border: 1px solid; border-radius: 6px; padding: 7px 18px; font-weight: 700; font-size: 11px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; }
+    .news-body { margin-top: 16px; color: #E8EFF8; font-size: 14px; line-height: 1.75; display: none; }
+    .news-body.open { display: block; }
+
+    /* FORM */
+    .form-label { color: #8A9BC0; font-size: 11px; font-weight: 700; letter-spacing: 1px; display: block; margin-bottom: 6px; text-transform: uppercase; }
+    .form-input { width: 100%; padding: 12px 16px; border-radius: 8px; border: 1.5px solid #1E3A5F; font-size: 14px; background: #0A1628; color: white; outline: none; font-family: inherit; margin-bottom: 16px; }
+    .btn-submit { background: #FF8F00; color: #0A1628; border: none; border-radius: 8px; padding: 14px 28px; font-weight: 900; font-size: 15px; cursor: pointer; width: 100%; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* INFO CARDS */
+    .info-card { background: #0F2040; border: 1px solid #1E3A5F; border-radius: 10px; padding: 20px 24px; margin-bottom: 16px; }
+    .info-icon { font-size: 24px; margin-bottom: 6px; }
+    .info-title { font-weight: 700; color: white; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .info-text { color: #8A9BC0; font-size: 13px; }
+
+    /* FOOTER */
+    footer { background: #050E1A; border-top: 2px solid #1E3A5F; padding: 40px 40px 24px; }
+    .footer-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 32px; }
+    .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .footer-logo-box { background: #1565C0; border-radius: 6px; padding: 4px 10px; font-weight: 900; font-size: 16px; color: white; }
+    .footer-tagline { color: #2196F3; font-size: 10px; letter-spacing: 2px; margin-bottom: 12px; }
+    .footer-text { color: #8A9BC0; font-size: 12px; line-height: 1.9; }
+    .footer-heading { color: white; font-weight: 700; font-size: 11px; letter-spacing: 1px; margin-bottom: 16px; text-transform: uppercase; }
+    .footer-link { color: #8A9BC0; font-size: 12px; margin-bottom: 8px; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; }
+    .footer-bottom { border-top: 1px solid #1E3A5F; margin-top: 32px; padding-top: 20px; font-size: 11px; color: #8A9BC0; text-align: center; }
+
+    /* SHARED */
+    .pad { padding: 70px 40px; }
+    .pad-inner { max-width: 1100px; margin: 0 auto; }
+    .pad-inner-sm { max-width: 900px; margin: 0 auto; }
+    .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 40px; }
+    .about-card { background: #0F2040; border: 1px solid #1E3A5F; border-radius: 10px; padding: 18px 22px; display: flex; gap: 16px; align-items: flex-start; margin-bottom: 12px; }
+    .about-icon { font-size: 24px; }
+    .about-title { font-weight: 700; color: white; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .about-text { color: #8A9BC0; font-size: 13px; margin-top: 2px; }
+    .success-box { background: #0A1628; min-height: 60vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; }
+
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 40px; }
+      .section-title { font-size: 28px; }
+      .pad { padding: 50px 20px; }
+      nav { padding: 10px 16px; height: auto; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" onclick="showPage('home')">
+    <div class="logo-box">FXR</div>
+    <div>
+      <div class="logo-name">CONSTRUCTION</div>
+      <div class="logo-lic">CSLB LIC. #1005035</div>
+    </div>
+  </a>
+  <div class="nav-links">
+    <a onclick="showPage('home')" id="nav-home" class="active">HOME</a>
+    <a onclick="showPage('services')" id="nav-services">SERVICES</a>
+    <a onclick="showPage('portfolio')" id="nav-portfolio">PORTFOLIO</a>
+    <a onclick="showPage('howtos')" id="nav-howtos">HOW-TO'S</a>
+    <a onclick="showPage('codecases')" id="nav-codecases">CODE CASES</a>
+    <a onclick="showPage('schedule')" id="nav-schedule">SCHEDULE</a>
+    <a onclick="showPage('about')" id="nav-about">ABOUT</a>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-badge">LICENSED · INSURED · CENTRAL VALLEY & SAN JOSE</div>
+      <h1>The Fix<br/><span>Starts Here.</span></h1>
+      <p class="hero-sub">Code cases, permits, remodels, concrete —<br/><strong>one call solves it all.</strong></p>
+      <p class="hero-tagline">FXR = FIXER. THAT'S WHAT WE DO.</p>
+      <div class="hero-btns">
+        <a class="btn-gold" onclick="showPage('schedule')">📅 Get a Free Site Visit</a>
+        <a class="btn-outline" onclick="showPage('services')">View Services</a>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-big">ONE CALL</div><div class="hero-stat-small">Solves It All</div></div>
+        <div><div class="hero-stat-big">LICENSED</div><div class="hero-stat-small">CSLB #1005035</div></div>
+        <div><div class="hero-stat-big">FULL SERVICE</div><div class="hero-stat-small">Central Valley + SJ</div></div>
+        <div><div class="hero-stat-big">TRUSTED</div><div class="hero-stat-small">B2B & Residential</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT WE FIX -->
+  <div style="background:#0F2040;padding:70px 40px;border-top:1px solid #1E3A5F">
+    <div class="pad-inner">
+      <div style="text-align:center;margin-bottom:50px">
+        <div class="section-label">WHAT WE FIX</div>
+        <h2 class="section-title">Your Problem.<br/><span style="color:#2196F3">Our Fix.</span></h2>
+      </div>
+      <div class="fix-grid">
+        <div class="fix-card" style="--accent:#C62828"><div class="fix-icon">🚨</div><div class="fix-title">Code Violations</div><div class="fix-text">Red tags, stop-work orders, NOVs. We respond fast and get you compliant.</div></div>
+        <div class="fix-card" style="--accent:#1565C0"><div class="fix-icon">📋</div><div class="fix-title">Unpermitted Work</div><div class="fix-text">Legalize structures, pull permits, pass inspections. Done right.</div></div>
+        <div class="fix-card" style="--accent:#1B5E20"><div class="fix-icon">🧱</div><div class="fix-title">Concrete & Flatwork</div><div class="fix-text">Driveways, patios, retaining walls. Precision pours built to last.</div></div>
+        <div class="fix-card" style="--accent:#4A148C"><div class="fix-icon">🏗️</div><div class="fix-title">Ground-Up Builds</div><div class="fix-text">New construction, ADUs, additions. Full scope project management.</div></div>
+        <div class="fix-card" style="--accent:#E65100"><div class="fix-icon">🏠</div><div class="fix-title">Roofing & Framing</div><div class="fix-text">Full replacements, structural repairs, sheathing. Licensed and insured.</div></div>
+        <div class="fix-card" style="--accent:#006064"><div class="fix-icon">🔧</div><div class="fix-title">Property Maintenance</div><div class="fix-text">Make-ready turnovers, plumbing, porter services for property managers.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA BANNER -->
+  <div class="cta-banner">
+    <div class="cta-label">ONE COMPANY. TOTAL SOLUTION.</div>
+    <h2 class="cta-title">We Don't Just Build.<br/><span>We Fix.</span></h2>
+    <p class="cta-sub">From the first call to the final inspection — FXR handles it all.</p>
+    <a class="btn-gold" onclick="showPage('schedule')">📞 Call 408-769-9928</a>
+  </div>
+
+  <!-- DID YOU KNOW -->
+  <div class="pad" style="background:#0A1628">
+    <div class="pad-inner">
+      <div class="section-label">HOMEOWNER INTEL</div>
+      <h2 class="section-title" style="margin-bottom:40px">Did You Know?</h2>
+      <div class="dyk-grid">
+        <div class="dyk-card" onclick="showPage('codecases')"><div class="dyk-icon">⚠️</div><div class="dyk-text">Unpermitted work can block your home sale and cost 3x more to fix later.</div><div class="dyk-link">Learn More →</div></div>
+        <div class="dyk-card" onclick="showPage('howtos')"><div class="dyk-icon">🧮</div><div class="dyk-text">You can calculate exactly how much concrete you need in under 60 seconds.</div><div class="dyk-link">Learn More →</div></div>
+        <div class="dyk-card" onclick="showPage('codecases')"><div class="dyk-icon">🏚️</div><div class="dyk-text">A code enforcement case doesn't have to mean demolition — most can be resolved.</div><div class="dyk-link">Learn More →</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div id="page-services" class="page">
+  <div class="pad" style="background:#0A1628">
+    <div class="pad-inner">
+      <div class="section-label">FULL SERVICE</div>
+      <h2 class="section-title">What We Fix</h2>
+      <p class="section-sub">From new builds to emergency repairs — one call solves it all.</p>
+      <div class="services-grid">
+        <div class="service-card" style="--accent:#C62828"><div class="service-icon">🚨</div><div class="service-title">Permit & Code Compliance</div><ul><li>Red tag resolution</li><li>Unpermitted structure legalization</li><li>Code enforcement response</li><li>City plan submittal support</li></ul></div>
+        <div class="service-card" style="--accent:#1565C0"><div class="service-icon">🏗️</div><div class="service-title">General Contracting</div><ul><li>New construction & additions</li><li>Full remodels (kitchen, bath, ADU)</li><li>Project management</li><li>Subcontractor coordination</li></ul></div>
+        <div class="service-card" style="--accent:#1B5E20"><div class="service-icon">🧱</div><div class="service-title">Concrete & Flatwork</div><ul><li>Driveways & aprons</li><li>Patios & walkways</li><li>Retaining walls</li><li>Demolition & grading</li></ul></div>
+        <div class="service-card" style="--accent:#E65100"><div class="service-icon">🏠</div><div class="service-title">Roofing & Structural</div><ul><li>Full roof replacement</li><li>Framing & joist repair</li><li>Sheathing & shiplap</li><li>Structural assessments</li></ul></div>
+        <div class="service-card" style="--accent:#006064"><div class="service-icon">🔧</div><div class="service-title">Property Maintenance (CVTS)</div><ul><li>Make-ready unit turnovers</li><li>Porter & janitorial services</li><li>On-site maintenance contracts</li><li>Emergency repair response</li></ul></div>
+        <div class="service-card" style="--accent:#4A148C"><div class="service-icon">🚿</div><div class="service-title">Plumbing</div><ul><li>Pipe repair & replacement</li><li>Water heater install</li><li>Fixture upgrades</li><li>Emergency plumbing calls</li></ul></div>
+        <div class="service-card" style="--accent:#827717"><div class="service-icon">🚧</div><div class="service-title">Fencing & Exterior</div><ul><li>Wood & vinyl fencing</li><li>Gate installation</li><li>Lattice & decorative panels</li><li>Cedar & redwood work</li></ul></div>
+        <div class="service-card" style="--accent:#0D47A1"><div class="service-icon">🏢</div><div class="service-title">Commercial Services</div><ul><li>Tenant improvement</li><li>Office & retail buildouts</li><li>HOA maintenance contracts</li><li>Multi-unit property care</li></ul></div>
+      </div>
+      <div style="text-align:center;margin-top:48px"><a class="btn-gold" onclick="showPage('schedule')">📅 Get a Free Site Visit</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- PORTFOLIO -->
+<div id="page-portfolio" class="page">
+  <div class="pad" style="background:#0A1628">
+    <div class="pad-inner">
+      <div class="section-label">OUR WORK</div>
+      <h2 class="section-title">Projects Fixed</h2>
+      <div class="portfolio-filters">
+        <button class="filter-btn active" onclick="filterPortfolio('All',this)">All</button>
+        <button class="filter-btn" onclick="filterPortfolio('Roofing',this)">Roofing</button>
+        <button class="filter-btn" onclick="filterPortfolio('Structural',this)">Structural</button>
+        <button class="filter-btn" onclick="filterPortfolio('Concrete',this)">Concrete</button>
+        <button class="filter-btn" onclick="filterPortfolio('Compliance',this)">Compliance</button>
+        <button class="filter-btn" onclick="filterPortfolio('Commercial',this)">Commercial</button>
+        <button class="filter-btn" onclick="filterPortfolio('Remodel',this)">Remodel</button>
+        <button class="filter-btn" onclick="filterPortfolio('Fencing',this)">Fencing</button>
+      </div>
+      <div class="portfolio-grid" id="portfolio-grid">
+        <div class="portfolio-item" data-type="Roofing" style="background:#1A237E">
+          <div class="portfolio-emoji">🏠</div>
+          <div style="position:relative"><div class="portfolio-type">Roofing</div><div class="portfolio-name">Roofing – Davis St</div><div class="portfolio-city">Santa Clara, CA</div></div>
+        </div>
+        <div class="portfolio-item" data-type="Structural" style="background:#1B5E20">
+          <div class="portfolio-emoji">🏗️</div>
+          <div style="position:relative"><div class="portfolio-type">Structural</div><div class="portfolio-name">Garage Addition</div><div class="portfolio-city">Modesto, CA</div></div>
+        </div>
+        <div class="portfolio-item" data-type="Concrete" style="background:#004D40">
+          <div class="portfolio-emoji">🧱</div>
+          <div style="position:relative"><div class="portfolio-type">Concrete</div><div class="portfolio-name">Driveway Pour</div><div class="portfolio-city">San Jose, CA</div></div>
+        </div>
+        <div class="portfolio-item" data-type="Compliance" style="background:#B71C1C">
+          <div class="portfolio-emoji">📋</div>
+          <div style="position:relative"><div class="portfolio-type">Compliance</div><div class="portfolio-name">Permit Resolution</div><div class="portfolio-city">Fresno, CA</div></div>
+        </div>
+        <div class="portfolio-item" data-type="Commercial" style="background:#0D47A1">
+          <div class="portfolio-emoji">🏢</div>
+          <div style="position:relative"><div class="portfolio-type">Commercial</div><div class="portfolio-name">Shopping Center Upgrade</div><div class="portfolio-city">San Jose, CA</div></div>
+        </div>
+        <div class="portfolio-item" data-type="Remodel" style="background:#4A148C">
+          <div class="portfolio-emoji">🔨</div>
+          <div style="position:relative"><div class="portfolio-type">Remodel</div><div class="portfolio-name">Full Remodel</div><div class="portfolio-city">Turlock, CA</div></div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:32px;color:#8A9BC0;font-size:14px">📸 Real project photos coming soon — contact us to see our full portfolio.</div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW-TO'S -->
+<div id="page-howtos" class="page">
+  <div class="pad" style="background:#0A1628">
+    <div class="pad-inner-sm">
+      <div class="section-label">HOMEOWNER TOOLS</div>
+      <h2 class="section-title" style="margin-bottom:40px">How-To's & Tips</h2>
+
+      <div class="calc-box">
+        <div style="font-size:28px;margin-bottom:8px">🧮</div>
+        <div style="font-weight:800;font-size:20px;color:white;margin-bottom:8px;text-transform:uppercase">Concrete Yardage Calculator</div>
+        <p style="color:#8A9BC0;font-size:14px;margin-bottom:24px">Enter your slab dimensions to find out exactly how much concrete you need.</p>
+        <div class="calc-grid">
+          <div><label class="calc-label">Length (ft)</label><input class="calc-input" type="number" id="calc-len" placeholder="0"/></div>
+          <div><label class="calc-label">Width (ft)</label><input class="calc-input" type="number" id="calc-wid" placeholder="0"/></div>
+          <div><label class="calc-label">Thickness (in)</label><input class="calc-input" type="number" id="calc-dep" placeholder="0"/></div>
+        </div>
+        <button class="btn-calc" onclick="calculate()">Calculate</button>
+        <div class="calc-result" id="calc-result">
+          <div style="font-size:12px;color:#8A9BC0;letter-spacing:2px;margin-bottom:4px">YOU'LL NEED APPROXIMATELY</div>
+          <div class="calc-yards" id="calc-yards"></div>
+          <div style="font-size:14px;color:#8A9BC0" id="calc-cuft"></div>
+          <div class="calc-note" id="calc-note"></div>
+          <div style="margin-top:12px;font-size:12px;color:#8A9BC0">Need a pour? Call FXR — 408-769-9928</div>
+        </div>
+      </div>
+
+      <div class="section-label" style="margin-bottom:20px">QUICK TIPS</div>
+      <div class="tip" onclick="this.classList.toggle('open')"><div class="tip-header"><span class="tip-q">💡 Did you know a hairline crack in your foundation can double in size within one rainy season?</span><span class="tip-toggle">+</span></div><div class="tip-body">Water seeps into micro-cracks, freezes and expands, then widens the gap. Seal cracks under ¼ inch yourself with hydraulic cement. Anything wider needs a pro assessment.</div></div>
+      <div class="tip" onclick="this.classList.toggle('open')"><div class="tip-header"><span class="tip-q">💡 Did you know most bathroom remodels require a permit in California?</span><span class="tip-toggle">+</span></div><div class="tip-body">Moving or adding plumbing, electrical, or structural walls always requires a permit. Skipping this can block a future sale or trigger code enforcement.</div></div>
+      <div class="tip" onclick="this.classList.toggle('open')"><div class="tip-header"><span class="tip-q">💡 Did you know your driveway slope affects drainage and city compliance?</span><span class="tip-toggle">+</span></div><div class="tip-body">California requires driveways to drain away from the structure. A slope of 1–2% is ideal. FXR grades every pour to spec.</div></div>
+      <div class="tip" onclick="this.classList.toggle('open')"><div class="tip-header"><span class="tip-q">💡 Did you know an ADU can increase your property value by up to 30%?</span><span class="tip-toggle">+</span></div><div class="tip-body">California's ADU laws have made it easier than ever. FXR handles the full scope from permits to move-in ready.</div></div>
+      <div class="tip" onclick="this.classList.toggle('open')"><div class="tip-header"><span class="tip-q">💡 Did you know a sagging roofline usually means a compromised rafter or ridge board?</span><span class="tip-toggle">+</span></div><div class="tip-body">This is a structural issue, not cosmetic. Call a contractor before your next rainstorm. Left unaddressed it can lead to rafter failure.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CODE CASES -->
+<div id="page-codecases" class="page">
+  <div class="pad" style="background:#0A1628">
+    <div class="pad-inner-sm">
+      <div class="section-label">KNOW YOUR RIGHTS</div>
+      <h2 class="section-title" style="margin-bottom:40px">Code Cases & Red Flags</h2>
+
+      <div class="news-card" style="border-left:4px solid #C62828">
+        <span class="news-tag" style="background:#C62828">RED FLAG</span>
+        <div class="news-title">What Is a Code Enforcement Case — And What Happens Next?</div>
+        <div class="news-summary">Received a notice from the city? Here's exactly what it means and what NOT to do.</div>
+        <button class="btn-read" style="color:#C62828;border-color:#C62828" onclick="toggleNews(this)">Read More ↓</button>
+        <div class="news-body">A code enforcement case is opened when a city inspector or neighbor complaint triggers a review of your property. You'll receive a Notice of Violation with a correction deadline — typically 30 to 60 days. Missing this deadline escalates to fines or city-hired contractors at your expense. FXR responds fast — we pull the permits, do the corrective work, and handle the inspection process.</div>
+      </div>
+
+      <div class="news-card" style="border-left:4px solid #E65100">
+        <span class="news-tag" style="background:#E65100">WARNING</span>
+        <div class="news-title">What Happens If You Build Without a Permit in California?</div>
+        <div class="news-summary">Unpermitted work can cost you far more in the long run. Here's the real risk.</div>
+        <button class="btn-read" style="color:#E65100;border-color:#E65100" onclick="toggleNews(this)">Read More ↓</button>
+        <div class="news-body">California requires permits for structural, electrical, plumbing, or mechanical work. Building without one can result in Stop-Work Orders, Red Tags, legalization costs that exceed the original project, and complications when selling. FXR has helped dozens of homeowners navigate this process cleanly.</div>
+      </div>
+
+      <div class="news-card" style="border-left:4px solid #1B5E20">
+        <span class="news-tag" style="background:#1B5E20">SOLUTION</span>
+        <div class="news-title">How FXR Resolves Code Violations — Step by Step</div>
+        <div class="news-summary">We've resolved red tags and stop-work orders across the Central Valley.</div>
+        <button class="btn-read" style="color:#1B5E20;border-color:#1B5E20" onclick="toggleNews(this)">Read More ↓</button>
+        <div class="news-body">Step 1: Site Visit — assess the property and identify what work is needed. Step 2: Permit Pull — submit all required applications to the city. Step 3: Corrective Work — bring everything into compliance. Step 4: Final Inspection — coordinate with the city inspector and be on-site. Step 5: Case Closure — confirm the case is closed and provide documentation. Most cases resolved within 30–90 days.</div>
+      </div>
+
+      <div class="news-card" style="border-left:4px solid #1565C0">
+        <span class="news-tag" style="background:#1565C0">INSIGHT</span>
+        <div class="news-title">Red Tag vs. Stop-Work Order: What's the Difference?</div>
+        <div class="news-summary">Both are serious — but not the same. Know the difference.</div>
+        <button class="btn-read" style="color:#1565C0;border-color:#1565C0" onclick="toggleNews(this)">Read More ↓</button>
+        <div class="news-body">A Red Tag prohibits occupancy of an unsafe structure. A Stop-Work Order halts active construction. A red tag is more serious — it can affect tenants and trigger relocation requirements. Both require immediate action. Call FXR at 408-769-9928 before responding to the city on your own.</div>
+      </div>
+
+      <div style="background:linear-gradient(135deg,#1565C0 0%,#0D47A1 100%);border-radius:12px;padding:32px;text-align:center;margin-top:8px">
+        <div style="font-weight:800;font-size:20px;color:white;margin-bottom:8px">Dealing with a code case right now?</div>
+        <div style="color:rgba(255,255,255,0.8);font-size:14px;margin-bottom:20px">Don't wait. Every day it sits unresolved, it costs more.</div>
+        <a class="btn-gold" onclick="showPage('schedule')">Get a Free Site Visit</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCHEDULE -->
+<div id="page-schedule" class="page">
+  <div class="pad" style="background:#0A1628">
+    <div class="pad-inner">
+      <div class="section-label">FREE CONSULTATION</div>
+      <h2 class="section-title" style="margin-bottom:48px">Schedule a Site Visit</h2>
+      <div class="grid2">
+        <div style="background:#0F2040;border:1px solid #1E3A5F;border-radius:12px;padding:32px">
+          <form name="site-visit" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="handleSubmit(event)" style="margin:0">
+            <input type="hidden" name="form-name" value="site-visit"/>
+            <p style="display:none"><input name="bot-field"/></p>
+            <div id="form-fields">
+            <label class="form-label">Full Name *</label><input class="form-input" type="text" name="name" placeholder="Your name" required/>
+            <label class="form-label">Email Address</label><input class="form-input" type="email" name="email" placeholder="you@email.com"/>
+            <label class="form-label">Phone Number *</label><input class="form-input" type="tel" name="phone" placeholder="408-555-0000" required/>
+            <label class="form-label">Property Address</label><input class="form-input" type="text" name="address" placeholder="123 Main St, Modesto CA"/>
+            <label class="form-label">Service Needed *</label>
+            <select class="form-input" name="service" required>
+              <option value="">Select a service...</option>
+              <option>General Contracting</option>
+              <option>Permit / Code Compliance</option>
+              <option>Concrete & Flatwork</option>
+              <option>Roofing & Structural</option>
+              <option>Property Maintenance</option>
+              <option>Plumbing</option>
+              <option>Fencing & Exterior</option>
+              <option>Other</option>
+            </select>
+            <label class="form-label">Tell Us About Your Project</label>
+            <textarea class="form-input" name="message" placeholder="Describe what you need..." style="min-height:90px;resize:vertical"></textarea>
+            <button type="submit" class="btn-submit">📅 Request Site Visit</button>
+            <p style="font-size:11px;color:#8A9BC0;margin-top:12px;text-align:center">🔒 Your info goes directly to info@fxrcon.com</p>
+            </div>
+            <div id="success-msg" style="display:none;text-align:center;padding:40px 0">
+              <div style="font-size:60px;margin-bottom:16px">✅</div>
+              <div style="font-size:24px;font-weight:900;color:white;text-transform:uppercase;margin-bottom:12px">Request Received!</div>
+              <div style="color:#8A9BC0;font-size:15px">We'll reach out within 1 business day.<br/>Questions? Call <strong style="color:#2196F3">408-769-9928</strong></div>
+            </div>
+          </form>
+        </div>
+        <div>
+          <div class="info-card"><div class="info-icon">📞</div><div class="info-title">Call or Text</div><div class="info-text">408-769-9928</div></div>
+          <div class="info-card"><div class="info-icon">🕐</div><div class="info-title">Response Time</div><div class="info-text">Within 1 business day</div></div>
+          <div class="info-card"><div class="info-icon">✅</div><div class="info-title">What to Expect</div><div class="info-text">Free site assessment + transparent written estimate — no pressure, no surprises.</div></div>
+          <div class="info-card"><div class="info-icon">📍</div><div class="info-title">Service Area</div><div class="info-text">Modesto · Turlock · Ceres · Stockton · Fresno · San Jose · Bay Area</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div id="page-about" class="page">
+  <div style="background:linear-gradient(135deg,#0A1628 0%,#0D2145 100%);padding:80px 40px;text-align:center;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(21,101,192,0.1) 1px,transparent 1px),linear-gradient(90deg,rgba(21,101,192,0.1) 1px,transparent 1px);background-size:60px 60px"></div>
+    <div style="position:relative">
+      <div class="section-label">OUR STORY</div>
+      <h1 style="font-size:52px;font-weight:900;color:white;text-transform:uppercase;line-height:1.1;margin-bottom:16px">FXR = <span style="color:#2196F3">FIXER</span></h1>
+      <p style="color:#8A9BC0;font-size:18px;max-width:600px;margin:0 auto">We built FXR with one goal — to be the contractor that actually solves the problem. No runaround. No excuses. Just results.</p>
+    </div>
+  </div>
+  <div class="pad" style="background:#0A1628">
+    <div class="pad-inner">
+      <div class="grid2">
+        <div>
+          <div class="section-label">WHO WE ARE</div>
+          <p style="color:#8A9BC0;line-height:1.8;font-size:15px;margin-bottom:16px">FXR Construction is a full-service CSLB-licensed general contracting firm. We operate alongside our sister company, Central Valley Turnkey Services (CVTS), providing property maintenance, unit turnovers, and plumbing solutions for property managers and real estate investors.</p>
+          <p style="color:#8A9BC0;line-height:1.8;font-size:15px">Our clients include homeowners, real estate brokerages, investors, HOA management companies, and commercial property managers across Modesto, Turlock, Stockton, Fresno, and San Jose.</p>
+        </div>
+        <div>
+          <div class="about-card"><div class="about-icon">🏆</div><div><div class="about-title">CSLB Lic. #1005035</div><div class="about-text">Fully licensed — California compliant.</div></div></div>
+          <div class="about-card"><div class="about-icon">📍</div><div><div class="about-title">Service Area</div><div class="about-text">Central Valley + San Jose Bay Area.</div></div></div>
+          <div class="about-card"><div class="about-icon">🤝</div><div><div class="about-title">B2B Focused</div><div class="about-text">Preferred vendor for property managers, investors, and HOA firms.</div></div></div>
+          <div class="about-card"><div class="about-icon">📞</div><div><div class="about-title">408-769-9928</div><div class="about-text">Call or text — real people, real answers.</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-logo"><div class="footer-logo-box">FXR</div><div style="color:white;font-weight:700;font-size:14px">CONSTRUCTION</div></div>
+      <div class="footer-tagline">THE FIX STARTS HERE.</div>
+      <div class="footer-text">CSLB Lic. #1005035<br/>Serving Central Valley & San Jose<br/>📞 408-769-9928</div>
+    </div>
+    <div>
+      <div class="footer-heading">Quick Links</div>
+      <div class="footer-link" onclick="showPage('home')">Home</div>
+      <div class="footer-link" onclick="showPage('services')">Services</div>
+      <div class="footer-link" onclick="showPage('portfolio')">Portfolio</div>
+      <div class="footer-link" onclick="showPage('howtos')">How-To's</div>
+      <div class="footer-link" onclick="showPage('codecases')">Code Cases</div>
+      <div class="footer-link" onclick="showPage('schedule')">Schedule</div>
+      <div class="footer-link" onclick="showPage('about')">About</div>
+    </div>
+    <div>
+      <div class="footer-heading">Services</div>
+      <div class="footer-text">General Contracting<br/>Permit Compliance<br/>Concrete & Flatwork<br/>Property Maintenance<br/>Roofing<br/>Plumbing</div>
+    </div>
+    <div>
+      <div class="footer-heading">Service Area</div>
+      <div class="footer-text">Modesto · Turlock · Ceres<br/>Stockton · Fresno<br/>San Jose · Bay Area</div>
+    </div>
+  </div>
+  <div class="footer-bottom">© 2025 FXR Construction. All rights reserved. | fxrcon.com | CSLB Lic. #1005035</div>
+</footer>
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    const nav = document.getElementById('nav-' + id);
+    if (nav) nav.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function toggleNews(btn) {
+    const body = btn.nextElementSibling;
+    body.classList.toggle('open');
+    btn.textContent = body.classList.contains('open') ? 'Show Less ↑' : 'Read More ↓';
+  }
+
+  function filterPortfolio(type, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.portfolio-item').forEach(item => {
+      item.style.display = (type === 'All' || item.dataset.type === type) ? 'block' : 'none';
+    });
+  }
+
+  function calculate() {
+    const l = parseFloat(document.getElementById('calc-len').value);
+    const w = parseFloat(document.getElementById('calc-wid').value);
+    const d = parseFloat(document.getElementById('calc-dep').value);
+    if (!l || !w || !d) return alert('Please enter all three measurements.');
+    const cubicFt = l * w * (d / 12);
+    const yards = (cubicFt / 27).toFixed(2);
+    const bags = Math.ceil(cubicFt / 0.45);
+    document.getElementById('calc-yards').textContent = yards + ' yd³';
+    document.getElementById('calc-cuft').textContent = '(' + cubicFt.toFixed(1) + ' cubic feet)';
+    document.getElementById('calc-note').innerHTML = 'Always order 10% extra for waste · Est. 60lb bags: <strong style="color:#2196F3">' + bags + '</strong>';
+    document.getElementById('calc-result').classList.add('show');
+  }
+
+  async function submitForm() {
+    const name = document.getElementById('f-name').value.trim();
+    const phone = document.getElementById('f-phone').value.trim();
+    const service = document.getElementById('f-service').value;
+    if (!name || !phone || !service) return alert('Please fill in name, phone, and service type.');
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    try {
+      const res = await fetch('https://fxrcon-construction.onrender.com/api/submit-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email: document.getElementById('f-email').value,
+          phone,
+          address: document.getElementById('f-address').value,
+          service,
+          message: document.getElementById('f-message').value
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('form-area').style.display = 'none';
+        document.getElementById('success-area').style.display = 'block';
+      } else {
+        alert('Something went wrong. Please call us at 408-769-9928.');
+        btn.disabled = false;
+        btn.textContent = '📅 Request Site Visit';
+      }
+    } catch (err) {
+      alert('Could not connect. Please call us at 408-769-9928.');
+      btn.disabled = false;
+      btn.textContent = '📅 Request Site Visit';
+    }
+  }
+</script>
+</body>
+</html>
