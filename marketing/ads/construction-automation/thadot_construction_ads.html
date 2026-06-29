@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>ThaDotCompany — Construction Automation Ads</title>
+<meta name="hz:slide-selector" content=".story" />
+<meta name="hz:canvas-width" content="1080" />
+<meta name="hz:canvas-height" content="1920" />
+<link rel="stylesheet" href="https://use.typekit.net/iys1uvx.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    padding: 48px;
+    background: #2b2e35;
+    font-family: "acumin-pro", sans-serif;
+  }
+
+  .story {
+    position: relative;
+    width: 1080px;
+    height: 1920px;
+    overflow: hidden;
+    background:
+      radial-gradient(120% 80% at 88% 6%, rgba(247,134,30,0.16) 0%, rgba(247,134,30,0) 46%),
+      radial-gradient(110% 70% at 6% 96%, rgba(247,134,30,0.10) 0%, rgba(247,134,30,0) 48%),
+      linear-gradient(168deg, #15171d 0%, #0d0e12 58%, #0a0b0e 100%);
+    color: #f4f6f9;
+    font-family: "acumin-pro", sans-serif;
+  }
+
+  /* background dot-network layer */
+  .net {
+    position: absolute;
+    inset: 0;
+    width: 1080px;
+    height: 1920px;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* content frame */
+  .frame {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 90px 84px 84px;
+  }
+
+  /* ---------- header ---------- */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .brand-dot {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #f7861e;
+    box-shadow: 0 0 0 6px rgba(247,134,30,0.18), 0 0 22px 4px rgba(247,134,30,0.55);
+  }
+  .brand-name {
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: 0.2px;
+    color: #f4f6f9;
+  }
+  .tag-pill {
+    border: 1px solid rgba(247,134,30,0.45);
+    border-radius: 100px;
+    padding: 12px 22px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 3.5px;
+    color: #f3a45a;
+    text-transform: uppercase;
+  }
+
+  /* ---------- hero ---------- */
+  .hero { margin-top: 8px; }
+  .eyebrow {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: #8b9099;
+    margin-bottom: 26px;
+  }
+  .eyebrow .accent { color: #f7861e; }
+  .headline {
+    font-weight: 900;
+    font-size: 90px;
+    line-height: 0.98;
+    letter-spacing: -1.5px;
+    text-transform: uppercase;
+    color: #ffffff;
+  }
+  .headline .accent { color: #f7861e; }
+  .subhead {
+    margin-top: 34px;
+    font-size: 31px;
+    line-height: 1.42;
+    font-weight: 500;
+    color: #aeb4be;
+    max-width: 860px;
+  }
+  .subhead b { color: #e9ecf1; font-weight: 600; }
+
+  /* ---------- features ---------- */
+  .features {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .card {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding: 30px 32px;
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.015) 100%);
+  }
+  .icon-tile {
+    flex: 0 0 auto;
+    width: 84px;
+    height: 84px;
+    border-radius: 18px;
+    border: 1px solid rgba(247,134,30,0.40);
+    background: radial-gradient(120% 120% at 30% 20%, rgba(247,134,30,0.20) 0%, rgba(247,134,30,0.05) 70%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .icon-tile svg { width: 40px; height: 40px; }
+  .card-text { display: flex; flex-direction: column; gap: 6px; }
+  .card-title {
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #f4f6f9;
+  }
+  .card-sub {
+    font-size: 21px;
+    font-weight: 400;
+    color: #9aa0ab;
+  }
+
+  /* ---------- footer ---------- */
+  .footer { margin-top: 8px; }
+  .divider {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, rgba(247,134,30,0.55) 0%, rgba(255,255,255,0.10) 45%, rgba(255,255,255,0) 100%);
+    margin-bottom: 30px;
+  }
+  .footer-label {
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #7e838d;
+    margin-bottom: 30px;
+  }
+  .footer-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 24px 38px;
+    border-radius: 100px;
+    background: linear-gradient(180deg, #ffa23f 0%, #f7861e 100%);
+    color: #1a1206;
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+    box-shadow: 0 12px 40px rgba(247,134,30,0.35);
+  }
+  .cta .arrow { font-size: 27px; font-weight: 700; }
+  .site {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 23px;
+    font-weight: 600;
+    color: #c2c7d0;
+  }
+  .site .s-dot {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: #f7861e;
+    box-shadow: 0 0 14px 2px rgba(247,134,30,0.6);
+  }
+</style>
+</head>
+<body>
+
+  <!-- ================= ENGLISH ================= -->
+  <div class="story" data-canvas-width="1080" data-canvas-height="1920">
+    <svg class="net" viewBox="0 0 1080 1920" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#f7861e" stroke-width="1.4" opacity="0.30">
+        <path d="M120 300 Q360 120 540 170 T980 240"/>
+        <path d="M980 240 Q1060 460 1010 660"/>
+        <path d="M1010 660 Q780 760 1000 1190"/>
+        <path d="M120 300 Q40 540 70 740"/>
+        <path d="M70 740 Q300 900 90 1250"/>
+        <path d="M90 1250 Q420 1500 150 1700"/>
+        <path d="M150 1700 Q560 1820 580 1780"/>
+        <path d="M1000 1190 Q1080 1450 1000 1620"/>
+        <path d="M1000 1620 Q780 1760 580 1780"/>
+      </g>
+      <g fill="#f7861e">
+        <circle cx="120" cy="300" r="14" opacity="0.16"/><circle cx="120" cy="300" r="5"/>
+        <circle cx="540" cy="170" r="14" opacity="0.16"/><circle cx="540" cy="170" r="5"/>
+        <circle cx="980" cy="240" r="16" opacity="0.16"/><circle cx="980" cy="240" r="6"/>
+        <circle cx="1010" cy="660" r="14" opacity="0.16"/><circle cx="1010" cy="660" r="5"/>
+        <circle cx="70" cy="740" r="14" opacity="0.16"/><circle cx="70" cy="740" r="5"/>
+        <circle cx="90" cy="1250" r="14" opacity="0.16"/><circle cx="90" cy="1250" r="5"/>
+        <circle cx="1000" cy="1190" r="14" opacity="0.16"/><circle cx="1000" cy="1190" r="5"/>
+        <circle cx="1000" cy="1620" r="14" opacity="0.16"/><circle cx="1000" cy="1620" r="5"/>
+        <circle cx="150" cy="1700" r="14" opacity="0.16"/><circle cx="150" cy="1700" r="5"/>
+        <circle cx="580" cy="1780" r="16" opacity="0.16"/><circle cx="580" cy="1780" r="6"/>
+      </g>
+    </svg>
+
+    <div class="frame">
+      <div class="header">
+        <div class="brand">
+          <span class="brand-dot"></span>
+          <span class="brand-name">ThaDotCompany</span>
+        </div>
+        <span class="tag-pill">Connect the dots</span>
+      </div>
+
+      <div class="hero">
+        <div class="eyebrow">We build <span class="accent">high-performing</span></div>
+        <div class="headline">Automations for <span class="accent">construction</span> companies</div>
+        <div class="subhead"><b>Professionally integrated. Strategically built.</b> Built to save you hours — so you can focus on building.</div>
+      </div>
+
+      <div class="features">
+        <div class="card">
+          <div class="icon-tile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f7861e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <span class="card-title">Modern, trusted workflows</span>
+            <span class="card-sub">Proven systems your team can rely on.</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="icon-tile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f7861e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+              <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+              <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+              <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <span class="card-title">Built for speed &amp; growth</span>
+            <span class="card-sub">Scale your output without adding headcount.</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="icon-tile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f7861e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"/>
+              <circle cx="6" cy="12" r="3"/>
+              <circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <span class="card-title">Fully integrated on all systems</span>
+            <span class="card-sub">Your CRM, scheduling &amp; estimates in sync.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="divider"></div>
+        <div class="footer-label">Proudly serving construction companies across the nation</div>
+        <div class="footer-row">
+          <span class="cta">Let's automate your business <span class="arrow">→</span></span>
+          <span class="site"><span class="s-dot"></span>thadotcompany.com</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SPANISH ================= -->
+  <div class="story" data-canvas-width="1080" data-canvas-height="1920">
+    <svg class="net" viewBox="0 0 1080 1920" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g stroke="#f7861e" stroke-width="1.4" opacity="0.30">
+        <path d="M120 300 Q360 120 540 170 T980 240"/>
+        <path d="M980 240 Q1060 460 1010 660"/>
+        <path d="M1010 660 Q780 760 1000 1190"/>
+        <path d="M120 300 Q40 540 70 740"/>
+        <path d="M70 740 Q300 900 90 1250"/>
+        <path d="M90 1250 Q420 1500 150 1700"/>
+        <path d="M150 1700 Q560 1820 580 1780"/>
+        <path d="M1000 1190 Q1080 1450 1000 1620"/>
+        <path d="M1000 1620 Q780 1760 580 1780"/>
+      </g>
+      <g fill="#f7861e">
+        <circle cx="120" cy="300" r="14" opacity="0.16"/><circle cx="120" cy="300" r="5"/>
+        <circle cx="540" cy="170" r="14" opacity="0.16"/><circle cx="540" cy="170" r="5"/>
+        <circle cx="980" cy="240" r="16" opacity="0.16"/><circle cx="980" cy="240" r="6"/>
+        <circle cx="1010" cy="660" r="14" opacity="0.16"/><circle cx="1010" cy="660" r="5"/>
+        <circle cx="70" cy="740" r="14" opacity="0.16"/><circle cx="70" cy="740" r="5"/>
+        <circle cx="90" cy="1250" r="14" opacity="0.16"/><circle cx="90" cy="1250" r="5"/>
+        <circle cx="1000" cy="1190" r="14" opacity="0.16"/><circle cx="1000" cy="1190" r="5"/>
+        <circle cx="1000" cy="1620" r="14" opacity="0.16"/><circle cx="1000" cy="1620" r="5"/>
+        <circle cx="150" cy="1700" r="14" opacity="0.16"/><circle cx="150" cy="1700" r="5"/>
+        <circle cx="580" cy="1780" r="16" opacity="0.16"/><circle cx="580" cy="1780" r="6"/>
+      </g>
+    </svg>
+
+    <div class="frame">
+      <div class="header">
+        <div class="brand">
+          <span class="brand-dot"></span>
+          <span class="brand-name">ThaDotCompany</span>
+        </div>
+        <span class="tag-pill">Conectamos los puntos</span>
+      </div>
+
+      <div class="hero">
+        <div class="eyebrow">Construimos <span class="accent">alto rendimiento</span> en</div>
+        <div class="headline">Automatizaciones para empresas de <span class="accent">construcción</span></div>
+        <div class="subhead"><b>Profesionalmente integradas. Estratégicamente creadas.</b> Diseñadas para ahorrarte horas — para que tú te enfoques en construir.</div>
+      </div>
+
+      <div class="features">
+        <div class="card">
+          <div class="icon-tile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f7861e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <span class="card-title">Flujos de trabajo modernos y confiables</span>
+            <span class="card-sub">Sistemas probados en los que tu equipo confía.</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="icon-tile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f7861e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/>
+              <path d="M12 15l-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/>
+              <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/>
+              <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <span class="card-title">Creados para la velocidad y el crecimiento</span>
+            <span class="card-sub">Crece sin contratar más personal.</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="icon-tile">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#f7861e" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3"/>
+              <circle cx="6" cy="12" r="3"/>
+              <circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </div>
+          <div class="card-text">
+            <span class="card-title">Totalmente integrados en todos tus sistemas</span>
+            <span class="card-sub">Tu CRM, agenda y cotizaciones en sincronía.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="divider"></div>
+        <div class="footer-label">Orgullosamente sirviendo a empresas de construcción en todo el país</div>
+        <div class="footer-row">
+          <span class="cta">Automaticemos tu negocio <span class="arrow">→</span></span>
+          <span class="site"><span class="s-dot"></span>thadotcompany.com</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
