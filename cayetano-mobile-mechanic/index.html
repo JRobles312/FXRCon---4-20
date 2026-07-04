@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#0E0F12"/>
+  <title>Cayetano's Mobile Mechanic — Oil Changes & Gas Engine Repair | San Jose</title>
+  <meta name="description" content="Cayetano's Mobile Mechanic. Oil changes and gas engine repair that come to you in the San Jose area. Book online, pay online, and never miss an oil change."/>
+  <link rel="manifest" href="manifest.json"/>
+  <link rel="icon" type="image/png" href="assets/icon-192.png"/>
+  <link rel="apple-touch-icon" href="assets/icon-192.png"/>
+  <style>
+    /* ---------- BASE ---------- */
+    :root{
+      --bg:#0E0F12; --bg2:#15171C; --card:#1A1D24; --line:#282C36;
+      --text:#EDEFF3; --muted:#9AA3B2; --accent:#FF6B1A; --accent2:#FFB020;
+      --good:#39C46E; --bad:#E5484D; --radius:14px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Segoe UI',system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+    img{max-width:100%;display:block}
+    button{font-family:inherit;cursor:pointer}
+    .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+    /* ---------- NAV ---------- */
+    nav{position:sticky;top:0;z-index:200;background:rgba(14,15,18,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .nav-inner{max-width:1120px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand{display:flex;align-items:center;gap:12px;cursor:pointer}
+    .brand-mark{width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:22px;flex-shrink:0}
+    .brand-txt b{display:block;font-size:15px;font-weight:800;letter-spacing:.3px;line-height:1.1}
+    .brand-txt span{font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+    .nav-links{display:flex;gap:2px;flex-wrap:wrap}
+    .nav-links a{color:var(--muted);font-size:13px;font-weight:600;padding:8px 12px;border-radius:8px;transition:.15s;cursor:pointer;white-space:nowrap}
+    .nav-links a:hover,.nav-links a.active{color:#fff;background:var(--card)}
+    .nav-cta{background:var(--accent);color:#0E0F12 !important;font-weight:800 !important}
+    .nav-cta:hover{background:var(--accent2) !important}
+    .menu-btn{display:none;background:var(--card);border:1px solid var(--line);color:#fff;border-radius:8px;padding:8px 12px;font-size:18px}
+    @media(max-width:860px){
+      .menu-btn{display:block}
+      .nav-links{position:fixed;top:67px;left:0;right:0;flex-direction:column;background:var(--bg2);border-bottom:1px solid var(--line);padding:10px 16px;gap:4px;display:none}
+      .nav-links.open{display:flex}
+      .nav-links a{padding:12px;font-size:15px}
+    }
+
+    /* ---------- PAGES ---------- */
+    .page{display:none}
+    .page.active{display:block;animation:fade .3s ease}
+    @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    section{padding:64px 0}
+    .eyebrow{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+    h2.title{font-size:34px;font-weight:900;letter-spacing:-.5px;margin-bottom:8px}
+    .sub{color:var(--muted);font-size:16px;max-width:600px;margin-bottom:36px}
+
+    /* ---------- BUTTONS ---------- */
+    .btn{display:inline-flex;align-items:center;gap:8px;border:none;border-radius:10px;padding:14px 24px;font-size:15px;font-weight:800;transition:.15s}
+    .btn-primary{background:var(--accent);color:#0E0F12}
+    .btn-primary:hover{background:var(--accent2)}
+    .btn-ghost{background:transparent;color:#fff;border:1px solid var(--line)}
+    .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+    .btn-sm{padding:9px 16px;font-size:13px;border-radius:8px}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+
+    /* ---------- HERO ---------- */
+    .hero{background:radial-gradient(1000px 500px at 70% -10%,rgba(255,107,26,.18),transparent 60%),var(--bg);padding:80px 0 72px;position:relative;overflow:hidden}
+    .hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:30px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:24px}
+    .hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 4px rgba(57,196,110,.2)}
+    .hero h1{font-size:56px;font-weight:900;letter-spacing:-1.5px;line-height:1.03;margin-bottom:18px}
+    .hero h1 span{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+    .hero p{font-size:18px;color:var(--muted);max-width:540px;margin-bottom:32px}
+    .hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+    .hero-stats{display:flex;gap:40px;margin-top:52px;flex-wrap:wrap}
+    .hero-stat b{display:block;font-size:26px;font-weight:900;color:var(--accent2)}
+    .hero-stat span{font-size:13px;color:var(--muted)}
+    @media(max-width:640px){.hero h1{font-size:40px}}
+
+    /* ---------- CARDS / GRID ---------- */
+    .grid{display:grid;gap:16px}
+    .g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .g4{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px}
+    .card h3{font-size:19px;font-weight:800;margin-bottom:8px}
+    .card p{color:var(--muted);font-size:14px}
+    .svc-icon{font-size:32px;margin-bottom:14px}
+    .svc-price{margin-top:16px;font-size:14px;color:var(--accent2);font-weight:800}
+    .pill{display:inline-block;background:rgba(255,107,26,.12);color:var(--accent2);border:1px solid rgba(255,107,26,.3);font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:.5px}
+
+    /* ---------- VEHICLES ---------- */
+    .veh{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 14px;transition:.15s}
+    .veh:hover{border-color:var(--accent);transform:translateY(-3px)}
+    .veh .logo{font-size:34px;margin-bottom:10px}
+    .veh b{font-size:15px}
+    .veh span{font-size:12px;color:var(--muted)}
+
+    /* ---------- GALLERY ---------- */
+    .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+    .gal-item{position:relative;border-radius:var(--radius);overflow:hidden;aspect-ratio:4/3;border:1px solid var(--line);background:
+      repeating-linear-gradient(45deg,#1A1D24,#1A1D24 12px,#181B21 12px,#181B21 24px);
+      display:grid;place-items:center;text-align:center;padding:16px}
+    .gal-item .ph{color:var(--muted)}
+    .gal-item .ph .ico{font-size:34px;margin-bottom:8px}
+    .gal-item .cap{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.85));padding:26px 14px 12px;font-size:13px;font-weight:700}
+    .gal-item img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+    /* ---------- FORMS ---------- */
+    label.f{display:block;font-size:13px;font-weight:700;color:var(--muted);margin:14px 0 6px}
+    input.f,textarea.f,select.f{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:13px 14px;color:var(--text);font-size:15px;font-family:inherit}
+    input.f:focus,textarea.f:focus,select.f:focus{outline:none;border-color:var(--accent)}
+    textarea.f{min-height:110px;resize:vertical}
+    .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:560px){.row2{grid-template-columns:1fr}}
+    .drop{border:2px dashed var(--line);border-radius:12px;padding:24px;text-align:center;color:var(--muted);cursor:pointer;transition:.15s}
+    .drop:hover{border-color:var(--accent);color:var(--text)}
+    .thumbs{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .thumbs .t{position:relative;width:76px;height:76px;border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+    .thumbs .t img{width:100%;height:100%;object-fit:cover}
+    .thumbs .t button{position:absolute;top:2px;right:2px;width:20px;height:20px;border-radius:50%;background:rgba(0,0,0,.7);color:#fff;border:none;font-size:12px;line-height:1}
+    .note{font-size:12px;color:var(--muted);margin-top:8px}
+    .ok-msg{background:rgba(57,196,110,.12);border:1px solid rgba(57,196,110,.4);color:var(--good);border-radius:10px;padding:14px;margin-top:16px;font-size:14px;font-weight:600}
+
+    /* ---------- CALENDAR ---------- */
+    .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px}
+    .cal-nav{display:flex;align-items:center;gap:10px}
+    .cal-nav button{background:var(--card);border:1px solid var(--line);color:#fff;width:38px;height:38px;border-radius:8px;font-size:18px}
+    .cal-nav b{font-size:18px;min-width:170px;text-align:center}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+    .cal-dow{text-align:center;font-size:11px;font-weight:800;color:var(--muted);letter-spacing:1px;padding-bottom:4px}
+    .cal-day{aspect-ratio:1;background:var(--card);border:1px solid var(--line);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:15px;font-weight:700;cursor:pointer;transition:.12s;position:relative}
+    .cal-day:hover:not(.empty):not(.past){border-color:var(--accent)}
+    .cal-day.empty{background:transparent;border:none;cursor:default}
+    .cal-day.past{color:#4a505c;cursor:not-allowed;background:transparent}
+    .cal-day.today{box-shadow:inset 0 0 0 2px var(--accent2)}
+    .cal-day.blocked{background:repeating-linear-gradient(45deg,#241318,#241318 6px,#2a1519 6px,#2a1519 12px);color:#c96;cursor:not-allowed}
+    .cal-day.selected{background:var(--accent);color:#0E0F12;border-color:var(--accent)}
+    .cal-day .mk{font-size:9px;font-weight:800;margin-top:2px}
+    .cal-day.hasslots .mk{color:var(--good)}
+    .legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:12px;color:var(--muted)}
+    .legend span{display:flex;align-items:center;gap:6px}
+    .legend i{width:14px;height:14px;border-radius:4px;display:inline-block}
+    .slots{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+    .slot{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:9px 14px;font-size:14px;font-weight:700;cursor:pointer}
+    .slot:hover{border-color:var(--accent)}
+    .slot.selected{background:var(--accent);color:#0E0F12;border-color:var(--accent)}
+    .slot.taken{opacity:.35;cursor:not-allowed;text-decoration:line-through}
+    .admin-bar{background:linear-gradient(135deg,rgba(255,107,26,.12),rgba(255,176,32,.08));border:1px solid rgba(255,107,26,.4);border-radius:12px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:14px}
+
+    /* ---------- REMINDERS ---------- */
+    .rem-card{background:linear-gradient(135deg,var(--bg2),var(--card));border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+    .rem-result{margin-top:20px;padding:18px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);display:none}
+    .rem-result.show{display:block}
+    .rem-big{font-size:30px;font-weight:900;color:var(--accent2)}
+    .badge-due{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:800;margin-top:8px}
+
+    /* ---------- PAY ---------- */
+    .pay-opt{display:flex;align-items:center;justify-content:space-between;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+    .pay-opt .l{display:flex;align-items:center;gap:14px}
+    .pay-opt .ico{width:46px;height:46px;border-radius:10px;display:grid;place-items:center;font-size:22px;background:var(--bg2)}
+
+    /* ---------- CTA / FOOTER ---------- */
+    .cta{background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:20px;padding:48px 32px;text-align:center;color:#0E0F12}
+    .cta h2{font-size:32px;font-weight:900;margin-bottom:10px}
+    .cta p{font-size:16px;font-weight:600;opacity:.85;margin-bottom:24px}
+    .cta .btn{background:#0E0F12;color:#fff}
+    .cta .btn:hover{background:#000}
+    footer{border-top:1px solid var(--line);padding:44px 0;color:var(--muted);font-size:14px}
+    .foot-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:32px}
+    @media(max-width:700px){.foot-grid{grid-template-columns:1fr}}
+    footer b{color:#fff;display:block;margin-bottom:12px;font-size:15px}
+    footer a{display:block;padding:5px 0}
+    footer a:hover{color:var(--accent)}
+    .foot-bottom{margin-top:32px;padding-top:20px;border-top:1px solid var(--line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:12px}
+
+    /* ---------- MODAL ---------- */
+    .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:none;align-items:center;justify-content:center;padding:20px}
+    .modal.show{display:flex}
+    .modal-box{background:var(--bg2);border:1px solid var(--line);border-radius:16px;padding:28px;max-width:440px;width:100%;animation:fade .2s}
+    .modal-box h3{font-size:20px;margin-bottom:6px}
+    .modal-box p{color:var(--muted);font-size:14px;margin-bottom:16px}
+    .modal-x{display:flex;gap:10px;margin-top:20px}
+
+    /* install banner */
+    #installBar{display:none;position:fixed;bottom:16px;left:16px;right:16px;max-width:520px;margin:0 auto;background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:12px 16px;z-index:400;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+    #installBar b{font-size:14px}
+    #installBar span{font-size:12px;color:var(--muted)}
+  </style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav>
+  <div class="nav-inner">
+    <div class="brand" onclick="go('home')">
+      <div class="brand-mark">🔧</div>
+      <div class="brand-txt"><b id="brandName">Cayetano's</b><span>Mobile Mechanic</span></div>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a onclick="go('home')" data-nav="home" class="active">Home</a>
+      <a onclick="go('services')" data-nav="services">Services</a>
+      <a onclick="go('work')" data-nav="work">Our Work</a>
+      <a onclick="go('book')" data-nav="book">Book</a>
+      <a onclick="go('reminders')" data-nav="reminders">Oil Reminders</a>
+      <a onclick="go('pay')" data-nav="pay">Pay</a>
+      <a onclick="go('contact')" data-nav="contact" class="nav-cta">Contact</a>
+    </div>
+    <button class="menu-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+  </div>
+</nav>
+
+<!-- ============ HOME ============ -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <div class="wrap">
+      <div class="hero-badge"><span class="dot"></span> Now serving the San&nbsp;Jose area</div>
+      <h1>The shop that <span>comes to you.</span></h1>
+      <p>Hi, I'm <b id="heroName">Cayetano</b> — a mobile mechanic working out of my fully-equipped van. Oil changes and gas engine repair, done right in your driveway. No towing, no waiting rooms.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="go('book')">📅 Book an Appointment</button>
+        <a class="btn btn-ghost" id="heroCall" href="tel:+14085550123">📞 Call or Text</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><b>2</b><span>Core services</span></div>
+        <div class="hero-stat"><b>100%</b><span>Mobile — I come to you</span></div>
+        <div class="hero-stat"><b>Gas</b><span>Engines only (no diesel)</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">What I Do</div>
+      <h2 class="title">Straightforward services</h2>
+      <p class="sub">No upsells, no surprises. Two things done well.</p>
+      <div class="grid g2">
+        <div class="card">
+          <div class="svc-icon">🛢️</div>
+          <span class="pill">Most popular</span>
+          <h3 style="margin-top:12px">Oil Changes</h3>
+          <p>Full-service oil and filter change at your home or work. Conventional, synthetic blend, or full synthetic — your choice. I'll also do a quick safety look-over while I'm under the hood.</p>
+          <div class="svc-price">From $XX &middot; ~30 minutes</div>
+        </div>
+        <div class="card">
+          <div class="svc-icon">⚙️</div>
+          <h3>Gas Engine Repair</h3>
+          <p>Diagnostics and repair for gasoline engines — check-engine lights, tune-ups, belts, brakes, batteries, starters, and more. If it runs on gas, I can take a look. (No diesel work.)</p>
+          <div class="svc-price">Quoted after diagnosis</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:36px">
+        <button class="btn btn-ghost" onclick="go('services')">See all services →</button>
+      </div>
+    </div>
+  </section>
+
+  <section style="background:var(--bg2)">
+    <div class="wrap">
+      <div class="eyebrow">Vehicles</div>
+      <h2 class="title">Makes &amp; models I work on</h2>
+      <p class="sub">A sample of what rolls through the driveway. Don't see yours? Just ask.</p>
+      <div class="grid g4" id="vehicleGrid"></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="grid g3">
+        <div class="card"><div class="svc-icon">🚐</div><h3>I come to you</h3><p>Home, office, or roadside anywhere in the San Jose area. You keep your day, I do the wrenching.</p></div>
+        <div class="card"><div class="svc-icon">💳</div><h3>Easy payment</h3><p>Pay online or in person. Tap, card, or app — whatever's easiest for you.</p></div>
+        <div class="card"><div class="svc-icon">🔔</div><h3>Oil-change reminders</h3><p>Sign up once and I'll remind you when your next oil change is due. No more guessing.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <div class="cta">
+        <h2>Ready to get your car handled?</h2>
+        <p>Pick a time that works — I'll bring the shop to your driveway.</p>
+        <button class="btn" onclick="go('book')">Book Now</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ SERVICES ============ -->
+<div id="page-services" class="page">
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">Services</div>
+      <h2 class="title">What I can do for your vehicle</h2>
+      <p class="sub">Gasoline engines only — I don't do diesel. Prices below are placeholders; you'll always get a clear quote first.</p>
+      <div class="grid g2">
+        <div class="card"><div class="svc-icon">🛢️</div><h3>Oil &amp; Filter Change</h3><p>Conventional, synthetic blend, or full synthetic. Includes new filter and a fluid top-off.</p><div class="svc-price">From $XX</div></div>
+        <div class="card"><div class="svc-icon">🔦</div><h3>Check-Engine Diagnostics</h3><p>I'll pull the codes, explain what's going on in plain English, and give you options.</p><div class="svc-price">From $XX</div></div>
+        <div class="card"><div class="svc-icon">🔋</div><h3>Battery &amp; Starter</h3><p>Testing and replacement for batteries, alternators, and starters.</p><div class="svc-price">From $XX + parts</div></div>
+        <div class="card"><div class="svc-icon">🛑</div><h3>Brakes</h3><p>Pads, rotors, and brake fluid. Safety-checked before I leave.</p><div class="svc-price">From $XX + parts</div></div>
+        <div class="card"><div class="svc-icon">🔧</div><h3>Tune-Ups</h3><p>Spark plugs, filters, belts, and general maintenance to keep it running smooth.</p><div class="svc-price">From $XX</div></div>
+        <div class="card"><div class="svc-icon">💨</div><h3>Fluids &amp; Filters</h3><p>Coolant, transmission, air and cabin filters — the routine stuff, done at your door.</p><div class="svc-price">From $XX</div></div>
+      </div>
+      <div class="card" style="margin-top:24px;border-color:rgba(255,107,26,.35)">
+        <h3>🚫 What I don't do</h3>
+        <p>To keep quality high, I stick to what I know: <b>no diesel engines</b>, no heavy transmission rebuilds, and no bodywork/paint. If it's outside my lane, I'll point you to someone good.</p>
+      </div>
+      <div style="text-align:center;margin-top:36px"><button class="btn btn-primary" onclick="go('book')">📅 Book a Service</button></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ WORK / GALLERY ============ -->
+<div id="page-work" class="page">
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">Our Work</div>
+      <h2 class="title">Recent jobs</h2>
+      <p class="sub">A look at some of the work I've done. (Placeholder tiles — swap in real photos anytime.)</p>
+      <div class="gal" id="galleryGrid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ BOOK / CALENDAR ============ -->
+<div id="page-book" class="page">
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">Book</div>
+      <h2 class="title">Pick a day &amp; time</h2>
+      <p class="sub">Choose an open day, then a time slot. I'll confirm by text. Grayed-out days are already blocked off.</p>
+
+      <div class="admin-bar" id="adminBar">
+        <div id="adminStatus">👤 <b>Client view</b> — tap an open day to request a time.</div>
+        <button class="btn btn-sm btn-ghost" id="adminToggle" onclick="toggleAdmin()">🔒 Mechanic login</button>
+      </div>
+
+      <div class="card">
+        <div class="cal-head">
+          <div class="cal-nav">
+            <button onclick="calMove(-1)">‹</button>
+            <b id="calLabel"></b>
+            <button onclick="calMove(1)">›</button>
+          </div>
+          <button class="btn btn-sm btn-ghost" onclick="calToday()">Today</button>
+        </div>
+        <div class="cal-grid" id="calDow"></div>
+        <div class="cal-grid" id="calDays" style="margin-top:6px"></div>
+        <div class="legend">
+          <span><i style="background:var(--card);box-shadow:inset 0 0 0 2px var(--accent2)"></i> Today</span>
+          <span><i style="background:var(--accent)"></i> Selected</span>
+          <span><i style="background:repeating-linear-gradient(45deg,#241318,#241318 4px,#2a1519 4px,#2a1519 8px)"></i> Blocked / full</span>
+          <span id="adminHint" style="display:none">💡 Mechanic: click a day to block/unblock it.</span>
+        </div>
+      </div>
+
+      <!-- client slot picker -->
+      <div class="card" id="slotCard" style="margin-top:20px;display:none">
+        <h3 id="slotTitle">Available times</h3>
+        <div class="slots" id="slotList"></div>
+
+        <div id="bookForm" style="display:none;margin-top:20px;border-top:1px solid var(--line);padding-top:20px">
+          <h3>Your details</h3>
+          <div class="row2">
+            <div><label class="f">Name</label><input class="f" id="bkName" placeholder="Your name"/></div>
+            <div><label class="f">Phone</label><input class="f" id="bkPhone" placeholder="(408) 555-0123"/></div>
+          </div>
+          <label class="f">Vehicle (year / make / model)</label>
+          <input class="f" id="bkVehicle" placeholder="2016 Honda Civic"/>
+          <label class="f">What do you need?</label>
+          <textarea class="f" id="bkNeed" placeholder="Oil change, check-engine light, etc."></textarea>
+          <button class="btn btn-primary" style="margin-top:16px" onclick="submitBooking()">Request this time</button>
+        </div>
+        <div class="ok-msg" id="bookOk" style="display:none;margin-top:20px"></div>
+      </div>
+
+      <!-- admin hour blocker -->
+      <div class="card" id="hourCard" style="margin-top:20px;display:none">
+        <h3 id="hourTitle">Manage availability</h3>
+        <p class="note" style="margin-bottom:12px">Toggle individual hours off (e.g. lunch, a personal appointment). Toggle the whole day with the button.</p>
+        <div style="margin-bottom:14px"><button class="btn btn-sm" id="blockDayBtn" onclick="toggleBlockDay()"></button></div>
+        <div class="slots" id="hourList"></div>
+        <div id="dayBookings" style="margin-top:18px"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ REMINDERS ============ -->
+<div id="page-reminders" class="page">
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">Never Miss an Oil Change</div>
+      <h2 class="title">Oil-change reminders</h2>
+      <p class="sub">Tell me when you last changed your oil and how you drive. I'll calculate when you're due and can send you a reminder.</p>
+      <div class="grid g2">
+        <div class="rem-card">
+          <label class="f">Your name</label>
+          <input class="f" id="remName" placeholder="Your name"/>
+          <label class="f">Email or phone for the reminder</label>
+          <input class="f" id="remContact" placeholder="you@email.com or (408) 555-0123"/>
+          <div class="row2">
+            <div><label class="f">Vehicle</label><input class="f" id="remVehicle" placeholder="2016 Honda Civic"/></div>
+            <div><label class="f">Oil type</label>
+              <select class="f" id="remOil">
+                <option value="3">Conventional (~3,000 mi / 3 mo)</option>
+                <option value="5" selected>Synthetic blend (~5,000 mi / 5 mo)</option>
+                <option value="7">Full synthetic (~7,500 mi / 6 mo)</option>
+              </select>
+            </div>
+          </div>
+          <label class="f">Date of last oil change</label>
+          <input class="f" id="remDate" type="date"/>
+          <button class="btn btn-primary" style="margin-top:18px" onclick="calcReminder()">Calculate my next change</button>
+          <div class="rem-result" id="remResult"></div>
+        </div>
+        <div class="card">
+          <h3>How it works</h3>
+          <p style="margin-bottom:14px">1. Enter your last oil change and oil type.<br>2. I'll estimate your next due date.<br>3. Add it to your calendar or save it with me — I'll give you a heads-up when it's close.</p>
+          <div class="pill">Tip</div>
+          <p style="margin-top:12px">Severe driving (short trips, heat, towing, lots of stop-and-go) can shorten these intervals. When in doubt, sooner is safer for your engine.</p>
+          <h3 style="margin-top:24px">Saved reminders</h3>
+          <div id="remSaved"><p>None yet.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ PAY ============ -->
+<div id="page-pay" class="page">
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">Payment</div>
+      <h2 class="title">Pay your invoice</h2>
+      <p class="sub">Pay online in seconds, or settle up in person. Enter an amount and pick your method — links are placeholders until Cayetano connects his accounts.</p>
+      <div class="grid g2">
+        <div class="card">
+          <label class="f">Amount (USD)</label>
+          <input class="f" id="payAmt" type="number" placeholder="0.00" oninput="updatePayLinks()"/>
+          <label class="f">Invoice # or note (optional)</label>
+          <input class="f" id="payNote" placeholder="e.g. Oil change — Civic" oninput="updatePayLinks()"/>
+          <div style="margin-top:20px;display:flex;flex-direction:column;gap:12px">
+            <a class="pay-opt" id="payVenmo" href="#" target="_blank" rel="noopener">
+              <div class="l"><div class="ico">🅥</div><div><b>Venmo</b><br><span class="note">Fast phone-to-phone</span></div></div>
+              <span class="btn btn-sm btn-primary">Pay</span>
+            </a>
+            <a class="pay-opt" id="payPaypal" href="#" target="_blank" rel="noopener">
+              <div class="l"><div class="ico">🅿️</div><div><b>PayPal</b><br><span class="note">Card or balance</span></div></div>
+              <span class="btn btn-sm btn-primary">Pay</span>
+            </a>
+            <a class="pay-opt" id="payCashapp" href="#" target="_blank" rel="noopener">
+              <div class="l"><div class="ico">💵</div><div><b>Cash App</b><br><span class="note">$Cashtag</span></div></div>
+              <span class="btn btn-sm btn-primary">Pay</span>
+            </a>
+          </div>
+        </div>
+        <div class="card">
+          <h3>In-person options</h3>
+          <p>Prefer to pay when I'm there? I take:</p>
+          <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
+            <div class="pay-opt"><div class="l"><div class="ico">💳</div><div><b>Tap / Card</b><br><span class="note">Chip, tap, or swipe on my reader</span></div></div></div>
+            <div class="pay-opt"><div class="l"><div class="ico">💵</div><div><b>Cash</b><br><span class="note">Exact change appreciated</span></div></div></div>
+          </div>
+          <p class="note" style="margin-top:18px">Payment is due at completion unless we've agreed otherwise. Questions on an invoice? Just reach out on the contact page.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ CONTACT ============ -->
+<div id="page-contact" class="page">
+  <section>
+    <div class="wrap">
+      <div class="eyebrow">Get in Touch</div>
+      <h2 class="title">Contact Cayetano</h2>
+      <p class="sub">Send a message with photos of the problem (a dashboard light, a leak, anything). It goes straight to my inbox and I'll get back to you fast.</p>
+      <div class="grid g2">
+        <div class="card">
+          <form id="contactForm" onsubmit="return submitContact(event)">
+            <div class="row2">
+              <div><label class="f">Name *</label><input class="f" id="cName" required placeholder="Your name"/></div>
+              <div><label class="f">Phone *</label><input class="f" id="cPhone" required placeholder="(408) 555-0123"/></div>
+            </div>
+            <label class="f">Email *</label>
+            <input class="f" id="cEmail" type="email" required placeholder="you@email.com"/>
+            <label class="f">Vehicle</label>
+            <input class="f" id="cVehicle" placeholder="2016 Honda Civic"/>
+            <label class="f">How can I help? *</label>
+            <textarea class="f" id="cMsg" required placeholder="Tell me what's going on with your vehicle…"></textarea>
+
+            <label class="f">Add photos (optional)</label>
+            <div class="drop" id="dropZone" onclick="document.getElementById('cPhotos').click()">
+              📷 Tap to add photos, or drag &amp; drop here
+            </div>
+            <input type="file" id="cPhotos" accept="image/*" multiple capture="environment" style="display:none" onchange="handlePhotos(this.files)"/>
+            <div class="thumbs" id="photoThumbs"></div>
+
+            <button class="btn btn-primary" type="submit" style="margin-top:20px;width:100%;justify-content:center">Send Message</button>
+            <div class="ok-msg" id="contactOk" style="display:none"></div>
+            <p class="note" id="contactNote"></p>
+          </form>
+        </div>
+        <div class="card">
+          <h3>Reach me directly</h3>
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:14px">
+            <a class="pay-opt" id="ctPhone" href="tel:+14085550123"><div class="l"><div class="ico">📞</div><div><b>Call or text</b><br><span class="note" id="ctPhoneTxt">(408) 555-0123</span></div></div><span class="btn btn-sm btn-ghost">Call</span></a>
+            <a class="pay-opt" id="ctEmail" href="mailto:cayetano@example.com"><div class="l"><div class="ico">✉️</div><div><b>Email</b><br><span class="note" id="ctEmailTxt">cayetano@example.com</span></div></div><span class="btn btn-sm btn-ghost">Email</span></a>
+            <div class="pay-opt"><div class="l"><div class="ico">📍</div><div><b>Service area</b><br><span class="note">San Jose &amp; surrounding cities</span></div></div></div>
+            <div class="pay-opt"><div class="l"><div class="ico">🕒</div><div><b>Hours</b><br><span class="note" id="ctHours">Mon–Sat, 8am–6pm</span></div></div></div>
+          </div>
+          <div style="margin-top:22px">
+            <button class="btn btn-ghost" style="width:100%;justify-content:center" onclick="go('book')">📅 Or book a time directly →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <b>🔧 Cayetano's Mobile Mechanic</b>
+        <p>Honest, convenient auto care for the San Jose area. Oil changes and gas engine repair, brought right to your driveway.</p>
+      </div>
+      <div>
+        <b>Services</b>
+        <a onclick="go('services')">Oil Changes</a>
+        <a onclick="go('services')">Engine Repair</a>
+        <a onclick="go('reminders')">Oil Reminders</a>
+        <a onclick="go('book')">Book Now</a>
+      </div>
+      <div>
+        <b>Contact</b>
+        <a id="footPhone" href="tel:+14085550123">(408) 555-0123</a>
+        <a id="footEmail" href="mailto:cayetano@example.com">cayetano@example.com</a>
+        <a onclick="go('pay')">Pay an Invoice</a>
+        <a onclick="go('contact')">Send a Message</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="year"></span> Cayetano's Mobile Mechanic. All rights reserved.</span>
+      <span>San Jose, CA · Gas engines only</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ PIN MODAL ============ -->
+<div class="modal" id="pinModal">
+  <div class="modal-box">
+    <h3>🔒 Mechanic login</h3>
+    <p>Enter your PIN to manage the calendar and block off availability.</p>
+    <input class="f" id="pinInput" type="password" inputmode="numeric" placeholder="PIN" onkeydown="if(event.key==='Enter')checkPin()"/>
+    <div id="pinErr" class="note" style="color:var(--bad)"></div>
+    <div class="modal-x">
+      <button class="btn btn-primary" onclick="checkPin()">Unlock</button>
+      <button class="btn btn-ghost" onclick="closePin()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ INSTALL BANNER ============ -->
+<div id="installBar">
+  <div><b>📲 Install this app</b><br><span>Add Cayetano's to your home screen</span></div>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn-sm btn-primary" onclick="doInstall()">Install</button>
+    <button class="btn btn-sm btn-ghost" onclick="document.getElementById('installBar').style.display='none'">✕</button>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   CONFIG — edit these placeholders with Cayetano's real details.
+   ===================================================================== */
+const CONFIG = {
+  name: "Cayetano",
+  businessName: "Cayetano's Mobile Mechanic",
+  phone: "(408) 555-0123",          // display phone
+  phoneRaw: "+14085550123",         // tel: link
+  email: "cayetano@example.com",    // where contact form lands
+  area: "San Jose, CA",
+  hours: "Mon–Sat, 8am–6pm",
+  adminPin: "0420",                 // mechanic PIN to manage the calendar
+  // Contact form delivery. Create a free form at https://formspree.io,
+  // then paste the endpoint here (looks like https://formspree.io/f/abcdwxyz).
+  // Formspree supports file/photo uploads and emails them to you.
+  // Leave "" to fall back to opening the visitor's email app instead.
+  formEndpoint: "",
+  // Payment handles (leave "" to hide/placeholder). Examples below.
+  pay: {
+    venmo:   "",   // e.g. "Cayetano-Mechanic"  (Venmo username, no @)
+    paypal:  "",   // e.g. "cayetanomechanic"   (PayPal.Me name)
+    cashapp: ""    // e.g. "cayetanofix"        (Cashtag, no $)
+  },
+  // Working hours offered as bookable slots (24h). Edit as you like.
+  bookingHours: [8,9,10,11,13,14,15,16,17],
+  // Vehicles shown on the home page (placeholders).
+  vehicles: [
+    {logo:"🚙", make:"Ford",      note:"F-150, Escape, Focus"},
+    {logo:"🚗", make:"Honda",     note:"Civic, Accord, CR-V"},
+    {logo:"🚘", make:"Toyota",    note:"Corolla, Camry, RAV4"},
+    {logo:"🚐", make:"Chevrolet", note:"Silverado, Malibu"},
+    {logo:"🏎️", make:"Nissan",    note:"Altima, Sentra, Rogue"},
+    {logo:"🚕", make:"Hyundai",   note:"Elantra, Sonata"},
+    {logo:"🚙", make:"Jeep",      note:"Wrangler, Cherokee"},
+    {logo:"🚗", make:"Subaru",    note:"Outback, Forester"}
+  ],
+  // Gallery placeholders (label + optional image url).
+  gallery: [
+    {ico:"🛢️", cap:"Synthetic oil change — Honda Civic", img:""},
+    {ico:"🔦", cap:"Check-engine diagnosis — Ford F-150", img:""},
+    {ico:"🛑", cap:"Front brake job — Toyota Camry", img:""},
+    {ico:"🔋", cap:"Battery & alternator swap — Nissan Altima", img:""},
+    {ico:"🔧", cap:"Spark plug tune-up — Chevy Malibu", img:""},
+    {ico:"💨", cap:"Coolant flush — Jeep Cherokee", img:""},
+    {ico:"⚙️", cap:"Starter replacement — Hyundai Elantra", img:""},
+    {ico:"🚐", cap:"Roadside oil top-off — Subaru Outback", img:""}
+  ]
+};
+
+/* =====================================================================
+   STATE (persisted in localStorage — device-local without a backend)
+   ===================================================================== */
+const DB = {
+  get(k,d){ try{return JSON.parse(localStorage.getItem('cmm_'+k)) ?? d}catch(e){return d} },
+  set(k,v){ localStorage.setItem('cmm_'+k, JSON.stringify(v)) }
+};
+let store = {
+  blockedDays: DB.get('blockedDays', []),      // ["2026-07-10", ...]
+  blockedHours: DB.get('blockedHours', {}),    // { "2026-07-10":[13,14] }
+  bookings: DB.get('bookings', {}),            // { "2026-07-10":[{h:9,name,phone,vehicle,need}] }
+  reminders: DB.get('reminders', [])
+};
+function save(){ DB.set('blockedDays',store.blockedDays); DB.set('blockedHours',store.blockedHours); DB.set('bookings',store.bookings); DB.set('reminders',store.reminders); }
+let isAdmin = false;
+
+/* =====================================================================
+   NAV
+   ===================================================================== */
+function go(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('[data-nav]').forEach(a=>a.classList.toggle('active', a.dataset.nav===page));
+  document.getElementById('navLinks').classList.remove('open');
+  window.scrollTo({top:0,behavior:'smooth'});
+  location.hash = page;
+}
+window.addEventListener('hashchange',()=>{ const p=location.hash.slice(1); if(p&&document.getElementById('page-'+p)) go(p); });
+
+/* =====================================================================
+   APPLY CONFIG TO DOM
+   ===================================================================== */
+function applyConfig(){
+  document.getElementById('brandName').textContent = CONFIG.name + "'s";
+  document.getElementById('heroName').textContent = CONFIG.name;
+  document.getElementById('year').textContent = '2026';
+  // phones/emails
+  const tel = 'tel:'+CONFIG.phoneRaw, mail='mailto:'+CONFIG.email;
+  document.getElementById('heroCall').href = tel;
+  document.getElementById('ctPhone').href = tel;
+  document.getElementById('ctPhoneTxt').textContent = CONFIG.phone;
+  document.getElementById('ctEmail').href = mail;
+  document.getElementById('ctEmailTxt').textContent = CONFIG.email;
+  document.getElementById('ctHours').textContent = CONFIG.hours;
+  document.getElementById('footPhone').href = tel;
+  document.getElementById('footPhone').textContent = CONFIG.phone;
+  document.getElementById('footEmail').href = mail;
+  document.getElementById('footEmail').textContent = CONFIG.email;
+
+  // vehicles
+  document.getElementById('vehicleGrid').innerHTML = CONFIG.vehicles.map(v=>
+    `<div class="veh"><div class="logo">${v.logo}</div><b>${v.make}</b><span>${v.note}</span></div>`).join('');
+
+  // gallery
+  document.getElementById('galleryGrid').innerHTML = CONFIG.gallery.map(g=>
+    `<div class="gal-item">${g.img?`<img src="${g.img}" alt="${g.cap}"/>`:`<div class="ph"><div class="ico">${g.ico}</div>Photo coming soon</div>`}<div class="cap">${g.cap}</div></div>`).join('');
+}
+
+/* =====================================================================
+   CALENDAR
+   ===================================================================== */
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const MON = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+let viewY, viewM, selectedDate=null;
+
+function ymd(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+function todayStr(){ const t=new Date(); return ymd(t.getFullYear(),t.getMonth(),t.getDate()); }
+
+function initCal(){
+  const t=new Date(); viewY=t.getFullYear(); viewM=t.getMonth();
+  document.getElementById('calDow').innerHTML = DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  renderCal();
+}
+function calMove(n){ viewM+=n; if(viewM<0){viewM=11;viewY--} if(viewM>11){viewM=0;viewY++} renderCal(); }
+function calToday(){ const t=new Date(); viewY=t.getFullYear(); viewM=t.getMonth(); renderCal(); }
+
+function renderCal(){
+  document.getElementById('calLabel').textContent = MON[viewM]+' '+viewY;
+  const first=new Date(viewY,viewM,1).getDay();
+  const days=new Date(viewY,viewM+1,0).getDate();
+  const tstr=todayStr();
+  let html='';
+  for(let i=0;i<first;i++) html+='<div class="cal-day empty"></div>';
+  for(let d=1;d<=days;d++){
+    const ds=ymd(viewY,viewM,d);
+    const past = ds<tstr;
+    const blocked = store.blockedDays.includes(ds);
+    const cls=['cal-day'];
+    if(past) cls.push('past');
+    if(ds===tstr) cls.push('today');
+    if(blocked) cls.push('blocked');
+    if(ds===selectedDate) cls.push('selected');
+    let mark='';
+    if(!past && !blocked){
+      const free=freeSlots(ds).length;
+      if(free>0){ cls.push('hasslots'); mark=`<span class="mk">${free} open</span>`; }
+      else { cls.push('blocked'); }
+    }
+    const clickable = !past && (isAdmin || !blocked);
+    html+=`<div class="${cls.join(' ')}" ${clickable?`onclick="pickDay('${ds}')"`:''}>${d}${mark}</div>`;
+  }
+  document.getElementById('calDays').innerHTML=html;
+}
+
+function freeSlots(ds){
+  if(store.blockedDays.includes(ds)) return [];
+  const blockedH = store.blockedHours[ds]||[];
+  const booked = (store.bookings[ds]||[]).map(b=>b.h);
+  return CONFIG.bookingHours.filter(h=>!blockedH.includes(h) && !booked.includes(h));
+}
+function fmtHour(h){ const ap=h<12?'am':'pm'; let hr=h%12; if(hr===0)hr=12; return hr+':00 '+ap; }
+
+function pickDay(ds){
+  selectedDate=ds; renderCal();
+  if(isAdmin) renderAdminDay(ds);
+  else renderClientDay(ds);
+}
+
+/* ---- CLIENT booking ---- */
+function renderClientDay(ds){
+  document.getElementById('hourCard').style.display='none';
+  const card=document.getElementById('slotCard'); card.style.display='block';
+  const slots=freeSlots(ds);
+  document.getElementById('slotTitle').textContent = 'Available times — '+prettyDate(ds);
+  if(slots.length===0){
+    document.getElementById('slotList').innerHTML='<p class="note">No open times that day — please pick another.</p>';
+    document.getElementById('bookForm').style.display='none';
+    return;
+  }
+  document.getElementById('slotList').innerHTML = slots.map(h=>
+    `<button class="slot" data-h="${h}" onclick="pickSlot(${h},this)">${fmtHour(h)}</button>`).join('');
+  document.getElementById('bookForm').style.display='none';
+  document.getElementById('bookOk').style.display='none';
+  card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+let selectedHour=null;
+function pickSlot(h,el){
+  selectedHour=h;
+  document.querySelectorAll('#slotList .slot').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('bookForm').style.display='block';
+  document.getElementById('bookForm').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function submitBooking(){
+  const name=val('bkName'), phone=val('bkPhone'), vehicle=val('bkVehicle'), need=val('bkNeed');
+  if(!name||!phone){ alert('Please add your name and phone.'); return; }
+  if(selectedHour==null){ alert('Please pick a time.'); return; }
+  const ds=selectedDate;
+  store.bookings[ds]=store.bookings[ds]||[];
+  store.bookings[ds].push({h:selectedHour,name,phone,vehicle,need,at:Date.now()});
+  save();
+  // Notify Cayetano (opens his SMS/email prefilled if he taps; also a record is stored)
+  const msg=`New booking request:\n${prettyDate(ds)} at ${fmtHour(selectedHour)}\n${name} — ${phone}\nVehicle: ${vehicle||'—'}\nNeeds: ${need||'—'}`;
+  const bookedHour=selectedHour;
+  selectedHour=null;
+  // refresh the day's slots (the just-booked time is now taken) and calendar
+  renderClientDay(ds); renderCal();
+  // then show confirmation (renderClientDay resets/hides these)
+  const ok=document.getElementById('bookOk');
+  ok.style.display='block';
+  ok.innerHTML=`✅ Thanks ${escapeHtml(name)}! Your request for <b>${prettyDate(ds)} at ${fmtHour(bookedHour)}</b> is in. I'll text you at ${escapeHtml(phone)} to confirm.<br><br>
+    <a class="btn btn-sm btn-ghost" href="sms:${CONFIG.phoneRaw}?&body=${encodeURIComponent(msg)}">📱 Text Cayetano now</a>`;
+  ok.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ---- ADMIN availability ---- */
+function renderAdminDay(ds){
+  document.getElementById('slotCard').style.display='none';
+  const card=document.getElementById('hourCard'); card.style.display='block';
+  document.getElementById('hourTitle').textContent='Availability — '+prettyDate(ds);
+  const isBlocked=store.blockedDays.includes(ds);
+  const btn=document.getElementById('blockDayBtn');
+  btn.textContent = isBlocked ? '✅ Unblock this whole day' : '🚫 Block this whole day';
+  btn.className = 'btn btn-sm '+(isBlocked?'btn-primary':'btn-ghost');
+  const blockedH=store.blockedHours[ds]||[];
+  const booked=(store.bookings[ds]||[]).map(b=>b.h);
+  document.getElementById('hourList').innerHTML = CONFIG.bookingHours.map(h=>{
+    if(booked.includes(h)) return `<button class="slot taken" title="Booked">${fmtHour(h)}</button>`;
+    const off=blockedH.includes(h)||isBlocked;
+    return `<button class="slot ${off?'':'selected'}" onclick="toggleHour('${ds}',${h})">${fmtHour(h)} ${off?'🚫':'✓'}</button>`;
+  }).join('');
+  // list of bookings that day
+  const bks=store.bookings[ds]||[];
+  document.getElementById('dayBookings').innerHTML = bks.length
+    ? '<h3 style="margin-bottom:10px">Booked</h3>'+bks.sort((a,b)=>a.h-b.h).map(b=>
+        `<div class="pay-opt" style="margin-bottom:8px"><div class="l"><div class="ico">📌</div><div><b>${fmtHour(b.h)} — ${escapeHtml(b.name)}</b><br><span class="note">${escapeHtml(b.phone)} · ${escapeHtml(b.vehicle||'—')} · ${escapeHtml(b.need||'—')}</span></div></div><button class="btn btn-sm btn-ghost" onclick="cancelBooking('${ds}',${b.h})">Remove</button></div>`).join('')
+    : '<p class="note">No bookings that day yet.</p>';
+  card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function toggleBlockDay(){
+  const ds=selectedDate; const i=store.blockedDays.indexOf(ds);
+  if(i>=0) store.blockedDays.splice(i,1); else store.blockedDays.push(ds);
+  save(); renderAdminDay(ds); renderCal();
+}
+function toggleHour(ds,h){
+  store.blockedHours[ds]=store.blockedHours[ds]||[];
+  const i=store.blockedHours[ds].indexOf(h);
+  if(i>=0) store.blockedHours[ds].splice(i,1); else store.blockedHours[ds].push(h);
+  if(store.blockedHours[ds].length===0) delete store.blockedHours[ds];
+  save(); renderAdminDay(ds); renderCal();
+}
+function cancelBooking(ds,h){
+  store.bookings[ds]=(store.bookings[ds]||[]).filter(b=>b.h!==h);
+  if(store.bookings[ds].length===0) delete store.bookings[ds];
+  save(); renderAdminDay(ds); renderCal();
+}
+
+/* ---- admin auth ---- */
+function toggleAdmin(){
+  if(isAdmin){ isAdmin=false; setAdminUI(); return; }
+  document.getElementById('pinModal').classList.add('show');
+  document.getElementById('pinInput').value=''; document.getElementById('pinErr').textContent='';
+  setTimeout(()=>document.getElementById('pinInput').focus(),50);
+}
+function checkPin(){
+  if(document.getElementById('pinInput').value===CONFIG.adminPin){ isAdmin=true; closePin(); setAdminUI(); }
+  else document.getElementById('pinErr').textContent='Incorrect PIN.';
+}
+function closePin(){ document.getElementById('pinModal').classList.remove('show'); }
+function setAdminUI(){
+  document.getElementById('adminStatus').innerHTML = isAdmin
+    ? '🔧 <b>Mechanic mode</b> — click any day to manage availability & bookings.'
+    : '👤 <b>Client view</b> — tap an open day to request a time.';
+  document.getElementById('adminToggle').textContent = isAdmin ? '🔓 Log out' : '🔒 Mechanic login';
+  document.getElementById('adminHint').style.display = isAdmin ? 'flex' : 'none';
+  document.getElementById('slotCard').style.display='none';
+  document.getElementById('hourCard').style.display='none';
+  selectedDate=null; renderCal();
+}
+
+/* =====================================================================
+   OIL-CHANGE REMINDERS
+   ===================================================================== */
+function calcReminder(){
+  const name=val('remName'), contact=val('remContact'), vehicle=val('remVehicle');
+  const months=parseInt(document.getElementById('remOil').value,10);
+  const dateStr=val('remDate');
+  if(!dateStr){ alert('Please enter the date of your last oil change.'); return; }
+  const last=new Date(dateStr+'T12:00:00');
+  const next=new Date(last); next.setMonth(next.getMonth()+months);
+  const now=new Date(); const days=Math.round((next-now)/86400000);
+  let status,color;
+  if(days<0){ status='Overdue — book soon!'; color='var(--bad)'; }
+  else if(days<=21){ status='Due soon'; color='var(--accent2)'; }
+  else { status='On track'; color='var(--good)'; }
+  const nextStr=next.toLocaleDateString(undefined,{weekday:'short',year:'numeric',month:'long',day:'numeric'});
+  const res=document.getElementById('remResult'); res.classList.add('show');
+  // Google Calendar add link
+  const gcalDate=`${next.getFullYear()}${String(next.getMonth()+1).padStart(2,'0')}${String(next.getDate()).padStart(2,'0')}`;
+  const gcal=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Oil change due — '+(vehicle||'my car'))}&dates=${gcalDate}/${gcalDate}&details=${encodeURIComponent('Reminder from '+CONFIG.businessName+'. Book: call '+CONFIG.phone)}`;
+  res.innerHTML=`
+    <div class="note">Your next oil change is estimated for</div>
+    <div class="rem-big">${nextStr}</div>
+    <span class="badge-due" style="background:${color}22;color:${color};border:1px solid ${color}">${status} · ${days<0?Math.abs(days)+' days ago':'in '+days+' days'}</span>
+    <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <a class="btn btn-sm btn-primary" href="${gcal}" target="_blank" rel="noopener">➕ Add to Google Calendar</a>
+      <button class="btn btn-sm btn-ghost" onclick="saveReminder('${nextStr.replace(/'/g,'')}','${(vehicle||'').replace(/'/g,'')}','${(name||'').replace(/'/g,'')}','${(contact||'').replace(/'/g,'')}')">🔔 Save reminder with Cayetano</button>
+      <button class="btn btn-sm btn-ghost" onclick="go('book')">📅 Book it now</button>
+    </div>`;
+  res.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function saveReminder(nextStr,vehicle,name,contact){
+  if(!name||!contact){ alert('Add your name and email/phone above so Cayetano can reach you.'); return; }
+  store.reminders.push({name,contact,vehicle,due:nextStr,at:Date.now()});
+  save(); renderReminders();
+  alert('Saved! Cayetano will reach out around '+nextStr+'.');
+}
+function renderReminders(){
+  const box=document.getElementById('remSaved');
+  if(!store.reminders.length){ box.innerHTML='<p class="note">None yet.</p>'; return; }
+  box.innerHTML=store.reminders.slice(-5).reverse().map(r=>
+    `<div class="pay-opt" style="margin-bottom:8px"><div class="l"><div class="ico">🔔</div><div><b>${escapeHtml(r.vehicle||'Vehicle')}</b><br><span class="note">Due ${escapeHtml(r.due)} · ${escapeHtml(r.name)}</span></div></div></div>`).join('');
+}
+
+/* =====================================================================
+   PAYMENTS
+   ===================================================================== */
+function updatePayLinks(){
+  const amt=parseFloat(val('payAmt'))||0;
+  const note=encodeURIComponent(val('payNote')||('Payment to '+CONFIG.businessName));
+  const p=CONFIG.pay;
+  setPay('payVenmo', p.venmo ? `https://venmo.com/${p.venmo}?txn=pay&amount=${amt}&note=${note}` : '', p.venmo);
+  setPay('payPaypal', p.paypal ? `https://paypal.me/${p.paypal}/${amt}` : '', p.paypal);
+  setPay('payCashapp', p.cashapp ? `https://cash.app/$${p.cashapp}/${amt}` : '', p.cashapp);
+}
+function setPay(id,href,configured){
+  const el=document.getElementById(id);
+  if(!configured){
+    el.href='#'; el.style.opacity='.5';
+    el.onclick=(e)=>{e.preventDefault();alert("This payment method isn't connected yet. Cayetano can add it in the site settings.");};
+  } else { el.href=href; el.style.opacity='1'; el.onclick=null; }
+}
+
+/* =====================================================================
+   CONTACT FORM (photo upload -> email)
+   ===================================================================== */
+let photos=[]; // {name, dataUrl, file}
+function handlePhotos(files){
+  [...files].forEach(f=>{
+    if(!f.type.startsWith('image/')) return;
+    const reader=new FileReader();
+    reader.onload=e=>{ photos.push({name:f.name,dataUrl:e.target.result,file:f}); renderThumbs(); };
+    reader.readAsDataURL(f);
+  });
+}
+function renderThumbs(){
+  document.getElementById('photoThumbs').innerHTML=photos.map((p,i)=>
+    `<div class="t"><img src="${p.dataUrl}" alt=""/><button type="button" onclick="rmPhoto(${i})">✕</button></div>`).join('');
+}
+function rmPhoto(i){ photos.splice(i,1); renderThumbs(); }
+// drag & drop
+const dz=document.getElementById('dropZone');
+;['dragover','dragenter'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.style.borderColor='var(--accent)';}));
+;['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.style.borderColor='';}));
+dz.addEventListener('drop',e=>handlePhotos(e.dataTransfer.files));
+
+async function submitContact(e){
+  e.preventDefault();
+  const data={ name:val('cName'), phone:val('cPhone'), email:val('cEmail'), vehicle:val('cVehicle'), message:val('cMsg') };
+  const ok=document.getElementById('contactOk');
+  const note=document.getElementById('contactNote');
+
+  if(CONFIG.formEndpoint){
+    // Send via Formspree (supports photo attachments) straight to Cayetano's inbox.
+    try{
+      const fd=new FormData();
+      Object.entries(data).forEach(([k,v])=>fd.append(k,v));
+      fd.append('_subject', `New message from ${data.name} — ${CONFIG.businessName}`);
+      photos.forEach((p,i)=>fd.append('photo'+(i+1), p.file, p.name));
+      const r=await fetch(CONFIG.formEndpoint,{method:'POST',body:fd,headers:{Accept:'application/json'}});
+      if(!r.ok) throw new Error('bad response');
+      ok.style.display='block';
+      ok.textContent=`✅ Thanks ${data.name}! Your message${photos.length?` and ${photos.length} photo(s)`:''} were sent. Cayetano will get back to you shortly.`;
+      e.target.reset(); photos=[]; renderThumbs(); note.textContent='';
+    }catch(err){
+      note.innerHTML=`⚠️ Couldn't send automatically. <a href="#" onclick="mailtoFallback();return false" style="color:var(--accent)">Tap here to email instead</a>.`;
+    }
+  } else {
+    // No backend configured -> open the visitor's email app, prefilled.
+    mailtoFallback();
+    ok.style.display='block';
+    ok.textContent=`✅ Your email app is opening with your message ready to send to Cayetano.`;
+    note.innerHTML = photos.length ? `📎 Heads up: email links can't carry attachments automatically — please attach your ${photos.length} photo(s) in your email app before sending.` : '';
+  }
+  return false;
+}
+function mailtoFallback(){
+  const s=encodeURIComponent(`Message from ${val('cName')} — ${CONFIG.businessName}`);
+  const b=encodeURIComponent(`Name: ${val('cName')}\nPhone: ${val('cPhone')}\nEmail: ${val('cEmail')}\nVehicle: ${val('cVehicle')||'—'}\n\n${val('cMsg')}`);
+  window.location.href=`mailto:${CONFIG.email}?subject=${s}&body=${b}`;
+}
+
+/* =====================================================================
+   HELPERS
+   ===================================================================== */
+function val(id){ return document.getElementById(id).value.trim(); }
+function prettyDate(ds){ const [y,m,d]=ds.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:'short',month:'long',day:'numeric'}); }
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* =====================================================================
+   PWA INSTALL
+   ===================================================================== */
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e; document.getElementById('installBar').style.display='flex'; });
+function doInstall(){ if(deferredPrompt){ deferredPrompt.prompt(); deferredPrompt=null; } document.getElementById('installBar').style.display='none'; }
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+
+/* =====================================================================
+   INIT
+   ===================================================================== */
+applyConfig();
+initCal();
+renderReminders();
+updatePayLinks();
+setAdminUI();
+{ const t=new Date(); document.getElementById('remDate').value=ymd(t.getFullYear(),t.getMonth(),t.getDate()); }
+{ const p=location.hash.slice(1); if(p&&document.getElementById('page-'+p)) go(p); }
+</script>
+</body>
+</html>
