@@ -14,8 +14,8 @@ mechanic serving the **San Jose** area. Oil changes and gas engine repair
 - **Oil Reminders** — clients enter their last oil change + oil type; the app
   estimates the next due date, offers an **"Add to Google Calendar"** link, and
   can save the reminder for Cayetano to follow up.
-- **Pay** — enter an amount and pay via Venmo / PayPal / Cash App, plus
-  in-person options.
+- **Pay** — Zelle-based. Shows Cayetano's Zelle recipient with a copy button
+  and step-by-step instructions, plus in-person (cash) options.
 - **Contact** — name/phone/email/message **with photo upload** that goes to
   Cayetano's email.
 - **Installable app** — "Add to Home Screen" on a phone; works offline.
@@ -41,7 +41,7 @@ const CONFIG = {
   email: "cayetano@example.com",    // where the contact form is delivered
   adminPin: "0420",                 // PIN for "Mechanic login" on the Book page
   formEndpoint: "",                 // see "Contact form" below
-  pay: { venmo:"", paypal:"", cashapp:"" },   // payment handles
+  pay: { zelle:"", zelleName:"Cayetano" },    // Zelle recipient (email or phone)
   bookingHours: [8,9,10,11,13,14,15,16,17],   // bookable hours (24h)
   vehicles: [ ... ],                // makes/models on the home page
   gallery:  [ ... ]                 // work photos (add `img:"url"` to show a real photo)
@@ -58,10 +58,16 @@ For **automatic delivery including photos**, create a free form at
 `CONFIG.formEndpoint` (looks like `https://formspree.io/f/abcdwxyz`). Photos are
 then emailed straight to Cayetano — no manual attaching needed.
 
-### Payments
-Fill in `CONFIG.pay` with the handles you use:
-`venmo` = Venmo username, `paypal` = PayPal.Me name, `cashapp` = Cashtag
-(no `$`). Empty methods show a "not connected yet" message.
+### Payments (Zelle)
+Payments are received by **Zelle**. In `CONFIG.pay`, set `zelle` to the email
+address or phone number Cayetano's Zelle is registered to (e.g.
+`"cayetano@example.com"` or `"(408) 555-0123"`), and optionally `zelleName`.
+While `zelle` is empty, the Pay page shows a "coming soon" placeholder.
+
+Zelle has no payment link — clients send money from their own bank app — so the
+page displays the recipient with a **Copy** button and clear step-by-step
+instructions. The amount/note fields are shown as a reminder for the client to
+enter in their bank app.
 
 ### About the calendar data
 Blocked days, hours, bookings, and saved reminders are stored **in the browser

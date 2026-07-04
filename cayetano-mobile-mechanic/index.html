@@ -430,34 +430,37 @@
     <div class="wrap">
       <div class="eyebrow">Payment</div>
       <h2 class="title">Pay your invoice</h2>
-      <p class="sub">Pay online in seconds, or settle up in person. Enter an amount and pick your method — links are placeholders until Cayetano connects his accounts.</p>
+      <p class="sub">Cayetano accepts <b>Zelle</b> — send it straight from your bank app, no fees. Or settle up in person.</p>
       <div class="grid g2">
         <div class="card">
-          <label class="f">Amount (USD)</label>
-          <input class="f" id="payAmt" type="number" placeholder="0.00" oninput="updatePayLinks()"/>
-          <label class="f">Invoice # or note (optional)</label>
-          <input class="f" id="payNote" placeholder="e.g. Oil change — Civic" oninput="updatePayLinks()"/>
-          <div style="margin-top:20px;display:flex;flex-direction:column;gap:12px">
-            <a class="pay-opt" id="payVenmo" href="#" target="_blank" rel="noopener">
-              <div class="l"><div class="ico">🅥</div><div><b>Venmo</b><br><span class="note">Fast phone-to-phone</span></div></div>
-              <span class="btn btn-sm btn-primary">Pay</span>
-            </a>
-            <a class="pay-opt" id="payPaypal" href="#" target="_blank" rel="noopener">
-              <div class="l"><div class="ico">🅿️</div><div><b>PayPal</b><br><span class="note">Card or balance</span></div></div>
-              <span class="btn btn-sm btn-primary">Pay</span>
-            </a>
-            <a class="pay-opt" id="payCashapp" href="#" target="_blank" rel="noopener">
-              <div class="l"><div class="ico">💵</div><div><b>Cash App</b><br><span class="note">$Cashtag</span></div></div>
-              <span class="btn btn-sm btn-primary">Pay</span>
-            </a>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
+            <div class="ico" style="width:46px;height:46px;border-radius:10px;display:grid;place-items:center;font-size:24px;background:#5B1F9E;color:#fff;font-weight:900">Z</div>
+            <div><h3 style="margin:0">Pay with Zelle</h3><span class="note">Bank-to-bank, usually instant</span></div>
           </div>
+          <label class="f">Amount (USD)</label>
+          <input class="f" id="payAmt" type="number" placeholder="0.00"/>
+          <label class="f">Invoice # or note (optional)</label>
+          <input class="f" id="payNote" placeholder="e.g. Oil change — Civic"/>
+
+          <label class="f">Send your Zelle payment to</label>
+          <div class="pay-opt" style="margin-top:0">
+            <div class="l"><div class="ico">💸</div><div><b id="zelleHandle">Zelle not set up yet</b><br><span class="note" id="zelleName"></span></div></div>
+            <button class="btn btn-sm btn-primary" id="zelleCopy" onclick="copyZelle()">Copy</button>
+          </div>
+
+          <ol class="note" style="margin:16px 0 0 18px;line-height:1.9">
+            <li>Open your bank's app and choose <b>Zelle / Send Money</b>.</li>
+            <li>Send to the recipient above.</li>
+            <li>Enter the amount, and add the note in the memo so Cayetano knows what it's for.</li>
+          </ol>
+          <div class="ok-msg" id="zelleCopied" style="display:none">✅ Copied — now paste it into your bank's Zelle screen.</div>
         </div>
         <div class="card">
           <h3>In-person options</h3>
-          <p>Prefer to pay when I'm there? I take:</p>
+          <p>Prefer to pay when I'm there? I also take:</p>
           <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
-            <div class="pay-opt"><div class="l"><div class="ico">💳</div><div><b>Tap / Card</b><br><span class="note">Chip, tap, or swipe on my reader</span></div></div></div>
             <div class="pay-opt"><div class="l"><div class="ico">💵</div><div><b>Cash</b><br><span class="note">Exact change appreciated</span></div></div></div>
+            <div class="pay-opt"><div class="l"><div class="ico">📱</div><div><b>Zelle on the spot</b><br><span class="note">Send from your bank app before I leave</span></div></div></div>
           </div>
           <p class="note" style="margin-top:18px">Payment is due at completion unless we've agreed otherwise. Questions on an invoice? Just reach out on the contact page.</p>
         </div>
@@ -587,11 +590,12 @@ const CONFIG = {
   // Formspree supports file/photo uploads and emails them to you.
   // Leave "" to fall back to opening the visitor's email app instead.
   formEndpoint: "",
-  // Payment handles (leave "" to hide/placeholder). Examples below.
+  // Zelle is the main payment method. Put the email OR phone number that
+  // Cayetano's Zelle is registered to. Leave "" to show a "not set up yet"
+  // placeholder. zelleName is the name that shows in the client's bank app.
   pay: {
-    venmo:   "",   // e.g. "Cayetano-Mechanic"  (Venmo username, no @)
-    paypal:  "",   // e.g. "cayetanomechanic"   (PayPal.Me name)
-    cashapp: ""    // e.g. "cayetanofix"        (Cashtag, no $)
+    zelle: "",                 // e.g. "cayetano@example.com" or "(408) 555-0123"
+    zelleName: "Cayetano"      // display name (optional)
   },
   // Working hours offered as bookable slots (24h). Edit as you like.
   bookingHours: [8,9,10,11,13,14,15,16,17],
@@ -897,19 +901,26 @@ function renderReminders(){
    PAYMENTS
    ===================================================================== */
 function updatePayLinks(){
-  const amt=parseFloat(val('payAmt'))||0;
-  const note=encodeURIComponent(val('payNote')||('Payment to '+CONFIG.businessName));
-  const p=CONFIG.pay;
-  setPay('payVenmo', p.venmo ? `https://venmo.com/${p.venmo}?txn=pay&amount=${amt}&note=${note}` : '', p.venmo);
-  setPay('payPaypal', p.paypal ? `https://paypal.me/${p.paypal}/${amt}` : '', p.paypal);
-  setPay('payCashapp', p.cashapp ? `https://cash.app/$${p.cashapp}/${amt}` : '', p.cashapp);
+  const z=CONFIG.pay.zelle, handle=document.getElementById('zelleHandle');
+  const copyBtn=document.getElementById('zelleCopy');
+  if(z){
+    handle.textContent=z;
+    handle.style.opacity='1';
+    document.getElementById('zelleName').textContent=CONFIG.pay.zelleName||'';
+    copyBtn.disabled=false;
+  } else {
+    handle.textContent='Zelle handle coming soon';
+    handle.style.opacity='.6';
+    document.getElementById('zelleName').textContent='Cayetano will add his Zelle details here';
+    copyBtn.disabled=true;
+  }
 }
-function setPay(id,href,configured){
-  const el=document.getElementById(id);
-  if(!configured){
-    el.href='#'; el.style.opacity='.5';
-    el.onclick=(e)=>{e.preventDefault();alert("This payment method isn't connected yet. Cayetano can add it in the site settings.");};
-  } else { el.href=href; el.style.opacity='1'; el.onclick=null; }
+function copyZelle(){
+  const z=CONFIG.pay.zelle;
+  if(!z){ alert('Cayetano hasn\'t added his Zelle details yet — please pay in cash or ask him directly.'); return; }
+  const done=()=>{ const m=document.getElementById('zelleCopied'); m.style.display='block'; setTimeout(()=>m.style.display='none',3000); };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(z).then(done).catch(()=>{prompt('Copy the Zelle recipient:', z);}); }
+  else { prompt('Copy the Zelle recipient:', z); }
 }
 
 /* =====================================================================
