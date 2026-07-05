@@ -31,6 +31,14 @@ mechanic serving the **San Jose** area. Oil changes and gas engine repair
     reminder + booking link, or **Schedule** it straight onto the calendar.
   - **Booking calendar** shows client requests as *Requested* for Cayetano to
     **Confirm**; he can also add confirmed appointments himself.
+- **Parts & Estimates (mechanic-only)** — a parts catalog + quote builder:
+  - **Parts catalog** with his cost, customer price, and margin. Each part has
+    one-tap **live price checks** that open searches at **AutoZone, O'Reilly,
+    NAPA, Advance Auto, and RockAuto** for current pricing.
+  - **Quick price check** — type any part name/number and open it at each store.
+  - **Estimate builder** — add labor + parts (from the catalog) for a client,
+    auto-totals with parts tax, then **text the estimate** to the customer or
+    **print/PDF** it.
 - **Installable app** — "Add to Home Screen" on a phone; works offline.
 
 ## Files
@@ -57,6 +65,9 @@ const CONFIG = {
   pay: { zelle:"", zelleName:"Cayetano" },    // Zelle recipient (email or phone)
   bookingHours: [8,9,10,11,13,14,15,16,17],   // bookable hours (24h)
   serviceTypes: [ {name:"Oil change", followupMonths:3}, … ], // reminder intervals
+  laborRate: 90, taxRate: 9.125,              // estimate defaults ($/hr, parts tax %)
+  partSuppliers: [ {name:"AutoZone", url:"…{q}…"}, … ], // live price-check links
+  parts: [ … ],                               // starter catalog (editable in-app)
   vehicles: [ ... ],                // makes/models on the home page
   gallery:  [ ... ]                 // work photos (add `img:"url"` to show a real photo)
 };
@@ -82,6 +93,15 @@ Zelle has no payment link — clients send money from their own bank app — so 
 page displays the recipient with a **Copy** button and clear step-by-step
 instructions. The amount/note fields are shown as a reminder for the client to
 enter in their bank app.
+
+### Parts pricing — how the "live" price check works
+The big local chains (AutoZone, O'Reilly, NAPA, Advance) don't offer a public
+pricing API, so the app links **out** to each store's live search for the part
+number/name — giving current pricing in one tap without any paid account. If
+Cayetano later gets a **PartsTech** account (an aggregator with a real
+parts-ordering API for shops), true in-app wholesale pricing can be added behind
+a small serverless proxy; the store links here keep it useful in the meantime.
+Edit `CONFIG.partSuppliers` if any store changes its search URL format.
 
 ### About the calendar & client data
 Blocked days, hours, bookings, saved reminders, **and the client book** are

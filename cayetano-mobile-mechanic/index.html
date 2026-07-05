@@ -206,6 +206,22 @@
     .detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:6px}
     .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
     .modal-box.wide{max-width:560px;max-height:88vh;overflow-y:auto}
+    /* parts + estimates */
+    .part-row{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:10px}
+    .part-row .head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+    .part-row .nm b{font-size:15px} .part-row .nm span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+    .price-tag{text-align:right;white-space:nowrap}
+    .price-tag b{font-size:16px;color:var(--good)} .price-tag span{display:block;font-size:11px;color:var(--muted)}
+    .store-links{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;align-items:center}
+    .store-links .lbl{font-size:11px;color:var(--muted);margin-right:2px}
+    .store-btn{font-size:12px;font-weight:700;padding:5px 10px;border-radius:7px;background:var(--bg2);border:1px solid var(--line);color:var(--text)}
+    .store-btn:hover{border-color:var(--accent);color:var(--accent)}
+    .est-line{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:9px;padding:9px 12px;margin-bottom:7px;font-size:14px}
+    .est-line .x{background:none;border:none;color:var(--bad);font-size:16px;cursor:pointer;line-height:1}
+    .totals{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+    .totals .tr{display:flex;justify-content:space-between;padding:3px 0;font-size:14px}
+    .totals .grand{font-size:19px;font-weight:900;color:var(--accent2);border-top:1px solid var(--line);margin-top:6px;padding-top:8px}
+    .tnum{font-variant-numeric:tabular-nums}
 
     /* install banner */
     #installBar{display:none;position:fixed;bottom:16px;left:16px;right:16px;max-width:520px;margin:0 auto;background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:12px 16px;z-index:400;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
@@ -231,6 +247,7 @@
       <a onclick="go('pay')" data-nav="pay">Pay</a>
       <a onclick="go('contact')" data-nav="contact" class="nav-cta">Contact</a>
       <a onclick="go('clients')" data-nav="clients" title="For Cayetano — mechanic login">🔧 Clients</a>
+      <a onclick="go('parts')" data-nav="parts" title="For Cayetano — mechanic login">🧰 Parts</a>
     </div>
     <button class="menu-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
   </div>
@@ -591,6 +608,77 @@
   </section>
 </div>
 
+<!-- ============ PARTS & ESTIMATES (mechanic-only) ============ -->
+<div id="page-parts" class="page">
+  <section>
+    <div class="wrap">
+      <!-- login gate -->
+      <div id="partsGate" class="gate">
+        <div class="ico">🧰</div>
+        <h2 class="title" style="font-size:26px">Parts &amp; estimates</h2>
+        <p class="sub" style="margin:8px auto 22px">For Cayetano — your parts catalog with live price checks at AutoZone, O'Reilly, NAPA and more, plus a quick estimate builder.</p>
+        <button class="btn btn-primary" onclick="toggleAdmin()">🔒 Mechanic login</button>
+      </div>
+
+      <div id="partsApp" style="display:none">
+        <div class="crm-toolbar">
+          <div><div class="eyebrow">Shop Tools</div><h2 class="title" style="font-size:30px">Parts &amp; estimates</h2></div>
+          <button class="btn btn-sm btn-ghost" onclick="toggleAdmin()">🔓 Log out</button>
+        </div>
+
+        <!-- Quick price check across stores -->
+        <div class="card" style="margin-bottom:22px">
+          <h3 style="margin-bottom:10px">⚡ Quick price check</h3>
+          <p class="note" style="margin-bottom:10px">Type a part name or number, then check live pricing at each store (opens in a new tab).</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <input class="f" id="priceQuery" placeholder="e.g. PH7317 oil filter, or Duralast Group 35 battery" style="flex:1;min-width:220px"/>
+          </div>
+          <div class="chip-row" id="priceCheckStores" style="margin-top:12px"></div>
+        </div>
+
+        <!-- Estimate builder -->
+        <h3 style="margin:8px 0 12px">🧾 Build an estimate</h3>
+        <div class="card" style="margin-bottom:14px">
+          <div class="row2">
+            <div><label class="f">Client</label><select class="f" id="estClient" onchange="estClientPick()"></select></div>
+            <div><label class="f">Vehicle</label><input class="f" id="estVehicle" placeholder="2016 Honda Civic"/></div>
+          </div>
+          <label class="f">Labor</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+            <div style="flex:2;min-width:160px"><input class="f" id="estLaborDesc" placeholder="Describe the work (e.g. front brake job)"/></div>
+            <div style="width:90px"><input class="f" id="estLaborHrs" type="number" step="0.5" placeholder="hrs"/></div>
+            <button class="btn btn-sm btn-ghost" onclick="addLabor()">＋ Labor</button>
+          </div>
+          <label class="f">Parts</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+            <div style="flex:2;min-width:160px"><select class="f" id="estPartSel"></select></div>
+            <div style="width:90px"><input class="f" id="estPartQty" type="number" min="1" value="1"/></div>
+            <button class="btn btn-sm btn-ghost" onclick="addEstPart()">＋ Part</button>
+          </div>
+          <div id="estLines" style="margin-top:16px"></div>
+          <div id="estTotals"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
+            <button class="btn btn-sm btn-primary" onclick="saveEstimate()">💾 Save estimate</button>
+            <button class="btn btn-sm btn-ghost" onclick="clearEstimate()">Clear</button>
+          </div>
+        </div>
+        <div id="savedEstimates" style="margin-bottom:8px"></div>
+
+        <!-- Parts catalog -->
+        <div class="crm-toolbar" style="margin-top:28px">
+          <h3 style="margin:0">📦 Parts catalog</h3>
+          <button class="btn btn-sm btn-primary" onclick="openPartForm()">＋ Add part</button>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+          <input class="f" id="partSearch" placeholder="🔍 Search parts…" oninput="renderParts()" style="flex:1;min-width:200px"/>
+          <select class="f" id="partCat" onchange="renderParts()" style="width:200px"></select>
+        </div>
+        <div id="partList"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
 <!-- ============ FOOTER ============ -->
 <footer>
   <div class="wrap">
@@ -687,6 +775,33 @@ const CONFIG = {
     {name:"Fluids / filters",      followupMonths:6},
     {name:"Other repair",          followupMonths:0}
   ],
+  // ---- Parts catalog & estimates (mechanic tools) ----
+  laborRate: 90,        // default labor rate $/hr (edit to Cayetano's rate)
+  taxRate: 9.125,       // sales tax % on parts (Santa Clara County ~9.125%); labor is not taxed in CA
+  partCategories: ["Oil & filters","Brakes","Battery & electrical","Belts & hoses","Ignition & tune-up","Fluids","Air & cabin filters","Suspension & steering","Other"],
+  // Local stores. {q} is replaced with the part number or name for a live price check.
+  partSuppliers: [
+    {name:"AutoZone",     url:"https://www.autozone.com/searchresult?searchText={q}"},
+    {name:"O'Reilly",     url:"https://www.oreillyauto.com/search?q={q}"},
+    {name:"NAPA",         url:"https://www.napaonline.com/en/search?text={q}"},
+    {name:"Advance Auto", url:"https://shop.advanceautoparts.com/web/SearchResults?searchTerm={q}"},
+    {name:"RockAuto",     url:"https://www.rockauto.com/en/partsearch/?partname={q}"}
+  ],
+  // Starter catalog — placeholder cost/price Cayetano can edit. cost = his cost, price = customer price.
+  parts: [
+    {name:"Engine oil filter",        category:"Oil & filters",        brand:"FRAM PH7317",   partNo:"PH7317",  supplier:"AutoZone", cost:6,   price:14},
+    {name:"Full synthetic oil (5qt)", category:"Oil & filters",        brand:"Mobil 1 5W-30", partNo:"5W30-5QT", supplier:"Walmart",  cost:27,  price:45},
+    {name:"Conventional oil (1qt)",   category:"Oil & filters",        brand:"Valvoline 5W-30",partNo:"VV5W30",  supplier:"O'Reilly", cost:5,   price:9},
+    {name:"Front brake pads",         category:"Brakes",               brand:"Duralast Gold", partNo:"DG-1234", supplier:"AutoZone", cost:38,  price:75},
+    {name:"Front brake rotor (ea)",   category:"Brakes",               brand:"Duralast",      partNo:"R-5678",  supplier:"AutoZone", cost:32,  price:65},
+    {name:"12V battery (Group 35)",   category:"Battery & electrical", brand:"Duralast Gold", partNo:"35-DLG",  supplier:"AutoZone", cost:150, price:210},
+    {name:"Serpentine belt",          category:"Belts & hoses",        brand:"Gates",         partNo:"K060841", supplier:"O'Reilly", cost:24,  price:48},
+    {name:"Spark plug (ea)",          category:"Ignition & tune-up",   brand:"NGK Iridium",   partNo:"NGK-IX",  supplier:"NAPA",     cost:8,   price:16},
+    {name:"Engine air filter",        category:"Air & cabin filters",  brand:"FRAM CA10467",  partNo:"CA10467", supplier:"O'Reilly", cost:12,  price:24},
+    {name:"Cabin air filter",         category:"Air & cabin filters",  brand:"FRAM CF10285",  partNo:"CF10285", supplier:"AutoZone", cost:11,  price:22},
+    {name:"Wiper blade (ea)",         category:"Other",                brand:"Rain-X 22\"",   partNo:"RX-22",   supplier:"AutoZone", cost:9,   price:18},
+    {name:"Coolant (1gal)",           category:"Fluids",               brand:"Prestone 50/50",partNo:"AF2100",  supplier:"O'Reilly", cost:14,  price:26}
+  ],
   // Vehicles shown on the home page (placeholders).
   vehicles: [
     {logo:"🚙", make:"Ford",      note:"F-150, Escape, Focus"},
@@ -723,9 +838,12 @@ let store = {
   blockedHours: DB.get('blockedHours', {}),    // { "2026-07-10":[13,14] }
   bookings: DB.get('bookings', {}),            // { "2026-07-10":[{h:9,name,phone,vehicle,need}] }
   reminders: DB.get('reminders', []),
-  clients: DB.get('clients', [])               // [{id,name,phone,email,address,notes,vehicle:{...},services:[{...}]}]
+  clients: DB.get('clients', []),              // [{id,name,phone,email,address,notes,vehicle:{...},services:[{...}]}]
+  parts: DB.get('parts', null),                // catalog; null => seed from CONFIG on first load
+  estimates: DB.get('estimates', [])           // [{id,clientName,vehicle,date,labor:[{desc,hours}],items:[{name,qty,price}],taxRate,notes}]
 };
-function save(){ DB.set('blockedDays',store.blockedDays); DB.set('blockedHours',store.blockedHours); DB.set('bookings',store.bookings); DB.set('reminders',store.reminders); DB.set('clients',store.clients); }
+if(!store.parts){ store.parts = (CONFIG.parts||[]).map(p=>({id:uid('p'),...p})); }
+function save(){ DB.set('blockedDays',store.blockedDays); DB.set('blockedHours',store.blockedHours); DB.set('bookings',store.bookings); DB.set('reminders',store.reminders); DB.set('clients',store.clients); DB.set('parts',store.parts); DB.set('estimates',store.estimates); }
 let isAdmin = false;
 
 /* =====================================================================
@@ -944,10 +1062,12 @@ function setAdminUI(){
   document.getElementById('slotCard').style.display='none';
   document.getElementById('hourCard').style.display='none';
   selectedDate=null; renderCal();
-  // Clients area follows the same login
+  // Clients + Parts areas follow the same login
   document.getElementById('clientsGate').style.display = isAdmin ? 'none' : 'block';
   document.getElementById('clientsApp').style.display = isAdmin ? 'block' : 'none';
-  if(isAdmin) renderClients();
+  document.getElementById('partsGate').style.display = isAdmin ? 'none' : 'block';
+  document.getElementById('partsApp').style.display = isAdmin ? 'block' : 'none';
+  if(isAdmin){ renderClients(); renderPartsPage(); }
 }
 
 /* =====================================================================
@@ -1230,6 +1350,239 @@ function saveAppt(){
 }
 function confirmBooking(ds,h){
   const b=(store.bookings[ds]||[]).find(x=>x.h===h); if(b){ b.confirmed=true; save(); renderAdminDay(ds); renderCal(); }
+}
+
+/* =====================================================================
+   PARTS CATALOG & ESTIMATES  (mechanic-only)
+   ===================================================================== */
+function money(n){ return '$'+(Math.round((+n||0)*100)/100).toFixed(2); }
+function supplierByName(name){ return CONFIG.partSuppliers.find(s=>s.name===name); }
+function supplierUrl(name,q){
+  const s=supplierByName(name);
+  const enc=encodeURIComponent(q||'');
+  return s ? s.url.replace('{q}',enc) : `https://www.google.com/search?q=${encodeURIComponent((name?name+' ':'')+(q||'')+' price')}`;
+}
+let estDraft = { labor:[], items:[] };
+
+function initPartsUI(){
+  // category filter
+  const cat=document.getElementById('partCat');
+  cat.innerHTML='<option value="">All categories</option>'+CONFIG.partCategories.map(c=>`<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join('');
+  // quick price-check store chips
+  document.getElementById('priceCheckStores').innerHTML='<span class="lbl">Check at:</span>'+
+    CONFIG.partSuppliers.map(s=>`<button class="store-btn" onclick="priceCheck('${escapeHtml(s.name)}')">${escapeHtml(s.name)}</button>`).join('');
+}
+function priceCheck(store){
+  const q=document.getElementById('priceQuery').value.trim();
+  if(!q){ alert('Type a part name or number first.'); return; }
+  window.open(supplierUrl(store,q),'_blank','noopener');
+}
+
+function renderPartsPage(){
+  if(!isAdmin) return;
+  initPartsUI();
+  // estimate dropdowns
+  const cli=document.getElementById('estClient');
+  cli.innerHTML='<option value="">— Walk-in / no client —</option>'+store.clients.map(c=>`<option value="${c.id}">${escapeHtml(c.name)}</option>`).join('');
+  const psel=document.getElementById('estPartSel');
+  psel.innerHTML=store.parts.map(p=>`<option value="${p.id}">${escapeHtml(p.name)} — ${money(p.price)}</option>`).join('')||'<option value="">No parts in catalog</option>';
+  renderParts();
+  renderEstimate();
+  renderSavedEstimates();
+}
+
+/* ---- catalog ---- */
+function renderParts(){
+  const q=(document.getElementById('partSearch').value||'').toLowerCase();
+  const cat=document.getElementById('partCat').value;
+  const list=store.parts.filter(p=>(!cat||p.category===cat) && (!q || [p.name,p.brand,p.partNo,p.category,p.supplier].join(' ').toLowerCase().includes(q)));
+  const el=document.getElementById('partList');
+  if(store.parts.length===0){ el.innerHTML='<p class="note">Catalog is empty. Tap “＋ Add part”.</p>'; return; }
+  el.innerHTML = list.length ? list.map(p=>{
+    const q2=encodeURIComponent(p.partNo||p.name);
+    const stores=CONFIG.partSuppliers.map(s=>`<a class="store-btn" href="${supplierUrl(s.name,p.partNo||p.name)}" target="_blank" rel="noopener">${escapeHtml(s.name)}</a>`).join('');
+    const margin=(+p.price)-(+p.cost);
+    return `<div class="part-row">
+      <div class="head">
+        <div class="nm"><b>${escapeHtml(p.name)}</b><span>${[p.brand,p.partNo,p.category].filter(Boolean).map(escapeHtml).join(' · ')}</span></div>
+        <div class="price-tag"><b>${money(p.price)}</b><span>cost ${money(p.cost)} · margin ${money(margin)}</span></div>
+      </div>
+      <div class="store-links"><span class="lbl">Live price:</span>${stores}
+        <span style="flex:1"></span>
+        <button class="store-btn" onclick="addPartToEstimate('${p.id}')">＋ Estimate</button>
+        <button class="store-btn" onclick="openPartForm('${p.id}')">Edit</button>
+      </div>
+    </div>`;
+  }).join('') : '<p class="note">No parts match that search.</p>';
+}
+function openPartForm(id){
+  const p = id ? store.parts.find(x=>x.id===id) : {};
+  const catOpts=CONFIG.partCategories.map(c=>`<option value="${escapeHtml(c)}" ${p.category===c?'selected':''}>${escapeHtml(c)}</option>`).join('');
+  const supOpts=CONFIG.partSuppliers.map(s=>`<option value="${escapeHtml(s.name)}" ${p.supplier===s.name?'selected':''}>${escapeHtml(s.name)}</option>`).join('');
+  openCrm(`
+    <div class="detail-head"><h3>${id?'Edit part':'Add part'}</h3><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
+    <label class="f">Part name *</label><input class="f" id="pf_name" value="${attr(p.name)}" placeholder="Front brake pads"/>
+    <div class="row2">
+      <div><label class="f">Brand</label><input class="f" id="pf_brand" value="${attr(p.brand)}" placeholder="Duralast Gold"/></div>
+      <div><label class="f">Part #</label><input class="f" id="pf_partNo" value="${attr(p.partNo)}" placeholder="DG-1234"/></div>
+    </div>
+    <div class="row2">
+      <div><label class="f">Category</label><select class="f" id="pf_category">${catOpts}</select></div>
+      <div><label class="f">Preferred store</label><select class="f" id="pf_supplier"><option value="">—</option>${supOpts}</select></div>
+    </div>
+    <div class="row2">
+      <div><label class="f">Your cost ($)</label><input class="f" id="pf_cost" type="number" step="0.01" value="${attr(p.cost)}" placeholder="0"/></div>
+      <div><label class="f">Customer price ($)</label><input class="f" id="pf_price" type="number" step="0.01" value="${attr(p.price)}" placeholder="0"/></div>
+    </div>
+    <div class="modal-x">
+      <button class="btn btn-primary" onclick="savePart(${id?`'${id}'`:'null'})">${id?'Save':'Add part'}</button>
+      ${id?`<button class="btn btn-ghost" onclick="deletePart('${id}')" style="color:var(--bad)">Delete</button>`:''}
+      <button class="btn btn-ghost" onclick="closeCrm()">Cancel</button>
+    </div>
+  `);
+  setTimeout(()=>document.getElementById('pf_name').focus(),60);
+}
+function savePart(id){
+  const name=mval('pf_name'); if(!name){ alert('Enter a part name.'); return; }
+  const data={ name, brand:mval('pf_brand'), partNo:mval('pf_partNo'), category:document.getElementById('pf_category').value, supplier:document.getElementById('pf_supplier').value, cost:+mval('pf_cost')||0, price:+mval('pf_price')||0 };
+  if(id){ Object.assign(store.parts.find(x=>x.id===id), data); }
+  else { store.parts.push({ id:uid('p'), ...data }); }
+  save(); closeCrm(); renderPartsPage();
+}
+function deletePart(id){
+  if(!confirm('Delete this part from the catalog?')) return;
+  store.parts=store.parts.filter(x=>x.id!==id); save(); closeCrm(); renderPartsPage();
+}
+
+/* ---- estimate builder ---- */
+function estClientPick(){
+  const id=document.getElementById('estClient').value;
+  const c=store.clients.find(x=>x.id===id);
+  if(c) document.getElementById('estVehicle').value=vehSummary(c.vehicle);
+}
+function addLabor(){
+  const desc=mval('estLaborDesc'); const hours=+mval('estLaborHrs')||0;
+  if(!hours){ alert('Enter labor hours.'); return; }
+  estDraft.labor.push({desc:desc||'Labor', hours});
+  document.getElementById('estLaborDesc').value=''; document.getElementById('estLaborHrs').value='';
+  renderEstimate();
+}
+function addEstPart(){
+  const id=document.getElementById('estPartSel').value; const qty=+document.getElementById('estPartQty').value||1;
+  const p=store.parts.find(x=>x.id===id); if(!p){ alert('Add a part to the catalog first.'); return; }
+  estDraft.items.push({name:p.name, qty, price:+p.price||0});
+  document.getElementById('estPartQty').value=1;
+  renderEstimate();
+}
+function addPartToEstimate(id){
+  const p=store.parts.find(x=>x.id===id); if(!p) return;
+  estDraft.items.push({name:p.name, qty:1, price:+p.price||0});
+  renderEstimate();
+  go('parts'); document.getElementById('estLines').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function removeLabor(i){ estDraft.labor.splice(i,1); renderEstimate(); }
+function removeItem(i){ estDraft.items.splice(i,1); renderEstimate(); }
+function estTotals(){
+  const labor=estDraft.labor.reduce((s,l)=>s+l.hours*CONFIG.laborRate,0);
+  const parts=estDraft.items.reduce((s,it)=>s+it.qty*it.price,0);
+  const tax=parts*(CONFIG.taxRate/100);
+  return {labor,parts,tax,grand:labor+parts+tax};
+}
+function renderEstimate(){
+  const lines=document.getElementById('estLines');
+  const L=estDraft.labor.map((l,i)=>`<div class="est-line"><span>🔧 ${escapeHtml(l.desc)} — ${l.hours} hr × ${money(CONFIG.laborRate)}</span><span><span class="tnum">${money(l.hours*CONFIG.laborRate)}</span> <button class="x" onclick="removeLabor(${i})">✕</button></span></div>`).join('');
+  const P=estDraft.items.map((it,i)=>`<div class="est-line"><span>📦 ${escapeHtml(it.name)} × ${it.qty}</span><span><span class="tnum">${money(it.qty*it.price)}</span> <button class="x" onclick="removeItem(${i})">✕</button></span></div>`).join('');
+  lines.innerHTML = (L+P) || '<p class="note">Add labor and parts to build the estimate.</p>';
+  const t=estTotals();
+  document.getElementById('estTotals').innerHTML = (estDraft.labor.length||estDraft.items.length) ? `<div class="totals">
+    <div class="tr"><span>Labor</span><span class="tnum">${money(t.labor)}</span></div>
+    <div class="tr"><span>Parts</span><span class="tnum">${money(t.parts)}</span></div>
+    <div class="tr"><span>Tax on parts (${CONFIG.taxRate}%)</span><span class="tnum">${money(t.tax)}</span></div>
+    <div class="tr grand"><span>Estimate total</span><span class="tnum">${money(t.grand)}</span></div>
+  </div>` : '';
+}
+function clearEstimate(){ estDraft={labor:[],items:[]}; renderEstimate(); }
+function saveEstimate(){
+  if(!estDraft.labor.length && !estDraft.items.length){ alert('Add labor or parts first.'); return; }
+  const cid=document.getElementById('estClient').value;
+  const c=store.clients.find(x=>x.id===cid);
+  store.estimates.push({ id:uid('e'), clientId:cid||'', clientName:c?c.name:'Walk-in', phone:c?c.phone:'', vehicle:mval('estVehicle'),
+    date:todayStr(), laborRate:CONFIG.laborRate, taxRate:CONFIG.taxRate, labor:estDraft.labor.slice(), items:estDraft.items.slice(), createdAt:Date.now() });
+  save(); clearEstimate(); renderSavedEstimates();
+  alert('Estimate saved.');
+}
+function renderSavedEstimates(){
+  const el=document.getElementById('savedEstimates');
+  if(!store.estimates.length){ el.innerHTML=''; return; }
+  el.innerHTML='<h3 style="margin:6px 0 12px;font-size:16px">Saved estimates</h3>'+store.estimates.slice().reverse().map(e=>{
+    const t=estimateTotals(e);
+    return `<div class="client-card" onclick="viewEstimate('${e.id}')"><div class="who"><b>${escapeHtml(e.clientName)} — ${money(t.grand)}</b><span>${escapeHtml(e.vehicle||'—')} · ${prettyDate(e.date)}</span></div><span class="status-badge st-ok">View</span></div>`;
+  }).join('');
+}
+function estimateTotals(e){
+  const labor=(e.labor||[]).reduce((s,l)=>s+l.hours*(e.laborRate||CONFIG.laborRate),0);
+  const parts=(e.items||[]).reduce((s,it)=>s+it.qty*it.price,0);
+  const tax=parts*((e.taxRate||0)/100);
+  return {labor,parts,tax,grand:labor+parts+tax};
+}
+function estimateText(e){
+  const t=estimateTotals(e);
+  const lines=[
+    `${CONFIG.businessName} — Estimate`,
+    `${prettyDate(e.date)}`,
+    `Client: ${e.clientName}${e.vehicle?'  ·  '+e.vehicle:''}`,
+    '',
+    ...(e.labor||[]).map(l=>`Labor: ${l.desc} — ${l.hours}hr = ${money(l.hours*(e.laborRate||CONFIG.laborRate))}`),
+    ...(e.items||[]).map(it=>`Part: ${it.name} x${it.qty} = ${money(it.qty*it.price)}`),
+    '',
+    `Labor ${money(t.labor)} | Parts ${money(t.parts)} | Tax ${money(t.tax)}`,
+    `TOTAL: ${money(t.grand)}`,
+    '',
+    `Questions? Call ${CONFIG.phone}`
+  ];
+  return lines.join('\n');
+}
+function viewEstimate(id){
+  const e=store.estimates.find(x=>x.id===id); if(!e) return; const t=estimateTotals(e);
+  openCrm(`
+    <div class="detail-head"><div><h3 style="margin:0">Estimate — ${escapeHtml(e.clientName)}</h3><span class="note">${escapeHtml(e.vehicle||'')} · ${prettyDate(e.date)}</span></div><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
+    ${(e.labor||[]).map(l=>`<div class="est-line"><span>🔧 ${escapeHtml(l.desc)} — ${l.hours}hr</span><span class="tnum">${money(l.hours*(e.laborRate||CONFIG.laborRate))}</span></div>`).join('')}
+    ${(e.items||[]).map(it=>`<div class="est-line"><span>📦 ${escapeHtml(it.name)} × ${it.qty}</span><span class="tnum">${money(it.qty*it.price)}</span></div>`).join('')}
+    <div class="totals">
+      <div class="tr"><span>Labor</span><span class="tnum">${money(t.labor)}</span></div>
+      <div class="tr"><span>Parts</span><span class="tnum">${money(t.parts)}</span></div>
+      <div class="tr"><span>Tax (${e.taxRate}%)</span><span class="tnum">${money(t.tax)}</span></div>
+      <div class="tr grand"><span>Total</span><span class="tnum">${money(t.grand)}</span></div>
+    </div>
+    <div class="chip-row" style="margin-top:16px">
+      ${e.phone?`<a class="btn btn-sm btn-primary" href="sms:${encodeURIComponent(e.phone)}?&body=${encodeURIComponent(estimateText(e))}">📱 Text to client</a>`:''}
+      <button class="btn btn-sm btn-ghost" onclick="printEstimate('${e.id}')">🖨️ Print / PDF</button>
+      <button class="btn btn-sm btn-ghost" onclick="deleteEstimate('${e.id}')" style="color:var(--bad)">Delete</button>
+    </div>
+  `);
+}
+function deleteEstimate(id){
+  if(!confirm('Delete this estimate?')) return;
+  store.estimates=store.estimates.filter(x=>x.id!==id); save(); closeCrm(); renderSavedEstimates();
+}
+function printEstimate(id){
+  const e=store.estimates.find(x=>x.id===id); if(!e) return; const t=estimateTotals(e);
+  const rows=[...(e.labor||[]).map(l=>`<tr><td>Labor — ${escapeHtml(l.desc)} (${l.hours}hr)</td><td style="text-align:right">${money(l.hours*(e.laborRate||CONFIG.laborRate))}</td></tr>`),
+    ...(e.items||[]).map(it=>`<tr><td>${escapeHtml(it.name)} × ${it.qty}</td><td style="text-align:right">${money(it.qty*it.price)}</td></tr>`)].join('');
+  const w=window.open('','_blank'); if(!w){ alert('Allow pop-ups to print.'); return; }
+  w.document.write(`<html><head><title>Estimate — ${escapeHtml(e.clientName)}</title>
+    <style>body{font-family:Arial,sans-serif;padding:32px;color:#111;max-width:640px;margin:auto}h1{margin:0 0 4px}table{width:100%;border-collapse:collapse;margin-top:16px}td{padding:8px 4px;border-bottom:1px solid #ddd}.tot td{border:none;font-weight:bold}.grand td{font-size:20px;color:#c60}.muted{color:#666;font-size:14px}</style></head><body>
+    <h1>${escapeHtml(CONFIG.businessName)}</h1><div class="muted">${escapeHtml(CONFIG.area)} · ${escapeHtml(CONFIG.phone)}</div>
+    <h2>Estimate</h2><div class="muted">${prettyDate(e.date)} · ${escapeHtml(e.clientName)}${e.vehicle?' · '+escapeHtml(e.vehicle):''}</div>
+    <table>${rows}
+      <tr class="tot"><td>Labor</td><td style="text-align:right">${money(t.labor)}</td></tr>
+      <tr class="tot"><td>Parts</td><td style="text-align:right">${money(t.parts)}</td></tr>
+      <tr class="tot"><td>Tax (${e.taxRate}%)</td><td style="text-align:right">${money(t.tax)}</td></tr>
+      <tr class="tot grand"><td>Total</td><td style="text-align:right">${money(t.grand)}</td></tr>
+    </table>
+    <p class="muted" style="margin-top:24px">Estimate only — final total may vary with actual parts and labor. Thank you!</p>
+    </body></html>`);
+  w.document.close(); w.focus(); setTimeout(()=>w.print(),300);
 }
 
 /* =====================================================================
