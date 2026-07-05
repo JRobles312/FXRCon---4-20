@@ -227,7 +227,7 @@
       <a onclick="go('services')" data-nav="services">Services</a>
       <a onclick="go('work')" data-nav="work">Our Work</a>
       <a onclick="go('book')" data-nav="book">Book</a>
-      <a onclick="go('reminders')" data-nav="reminders">Oil Reminders</a>
+      <a onclick="go('reminders')" data-nav="reminders">Service Reminder</a>
       <a onclick="go('pay')" data-nav="pay">Pay</a>
       <a onclick="go('contact')" data-nav="contact" class="nav-cta">Contact</a>
       <a onclick="go('clients')" data-nav="clients" title="For Cayetano — mechanic login">🔧 Clients</a>
@@ -245,7 +245,7 @@
       <p>Hi, I'm <b id="heroName">Cayetano</b> — a mobile mechanic working out of my fully-equipped van. Oil changes and gas engine repair, done right in your driveway. No towing, no waiting rooms.</p>
       <div class="hero-btns">
         <button class="btn btn-primary" onclick="go('book')">📅 Book an Appointment</button>
-        <a class="btn btn-ghost" id="heroCall" href="tel:+14085550123">📞 Call or Text</a>
+        <a class="btn btn-ghost" id="heroCall" href="tel:+14088549221">📞 Call or Text</a>
       </div>
       <div class="hero-stats">
         <div class="hero-stat"><b>2</b><span>Core services</span></div>
@@ -295,7 +295,7 @@
       <div class="grid g3">
         <div class="card"><div class="svc-icon">🚐</div><h3>I come to you</h3><p>Home, office, or roadside anywhere in the San Jose area. You keep your day, I do the wrenching.</p></div>
         <div class="card"><div class="svc-icon">💳</div><h3>Easy payment</h3><p>Pay online or in person. Tap, card, or app — whatever's easiest for you.</p></div>
-        <div class="card"><div class="svc-icon">🔔</div><h3>Oil-change reminders</h3><p>Sign up once and I'll remind you when your next oil change is due. No more guessing.</p></div>
+        <div class="card"><div class="svc-icon">🔔</div><h3>Service reminders</h3><p>Sign up once and I'll remind you when your next service — oil, brakes, tune-up — is due. No more guessing.</p></div>
       </div>
     </div>
   </section>
@@ -415,9 +415,9 @@
 <div id="page-reminders" class="page">
   <section>
     <div class="wrap">
-      <div class="eyebrow">Never Miss an Oil Change</div>
-      <h2 class="title">Oil-change reminders</h2>
-      <p class="sub">Tell me when you last changed your oil and how you drive. I'll calculate when you're due and can send you a reminder.</p>
+      <div class="eyebrow">Never Miss a Service</div>
+      <h2 class="title">Service reminder</h2>
+      <p class="sub">Pick the service, tell me when it was last done, and I'll estimate when you're due — then remind you and help you book.</p>
       <div class="grid g2">
         <div class="rem-card">
           <label class="f">Your name</label>
@@ -426,24 +426,28 @@
           <input class="f" id="remContact" placeholder="you@email.com or (408) 555-0123"/>
           <div class="row2">
             <div><label class="f">Vehicle</label><input class="f" id="remVehicle" placeholder="2016 Honda Civic"/></div>
-            <div><label class="f">Oil type</label>
-              <select class="f" id="remOil">
-                <option value="3">Conventional (~3,000 mi / 3 mo)</option>
-                <option value="5" selected>Synthetic blend (~5,000 mi / 5 mo)</option>
-                <option value="7">Full synthetic (~7,500 mi / 6 mo)</option>
-              </select>
+            <div><label class="f">Service</label>
+              <select class="f" id="remService" onchange="onServiceChange()"></select>
             </div>
           </div>
-          <label class="f">Date of last oil change</label>
+          <div id="remOilWrap">
+            <label class="f">Oil type</label>
+            <select class="f" id="remOil">
+              <option value="3">Conventional (~3,000 mi / 3 mo)</option>
+              <option value="5" selected>Synthetic blend (~5,000 mi / 5 mo)</option>
+              <option value="7">Full synthetic (~7,500 mi / 6 mo)</option>
+            </select>
+          </div>
+          <label class="f" id="remDateLabel">Date of last service</label>
           <input class="f" id="remDate" type="date"/>
-          <button class="btn btn-primary" style="margin-top:18px" onclick="calcReminder()">Calculate my next change</button>
+          <button class="btn btn-primary" style="margin-top:18px" onclick="calcReminder()">Calculate my next service</button>
           <div class="rem-result" id="remResult"></div>
         </div>
         <div class="card">
           <h3>How it works</h3>
-          <p style="margin-bottom:14px">1. Enter your last oil change and oil type.<br>2. I'll estimate your next due date.<br>3. Add it to your calendar or save it with me — I'll give you a heads-up when it's close.</p>
+          <p style="margin-bottom:14px">1. Choose the service and when it was last done.<br>2. I'll estimate your next due date.<br>3. Add it to your calendar or save it with me — I'll give you a heads-up when it's close, and you can book right away.</p>
           <div class="pill">Tip</div>
-          <p style="margin-top:12px">Severe driving (short trips, heat, towing, lots of stop-and-go) can shorten these intervals. When in doubt, sooner is safer for your engine.</p>
+          <p style="margin-top:12px">Severe driving (short trips, heat, towing, lots of stop-and-go) can shorten these intervals. When in doubt, sooner is safer for your vehicle.</p>
           <h3 style="margin-top:24px">Saved reminders</h3>
           <div id="remSaved"><p>None yet.</p></div>
         </div>
@@ -533,7 +537,7 @@
         <div class="card">
           <h3>Reach me directly</h3>
           <div style="margin-top:16px;display:flex;flex-direction:column;gap:14px">
-            <a class="pay-opt" id="ctPhone" href="tel:+14085550123"><div class="l"><div class="ico">📞</div><div><b>Call or text</b><br><span class="note" id="ctPhoneTxt">(408) 555-0123</span></div></div><span class="btn btn-sm btn-ghost">Call</span></a>
+            <a class="pay-opt" id="ctPhone" href="tel:+14088549221"><div class="l"><div class="ico">📞</div><div><b>Call or text</b><br><span class="note" id="ctPhoneTxt">(408) 854-9221</span></div></div><span class="btn btn-sm btn-ghost">Call</span></a>
             <a class="pay-opt" id="ctEmail" href="mailto:cayetano@example.com"><div class="l"><div class="ico">✉️</div><div><b>Email</b><br><span class="note" id="ctEmailTxt">cayetano@example.com</span></div></div><span class="btn btn-sm btn-ghost">Email</span></a>
             <div class="pay-opt"><div class="l"><div class="ico">📍</div><div><b>Service area</b><br><span class="note">San Jose &amp; surrounding cities</span></div></div></div>
             <div class="pay-opt"><div class="l"><div class="ico">🕒</div><div><b>Hours</b><br><span class="note" id="ctHours">Mon–Sat, 8am–6pm</span></div></div></div>
@@ -599,12 +603,12 @@
         <b>Services</b>
         <a onclick="go('services')">Oil Changes</a>
         <a onclick="go('services')">Engine Repair</a>
-        <a onclick="go('reminders')">Oil Reminders</a>
+        <a onclick="go('reminders')">Service Reminder</a>
         <a onclick="go('book')">Book Now</a>
       </div>
       <div>
         <b>Contact</b>
-        <a id="footPhone" href="tel:+14085550123">(408) 555-0123</a>
+        <a id="footPhone" href="tel:+14088549221">(408) 854-9221</a>
         <a id="footEmail" href="mailto:cayetano@example.com">cayetano@example.com</a>
         <a onclick="go('pay')">Pay an Invoice</a>
         <a onclick="go('contact')">Send a Message</a>
@@ -652,8 +656,8 @@
 const CONFIG = {
   name: "Cayetano",
   businessName: "Cayetano's Mobile Mechanic",
-  phone: "(408) 555-0123",          // display phone
-  phoneRaw: "+14085550123",         // tel: link
+  phone: "(408) 854-9221",          // display phone
+  phoneRaw: "+14088549221",         // tel: link
   email: "cayetano@example.com",    // where contact form lands
   area: "San Jose, CA",
   hours: "Mon–Sat, 8am–6pm",
@@ -1229,13 +1233,29 @@ function confirmBooking(ds,h){
 }
 
 /* =====================================================================
-   OIL-CHANGE REMINDERS
+   SERVICE REMINDERS (customer self-serve — pick a service, get next-due)
    ===================================================================== */
+function initReminderServices(){
+  const sel=document.getElementById('remService');
+  // offer the services that recur on a schedule (have a follow-up interval)
+  const recurring=CONFIG.serviceTypes.filter(t=>t.followupMonths>0);
+  sel.innerHTML=recurring.map(t=>`<option value="${CONFIG.serviceTypes.indexOf(t)}" ${t.name==='Oil change'?'selected':''}>${escapeHtml(t.name)} (~${t.followupMonths} mo)</option>`).join('');
+  onServiceChange();
+}
+function selectedService(){ return CONFIG.serviceTypes[parseInt(document.getElementById('remService').value,10)]; }
+function onServiceChange(){
+  const st=selectedService(); if(!st) return;
+  const isOil = st.name==='Oil change';
+  document.getElementById('remOilWrap').style.display = isOil ? 'block' : 'none';
+  document.getElementById('remDateLabel').textContent = `Date of last ${st.name.toLowerCase()}`;
+}
 function calcReminder(){
   const name=val('remName'), contact=val('remContact'), vehicle=val('remVehicle');
-  const months=parseInt(document.getElementById('remOil').value,10);
+  const st=selectedService(); const service=st?st.name:'service';
+  let months = st?st.followupMonths:6;
+  if(st && st.name==='Oil change'){ months=parseInt(document.getElementById('remOil').value,10)||months; }
   const dateStr=val('remDate');
-  if(!dateStr){ alert('Please enter the date of your last oil change.'); return; }
+  if(!dateStr){ alert(`Please enter the date of your last ${service.toLowerCase()}.`); return; }
   const last=new Date(dateStr+'T12:00:00');
   const next=new Date(last); next.setMonth(next.getMonth()+months);
   const now=new Date(); const days=Math.round((next-now)/86400000);
@@ -1247,21 +1267,21 @@ function calcReminder(){
   const res=document.getElementById('remResult'); res.classList.add('show');
   // Google Calendar add link
   const gcalDate=`${next.getFullYear()}${String(next.getMonth()+1).padStart(2,'0')}${String(next.getDate()).padStart(2,'0')}`;
-  const gcal=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Oil change due — '+(vehicle||'my car'))}&dates=${gcalDate}/${gcalDate}&details=${encodeURIComponent('Reminder from '+CONFIG.businessName+'. Book: call '+CONFIG.phone)}`;
+  const gcal=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(service+' due — '+(vehicle||'my car'))}&dates=${gcalDate}/${gcalDate}&details=${encodeURIComponent('Reminder from '+CONFIG.businessName+'. Book: call '+CONFIG.phone)}`;
   res.innerHTML=`
-    <div class="note">Your next oil change is estimated for</div>
+    <div class="note">Your next ${escapeHtml(service.toLowerCase())} is estimated for</div>
     <div class="rem-big">${nextStr}</div>
     <span class="badge-due" style="background:${color}22;color:${color};border:1px solid ${color}">${status} · ${days<0?Math.abs(days)+' days ago':'in '+days+' days'}</span>
     <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
       <a class="btn btn-sm btn-primary" href="${gcal}" target="_blank" rel="noopener">➕ Add to Google Calendar</a>
-      <button class="btn btn-sm btn-ghost" onclick="saveReminder('${nextStr.replace(/'/g,'')}','${(vehicle||'').replace(/'/g,'')}','${(name||'').replace(/'/g,'')}','${(contact||'').replace(/'/g,'')}')">🔔 Save reminder with Cayetano</button>
+      <button class="btn btn-sm btn-ghost" onclick="saveReminder('${nextStr.replace(/'/g,'')}','${(vehicle||'').replace(/'/g,'')}','${(name||'').replace(/'/g,'')}','${(contact||'').replace(/'/g,'')}','${service.replace(/'/g,'')}')">🔔 Save reminder with Cayetano</button>
       <button class="btn btn-sm btn-ghost" onclick="go('book')">📅 Book it now</button>
     </div>`;
   res.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
-function saveReminder(nextStr,vehicle,name,contact){
+function saveReminder(nextStr,vehicle,name,contact,service){
   if(!name||!contact){ alert('Add your name and email/phone above so Cayetano can reach you.'); return; }
-  store.reminders.push({name,contact,vehicle,due:nextStr,at:Date.now()});
+  store.reminders.push({name,contact,vehicle,service:service||'Service',due:nextStr,at:Date.now()});
   save(); renderReminders();
   alert('Saved! Cayetano will reach out around '+nextStr+'.');
 }
@@ -1269,7 +1289,7 @@ function renderReminders(){
   const box=document.getElementById('remSaved');
   if(!store.reminders.length){ box.innerHTML='<p class="note">None yet.</p>'; return; }
   box.innerHTML=store.reminders.slice(-5).reverse().map(r=>
-    `<div class="pay-opt" style="margin-bottom:8px"><div class="l"><div class="ico">🔔</div><div><b>${escapeHtml(r.vehicle||'Vehicle')}</b><br><span class="note">Due ${escapeHtml(r.due)} · ${escapeHtml(r.name)}</span></div></div></div>`).join('');
+    `<div class="pay-opt" style="margin-bottom:8px"><div class="l"><div class="ico">🔔</div><div><b>${escapeHtml(r.service||'Service')} · ${escapeHtml(r.vehicle||'Vehicle')}</b><br><span class="note">Due ${escapeHtml(r.due)} · ${escapeHtml(r.name)}</span></div></div></div>`).join('');
 }
 
 /* =====================================================================
@@ -1377,6 +1397,7 @@ if('serviceWorker' in navigator){ window.addEventListener('load',()=>navigator.s
    ===================================================================== */
 applyConfig();
 initCal();
+initReminderServices();
 renderReminders();
 updatePayLinks();
 setAdminUI();
