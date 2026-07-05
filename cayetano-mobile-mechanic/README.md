@@ -39,6 +39,9 @@ mechanic serving the **San Jose** area. Oil changes and gas engine repair
   - **Estimate builder** — add labor + parts (from the catalog) for a client,
     auto-totals with parts tax, then **text the estimate** to the customer or
     **print/PDF** it.
+- **Bilingual (English / Spanish)** — an **EN/ES** button in the top nav flips
+  the whole site — customer pages *and* the mechanic tools — and remembers the
+  choice. Dates, the calendar, and follow-up intervals localize too.
 - **Installable app** — "Add to Home Screen" on a phone; works offline.
 
 ## Files
@@ -93,6 +96,15 @@ Zelle has no payment link — clients send money from their own bank app — so 
 page displays the recipient with a **Copy** button and clear step-by-step
 instructions. The amount/note fields are shown as a reminder for the client to
 enter in their bank app.
+
+### Translations (English / Spanish)
+Every visible string carries its Spanish inline: static text via a
+`data-i18n-es="…"` attribute on the element (English stays as the default
+content), and dynamic/JS strings via a `t('English','Español')` helper. To fix
+or tweak wording, edit the Spanish right where the English lives — there's no
+separate translation file to keep in sync. `CONFIG.hoursEs` holds the Spanish
+hours, and service-type names are mapped in the `SVC_ES` object near the top of
+the script.
 
 ### Parts pricing — how the "live" price check works
 The big local chains (AutoZone, O'Reilly, NAPA, Advance) don't offer a public

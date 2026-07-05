@@ -37,6 +37,8 @@
     .nav-cta{background:var(--accent);color:#0E0F12 !important;font-weight:800 !important}
     .nav-cta:hover{background:var(--accent2) !important}
     .menu-btn{display:none;background:var(--card);border:1px solid var(--line);color:#fff;border-radius:8px;padding:8px 12px;font-size:18px}
+    .lang-btn{background:var(--bg2);border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:.15s}
+    .lang-btn:hover{background:var(--accent);color:#0E0F12}
     @media(max-width:860px){
       .menu-btn{display:block}
       .nav-links{position:fixed;top:67px;left:0;right:0;flex-direction:column;background:var(--bg2);border-bottom:1px solid var(--line);padding:10px 16px;gap:4px;display:none}
@@ -239,15 +241,16 @@
       <div class="brand-txt"><b id="brandName">Cayetano's</b><span>Mobile Mechanic</span></div>
     </div>
     <div class="nav-links" id="navLinks">
-      <a onclick="go('home')" data-nav="home" class="active">Home</a>
-      <a onclick="go('services')" data-nav="services">Services</a>
-      <a onclick="go('work')" data-nav="work">Our Work</a>
-      <a onclick="go('book')" data-nav="book">Book</a>
-      <a onclick="go('reminders')" data-nav="reminders">Service Reminder</a>
-      <a onclick="go('pay')" data-nav="pay">Pay</a>
-      <a onclick="go('contact')" data-nav="contact" class="nav-cta">Contact</a>
-      <a onclick="go('clients')" data-nav="clients" title="For Cayetano — mechanic login">🔧 Clients</a>
-      <a onclick="go('parts')" data-nav="parts" title="For Cayetano — mechanic login">🧰 Parts</a>
+      <a onclick="go('home')" data-nav="home" class="active" data-i18n-es="Inicio">Home</a>
+      <a onclick="go('services')" data-nav="services" data-i18n-es="Servicios">Services</a>
+      <a onclick="go('work')" data-nav="work" data-i18n-es="Trabajos">Our Work</a>
+      <a onclick="go('book')" data-nav="book" data-i18n-es="Reservar">Book</a>
+      <a onclick="go('reminders')" data-nav="reminders" data-i18n-es="Recordatorio">Service Reminder</a>
+      <a onclick="go('pay')" data-nav="pay" data-i18n-es="Pagar">Pay</a>
+      <a onclick="go('contact')" data-nav="contact" class="nav-cta" data-i18n-es="Contacto">Contact</a>
+      <a onclick="go('clients')" data-nav="clients" title="For Cayetano — mechanic login" data-i18n-es="🔧 Clientes">🔧 Clients</a>
+      <a onclick="go('parts')" data-nav="parts" title="For Cayetano — mechanic login" data-i18n-es="🧰 Piezas">🧰 Parts</a>
+      <button class="lang-btn" id="langBtn" onclick="toggleLang()" title="Cambiar idioma / Switch language">ES</button>
     </div>
     <button class="menu-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
   </div>
@@ -257,52 +260,52 @@
 <div id="page-home" class="page active">
   <div class="hero">
     <div class="wrap">
-      <div class="hero-badge"><span class="dot"></span> Now serving the San&nbsp;Jose area</div>
-      <h1>The shop that <span>comes to you.</span></h1>
-      <p>Hi, I'm <b id="heroName">Cayetano</b> — a mobile mechanic working out of my fully-equipped van. Oil changes and gas engine repair, done right in your driveway. No towing, no waiting rooms.</p>
+      <div class="hero-badge" data-i18n-es-html="<span class='dot'></span> Ahora atendiendo el área de San&nbsp;José"><span class="dot"></span> Now serving the San&nbsp;Jose area</div>
+      <h1 data-i18n-es-html="El taller que <span>llega a ti.</span>">The shop that <span>comes to you.</span></h1>
+      <p data-i18n-es-html="Hola, soy <b id='heroName'>Cayetano</b> — un mecánico móvil que trabaja desde su camioneta totalmente equipada. Cambios de aceite y reparación de motores de gasolina, hechos en tu propia entrada. Sin grúas, sin salas de espera.">Hi, I'm <b id="heroName">Cayetano</b> — a mobile mechanic working out of my fully-equipped van. Oil changes and gas engine repair, done right in your driveway. No towing, no waiting rooms.</p>
       <div class="hero-btns">
-        <button class="btn btn-primary" onclick="go('book')">📅 Book an Appointment</button>
-        <a class="btn btn-ghost" id="heroCall" href="tel:+14088549221">📞 Call or Text</a>
+        <button class="btn btn-primary" onclick="go('book')" data-i18n-es="📅 Reservar una cita">📅 Book an Appointment</button>
+        <a class="btn btn-ghost" id="heroCall" href="tel:+14088549221" data-i18n-es="📞 Llama o Escribe">📞 Call or Text</a>
       </div>
       <div class="hero-stats">
-        <div class="hero-stat"><b>2</b><span>Core services</span></div>
-        <div class="hero-stat"><b>100%</b><span>Mobile — I come to you</span></div>
-        <div class="hero-stat"><b>Gas</b><span>Engines only (no diesel)</span></div>
+        <div class="hero-stat"><b>2</b><span data-i18n-es="Servicios principales">Core services</span></div>
+        <div class="hero-stat"><b>100%</b><span data-i18n-es="Móvil — voy a ti">Mobile — I come to you</span></div>
+        <div class="hero-stat"><b>Gas</b><span data-i18n-es="Solo motores (sin diésel)">Engines only (no diesel)</span></div>
       </div>
     </div>
   </div>
 
   <section>
     <div class="wrap">
-      <div class="eyebrow">What I Do</div>
-      <h2 class="title">Straightforward services</h2>
-      <p class="sub">No upsells, no surprises. Two things done well.</p>
+      <div class="eyebrow" data-i18n-es="Lo Que Hago">What I Do</div>
+      <h2 class="title" data-i18n-es="Servicios sencillos">Straightforward services</h2>
+      <p class="sub" data-i18n-es="Sin ventas de más, sin sorpresas. Dos cosas bien hechas.">No upsells, no surprises. Two things done well.</p>
       <div class="grid g2">
         <div class="card">
           <div class="svc-icon">🛢️</div>
-          <span class="pill">Most popular</span>
-          <h3 style="margin-top:12px">Oil Changes</h3>
-          <p>Full-service oil and filter change at your home or work. Conventional, synthetic blend, or full synthetic — your choice. I'll also do a quick safety look-over while I'm under the hood.</p>
-          <div class="svc-price">From $XX &middot; ~30 minutes</div>
+          <span class="pill" data-i18n-es="Más popular">Most popular</span>
+          <h3 style="margin-top:12px" data-i18n-es="Cambios de aceite">Oil Changes</h3>
+          <p data-i18n-es="Cambio completo de aceite y filtro en tu casa o trabajo. Convencional, mezcla sintética o sintético completo — tú eliges. También hago una revisión rápida de seguridad mientras estoy bajo el capó.">Full-service oil and filter change at your home or work. Conventional, synthetic blend, or full synthetic — your choice. I'll also do a quick safety look-over while I'm under the hood.</p>
+          <div class="svc-price" data-i18n-es="Desde $XX &middot; ~30 minutos">From $XX &middot; ~30 minutes</div>
         </div>
         <div class="card">
           <div class="svc-icon">⚙️</div>
-          <h3>Gas Engine Repair</h3>
-          <p>Diagnostics and repair for gasoline engines — check-engine lights, tune-ups, belts, brakes, batteries, starters, and more. If it runs on gas, I can take a look. (No diesel work.)</p>
-          <div class="svc-price">Quoted after diagnosis</div>
+          <h3 data-i18n-es="Reparación de motor de gasolina">Gas Engine Repair</h3>
+          <p data-i18n-es="Diagnóstico y reparación de motores de gasolina — luces de check-engine, afinaciones, bandas, frenos, baterías, marchas y más. Si funciona con gasolina, le puedo echar un ojo. (Sin trabajo de diésel.)">Diagnostics and repair for gasoline engines — check-engine lights, tune-ups, belts, brakes, batteries, starters, and more. If it runs on gas, I can take a look. (No diesel work.)</p>
+          <div class="svc-price" data-i18n-es="Cotización tras el diagnóstico">Quoted after diagnosis</div>
         </div>
       </div>
       <div style="text-align:center;margin-top:36px">
-        <button class="btn btn-ghost" onclick="go('services')">See all services →</button>
+        <button class="btn btn-ghost" onclick="go('services')" data-i18n-es="Ver todos los servicios →">See all services →</button>
       </div>
     </div>
   </section>
 
   <section style="background:var(--bg2)">
     <div class="wrap">
-      <div class="eyebrow">Vehicles</div>
-      <h2 class="title">Makes &amp; models I work on</h2>
-      <p class="sub">A sample of what rolls through the driveway. Don't see yours? Just ask.</p>
+      <div class="eyebrow" data-i18n-es="Vehículos">Vehicles</div>
+      <h2 class="title" data-i18n-es="Marcas y modelos que atiendo">Makes &amp; models I work on</h2>
+      <p class="sub" data-i18n-es="Una muestra de lo que pasa por la entrada. ¿No ves el tuyo? Solo pregunta.">A sample of what rolls through the driveway. Don't see yours? Just ask.</p>
       <div class="grid g4" id="vehicleGrid"></div>
     </div>
   </section>
@@ -310,9 +313,9 @@
   <section>
     <div class="wrap">
       <div class="grid g3">
-        <div class="card"><div class="svc-icon">🚐</div><h3>I come to you</h3><p>Home, office, or roadside anywhere in the San Jose area. You keep your day, I do the wrenching.</p></div>
-        <div class="card"><div class="svc-icon">💳</div><h3>Easy payment</h3><p>Pay online or in person. Tap, card, or app — whatever's easiest for you.</p></div>
-        <div class="card"><div class="svc-icon">🔔</div><h3>Service reminders</h3><p>Sign up once and I'll remind you when your next service — oil, brakes, tune-up — is due. No more guessing.</p></div>
+        <div class="card"><div class="svc-icon">🚐</div><h3 data-i18n-es="Voy a ti">I come to you</h3><p data-i18n-es="Casa, oficina o en la carretera en toda el área de San José. Tú sigues con tu día, yo hago el trabajo.">Home, office, or roadside anywhere in the San Jose area. You keep your day, I do the wrenching.</p></div>
+        <div class="card"><div class="svc-icon">💳</div><h3 data-i18n-es="Pago fácil">Easy payment</h3><p data-i18n-es="Paga en línea o en persona. Contactless, tarjeta o app — lo que te sea más fácil.">Pay online or in person. Tap, card, or app — whatever's easiest for you.</p></div>
+        <div class="card"><div class="svc-icon">🔔</div><h3 data-i18n-es="Recordatorios de servicio">Service reminders</h3><p data-i18n-es="Regístrate una vez y te aviso cuando toque tu próximo servicio — aceite, frenos, afinación. Sin adivinar.">Sign up once and I'll remind you when your next service — oil, brakes, tune-up — is due. No more guessing.</p></div>
       </div>
     </div>
   </section>
@@ -320,9 +323,9 @@
   <section>
     <div class="wrap">
       <div class="cta">
-        <h2>Ready to get your car handled?</h2>
-        <p>Pick a time that works — I'll bring the shop to your driveway.</p>
-        <button class="btn" onclick="go('book')">Book Now</button>
+        <h2 data-i18n-es="¿Listo para poner tu carro en buenas manos?">Ready to get your car handled?</h2>
+        <p data-i18n-es="Elige una hora que te convenga — llevo el taller a tu entrada.">Pick a time that works — I'll bring the shop to your driveway.</p>
+        <button class="btn" onclick="go('book')" data-i18n-es="Reservar ahora">Book Now</button>
       </div>
     </div>
   </section>
@@ -332,22 +335,22 @@
 <div id="page-services" class="page">
   <section>
     <div class="wrap">
-      <div class="eyebrow">Services</div>
-      <h2 class="title">What I can do for your vehicle</h2>
-      <p class="sub">Gasoline engines only — I don't do diesel. Prices below are placeholders; you'll always get a clear quote first.</p>
+      <div class="eyebrow" data-i18n-es="Servicios">Services</div>
+      <h2 class="title" data-i18n-es="Lo que puedo hacer por tu vehículo">What I can do for your vehicle</h2>
+      <p class="sub" data-i18n-es="Solo motores de gasolina — no hago diésel. Los precios de abajo son de ejemplo; siempre recibirás una cotización clara primero.">Gasoline engines only — I don't do diesel. Prices below are placeholders; you'll always get a clear quote first.</p>
       <div class="grid g2">
-        <div class="card"><div class="svc-icon">🛢️</div><h3>Oil &amp; Filter Change</h3><p>Conventional, synthetic blend, or full synthetic. Includes new filter and a fluid top-off.</p><div class="svc-price">From $XX</div></div>
-        <div class="card"><div class="svc-icon">🔦</div><h3>Check-Engine Diagnostics</h3><p>I'll pull the codes, explain what's going on in plain English, and give you options.</p><div class="svc-price">From $XX</div></div>
-        <div class="card"><div class="svc-icon">🔋</div><h3>Battery &amp; Starter</h3><p>Testing and replacement for batteries, alternators, and starters.</p><div class="svc-price">From $XX + parts</div></div>
-        <div class="card"><div class="svc-icon">🛑</div><h3>Brakes</h3><p>Pads, rotors, and brake fluid. Safety-checked before I leave.</p><div class="svc-price">From $XX + parts</div></div>
-        <div class="card"><div class="svc-icon">🔧</div><h3>Tune-Ups</h3><p>Spark plugs, filters, belts, and general maintenance to keep it running smooth.</p><div class="svc-price">From $XX</div></div>
-        <div class="card"><div class="svc-icon">💨</div><h3>Fluids &amp; Filters</h3><p>Coolant, transmission, air and cabin filters — the routine stuff, done at your door.</p><div class="svc-price">From $XX</div></div>
+        <div class="card"><div class="svc-icon">🛢️</div><h3 data-i18n-es="Cambio de aceite y filtro">Oil &amp; Filter Change</h3><p data-i18n-es="Convencional, mezcla sintética o sintético completo. Incluye filtro nuevo y relleno de fluidos.">Conventional, synthetic blend, or full synthetic. Includes new filter and a fluid top-off.</p><div class="svc-price" data-i18n-es="Desde $XX">From $XX</div></div>
+        <div class="card"><div class="svc-icon">🔦</div><h3 data-i18n-es="Diagnóstico de check-engine">Check-Engine Diagnostics</h3><p data-i18n-es="Leo los códigos, te explico qué pasa en palabras claras y te doy opciones.">I'll pull the codes, explain what's going on in plain English, and give you options.</p><div class="svc-price" data-i18n-es="Desde $XX">From $XX</div></div>
+        <div class="card"><div class="svc-icon">🔋</div><h3 data-i18n-es="Batería y marcha">Battery &amp; Starter</h3><p data-i18n-es="Prueba y reemplazo de baterías, alternadores y marchas.">Testing and replacement for batteries, alternators, and starters.</p><div class="svc-price" data-i18n-es="Desde $XX + piezas">From $XX + parts</div></div>
+        <div class="card"><div class="svc-icon">🛑</div><h3 data-i18n-es="Frenos">Brakes</h3><p data-i18n-es="Pastillas, discos y líquido de frenos. Revisados por seguridad antes de irme.">Pads, rotors, and brake fluid. Safety-checked before I leave.</p><div class="svc-price" data-i18n-es="Desde $XX + piezas">From $XX + parts</div></div>
+        <div class="card"><div class="svc-icon">🔧</div><h3 data-i18n-es="Afinaciones">Tune-Ups</h3><p data-i18n-es="Bujías, filtros, bandas y mantenimiento general para que siga andando suave.">Spark plugs, filters, belts, and general maintenance to keep it running smooth.</p><div class="svc-price" data-i18n-es="Desde $XX">From $XX</div></div>
+        <div class="card"><div class="svc-icon">💨</div><h3 data-i18n-es="Fluidos y filtros">Fluids &amp; Filters</h3><p data-i18n-es="Anticongelante, transmisión, filtros de aire y de cabina — lo de rutina, en tu puerta.">Coolant, transmission, air and cabin filters — the routine stuff, done at your door.</p><div class="svc-price" data-i18n-es="Desde $XX">From $XX</div></div>
       </div>
       <div class="card" style="margin-top:24px;border-color:rgba(255,107,26,.35)">
-        <h3>🚫 What I don't do</h3>
-        <p>To keep quality high, I stick to what I know: <b>no diesel engines</b>, no heavy transmission rebuilds, and no bodywork/paint. If it's outside my lane, I'll point you to someone good.</p>
+        <h3 data-i18n-es="🚫 Lo que no hago">🚫 What I don't do</h3>
+        <p data-i18n-es-html="Para mantener la calidad, me quedo con lo que domino: <b>nada de motores diésel</b>, nada de reconstrucciones pesadas de transmisión, ni carrocería/pintura. Si está fuera de lo mío, te recomiendo a alguien bueno.">To keep quality high, I stick to what I know: <b>no diesel engines</b>, no heavy transmission rebuilds, and no bodywork/paint. If it's outside my lane, I'll point you to someone good.</p>
       </div>
-      <div style="text-align:center;margin-top:36px"><button class="btn btn-primary" onclick="go('book')">📅 Book a Service</button></div>
+      <div style="text-align:center;margin-top:36px"><button class="btn btn-primary" onclick="go('book')" data-i18n-es="📅 Reservar un servicio">📅 Book a Service</button></div>
     </div>
   </section>
 </div>
@@ -356,9 +359,9 @@
 <div id="page-work" class="page">
   <section>
     <div class="wrap">
-      <div class="eyebrow">Our Work</div>
-      <h2 class="title">Recent jobs</h2>
-      <p class="sub">A look at some of the work I've done. (Placeholder tiles — swap in real photos anytime.)</p>
+      <div class="eyebrow" data-i18n-es="Nuestros Trabajos">Our Work</div>
+      <h2 class="title" data-i18n-es="Trabajos recientes">Recent jobs</h2>
+      <p class="sub" data-i18n-es="Un vistazo a algo del trabajo que he hecho. (Imágenes de ejemplo — se pueden cambiar por fotos reales cuando quieras.)">A look at some of the work I've done. (Placeholder tiles — swap in real photos anytime.)</p>
       <div class="gal" id="galleryGrid"></div>
     </div>
   </section>
@@ -368,9 +371,9 @@
 <div id="page-book" class="page">
   <section>
     <div class="wrap">
-      <div class="eyebrow">Book</div>
-      <h2 class="title">Pick a day &amp; time</h2>
-      <p class="sub">Choose an open day, then a time slot. I'll confirm by text. Grayed-out days are already blocked off.</p>
+      <div class="eyebrow" data-i18n-es="Reservar">Book</div>
+      <h2 class="title" data-i18n-es="Elige día y hora">Pick a day &amp; time</h2>
+      <p class="sub" data-i18n-es="Elige un día disponible y luego una hora. Confirmo por mensaje. Los días en gris ya están ocupados.">Choose an open day, then a time slot. I'll confirm by text. Grayed-out days are already blocked off.</p>
 
       <div class="admin-bar" id="adminBar">
         <div id="adminStatus">👤 <b>Client view</b> — tap an open day to request a time.</div>
@@ -384,15 +387,15 @@
             <b id="calLabel"></b>
             <button onclick="calMove(1)">›</button>
           </div>
-          <button class="btn btn-sm btn-ghost" onclick="calToday()">Today</button>
+          <button class="btn btn-sm btn-ghost" onclick="calToday()" data-i18n-es="Hoy">Today</button>
         </div>
         <div class="cal-grid" id="calDow"></div>
         <div class="cal-grid" id="calDays" style="margin-top:6px"></div>
         <div class="legend">
-          <span><i style="background:var(--card);box-shadow:inset 0 0 0 2px var(--accent2)"></i> Today</span>
-          <span><i style="background:var(--accent)"></i> Selected</span>
-          <span><i style="background:repeating-linear-gradient(45deg,#241318,#241318 4px,#2a1519 4px,#2a1519 8px)"></i> Blocked / full</span>
-          <span id="adminHint" style="display:none">💡 Mechanic: click a day to block/unblock it.</span>
+          <span data-i18n-es-html="<i style='background:var(--card);box-shadow:inset 0 0 0 2px var(--accent2)'></i> Hoy"><i style="background:var(--card);box-shadow:inset 0 0 0 2px var(--accent2)"></i> Today</span>
+          <span data-i18n-es-html="<i style='background:var(--accent)'></i> Seleccionado"><i style="background:var(--accent)"></i> Selected</span>
+          <span data-i18n-es-html="<i style='background:repeating-linear-gradient(45deg,#241318,#241318 4px,#2a1519 4px,#2a1519 8px)'></i> Ocupado / lleno"><i style="background:repeating-linear-gradient(45deg,#241318,#241318 4px,#2a1519 4px,#2a1519 8px)"></i> Blocked / full</span>
+          <span id="adminHint" style="display:none" data-i18n-es="💡 Mecánico: haz clic en un día para bloquear/desbloquear.">💡 Mechanic: click a day to block/unblock it.</span>
         </div>
       </div>
 
@@ -402,16 +405,16 @@
         <div class="slots" id="slotList"></div>
 
         <div id="bookForm" style="display:none;margin-top:20px;border-top:1px solid var(--line);padding-top:20px">
-          <h3>Your details</h3>
+          <h3 data-i18n-es="Tus datos">Your details</h3>
           <div class="row2">
-            <div><label class="f">Name</label><input class="f" id="bkName" placeholder="Your name"/></div>
-            <div><label class="f">Phone</label><input class="f" id="bkPhone" placeholder="(408) 555-0123"/></div>
+            <div><label class="f" data-i18n-es="Nombre">Name</label><input class="f" id="bkName" placeholder="Your name" data-i18n-es-ph="Tu nombre"/></div>
+            <div><label class="f" data-i18n-es="Teléfono">Phone</label><input class="f" id="bkPhone" placeholder="(408) 555-0123"/></div>
           </div>
-          <label class="f">Vehicle (year / make / model)</label>
+          <label class="f" data-i18n-es="Vehículo (año / marca / modelo)">Vehicle (year / make / model)</label>
           <input class="f" id="bkVehicle" placeholder="2016 Honda Civic"/>
-          <label class="f">What do you need?</label>
-          <textarea class="f" id="bkNeed" placeholder="Oil change, check-engine light, etc."></textarea>
-          <button class="btn btn-primary" style="margin-top:16px" onclick="submitBooking()">Request this time</button>
+          <label class="f" data-i18n-es="¿Qué necesitas?">What do you need?</label>
+          <textarea class="f" id="bkNeed" placeholder="Oil change, check-engine light, etc." data-i18n-es-ph="Cambio de aceite, luz de check-engine, etc."></textarea>
+          <button class="btn btn-primary" style="margin-top:16px" onclick="submitBooking()" data-i18n-es="Solicitar esta hora">Request this time</button>
         </div>
         <div class="ok-msg" id="bookOk" style="display:none;margin-top:20px"></div>
       </div>
@@ -419,7 +422,7 @@
       <!-- admin hour blocker -->
       <div class="card" id="hourCard" style="margin-top:20px;display:none">
         <h3 id="hourTitle">Manage availability</h3>
-        <p class="note" style="margin-bottom:12px">Toggle individual hours off (e.g. lunch, a personal appointment). Toggle the whole day with the button.</p>
+        <p class="note" style="margin-bottom:12px" data-i18n-es="Apaga horas individuales (ej. almuerzo, una cita personal). Bloquea el día entero con el botón.">Toggle individual hours off (e.g. lunch, a personal appointment). Toggle the whole day with the button.</p>
         <div style="margin-bottom:14px"><button class="btn btn-sm" id="blockDayBtn" onclick="toggleBlockDay()"></button></div>
         <div class="slots" id="hourList"></div>
         <div id="dayBookings" style="margin-top:18px"></div>
@@ -432,40 +435,40 @@
 <div id="page-reminders" class="page">
   <section>
     <div class="wrap">
-      <div class="eyebrow">Never Miss a Service</div>
-      <h2 class="title">Service reminder</h2>
-      <p class="sub">Pick the service, tell me when it was last done, and I'll estimate when you're due — then remind you and help you book.</p>
+      <div class="eyebrow" data-i18n-es="Nunca te pierdas un servicio">Never Miss a Service</div>
+      <h2 class="title" data-i18n-es="Recordatorio de servicio">Service reminder</h2>
+      <p class="sub" data-i18n-es="Elige el servicio, dime cuándo se hizo por última vez y calculo cuándo te toca — luego te aviso y te ayudo a reservar.">Pick the service, tell me when it was last done, and I'll estimate when you're due — then remind you and help you book.</p>
       <div class="grid g2">
         <div class="rem-card">
-          <label class="f">Your name</label>
-          <input class="f" id="remName" placeholder="Your name"/>
-          <label class="f">Email or phone for the reminder</label>
-          <input class="f" id="remContact" placeholder="you@email.com or (408) 555-0123"/>
+          <label class="f" data-i18n-es="Tu nombre">Your name</label>
+          <input class="f" id="remName" placeholder="Your name" data-i18n-es-ph="Tu nombre"/>
+          <label class="f" data-i18n-es="Correo o teléfono para el recordatorio">Email or phone for the reminder</label>
+          <input class="f" id="remContact" placeholder="you@email.com or (408) 555-0123" data-i18n-es-ph="tu@correo.com o (408) 555-0123"/>
           <div class="row2">
-            <div><label class="f">Vehicle</label><input class="f" id="remVehicle" placeholder="2016 Honda Civic"/></div>
-            <div><label class="f">Service</label>
+            <div><label class="f" data-i18n-es="Vehículo">Vehicle</label><input class="f" id="remVehicle" placeholder="2016 Honda Civic"/></div>
+            <div><label class="f" data-i18n-es="Servicio">Service</label>
               <select class="f" id="remService" onchange="onServiceChange()"></select>
             </div>
           </div>
           <div id="remOilWrap">
-            <label class="f">Oil type</label>
+            <label class="f" data-i18n-es="Tipo de aceite">Oil type</label>
             <select class="f" id="remOil">
-              <option value="3">Conventional (~3,000 mi / 3 mo)</option>
-              <option value="5" selected>Synthetic blend (~5,000 mi / 5 mo)</option>
-              <option value="7">Full synthetic (~7,500 mi / 6 mo)</option>
+              <option value="3" data-i18n-es="Convencional (~3,000 mi / 3 meses)">Conventional (~3,000 mi / 3 mo)</option>
+              <option value="5" selected data-i18n-es="Mezcla sintética (~5,000 mi / 5 meses)">Synthetic blend (~5,000 mi / 5 mo)</option>
+              <option value="7" data-i18n-es="Sintético completo (~7,500 mi / 6 meses)">Full synthetic (~7,500 mi / 6 mo)</option>
             </select>
           </div>
           <label class="f" id="remDateLabel">Date of last service</label>
           <input class="f" id="remDate" type="date"/>
-          <button class="btn btn-primary" style="margin-top:18px" onclick="calcReminder()">Calculate my next service</button>
+          <button class="btn btn-primary" style="margin-top:18px" onclick="calcReminder()" data-i18n-es="Calcular mi próximo servicio">Calculate my next service</button>
           <div class="rem-result" id="remResult"></div>
         </div>
         <div class="card">
-          <h3>How it works</h3>
-          <p style="margin-bottom:14px">1. Choose the service and when it was last done.<br>2. I'll estimate your next due date.<br>3. Add it to your calendar or save it with me — I'll give you a heads-up when it's close, and you can book right away.</p>
-          <div class="pill">Tip</div>
-          <p style="margin-top:12px">Severe driving (short trips, heat, towing, lots of stop-and-go) can shorten these intervals. When in doubt, sooner is safer for your vehicle.</p>
-          <h3 style="margin-top:24px">Saved reminders</h3>
+          <h3 data-i18n-es="Cómo funciona">How it works</h3>
+          <p style="margin-bottom:14px" data-i18n-es-html="1. Elige el servicio y cuándo se hizo por última vez.<br>2. Calculo tu próxima fecha.<br>3. Agrégalo a tu calendario o guárdalo conmigo — te aviso cuando se acerque y puedes reservar de una vez.">1. Choose the service and when it was last done.<br>2. I'll estimate your next due date.<br>3. Add it to your calendar or save it with me — I'll give you a heads-up when it's close, and you can book right away.</p>
+          <div class="pill" data-i18n-es="Consejo">Tip</div>
+          <p style="margin-top:12px" data-i18n-es="El manejo severo (viajes cortos, calor, remolque, mucho arranque y pare) puede acortar estos intervalos. En la duda, más pronto es más seguro para tu vehículo.">Severe driving (short trips, heat, towing, lots of stop-and-go) can shorten these intervals. When in doubt, sooner is safer for your vehicle.</p>
+          <h3 style="margin-top:24px" data-i18n-es="Recordatorios guardados">Saved reminders</h3>
           <div id="remSaved"><p>None yet.</p></div>
         </div>
       </div>
@@ -477,41 +480,41 @@
 <div id="page-pay" class="page">
   <section>
     <div class="wrap">
-      <div class="eyebrow">Payment</div>
-      <h2 class="title">Pay your invoice</h2>
-      <p class="sub">Cayetano accepts <b>Zelle</b> — send it straight from your bank app, no fees. Or settle up in person.</p>
+      <div class="eyebrow" data-i18n-es="Pago">Payment</div>
+      <h2 class="title" data-i18n-es="Paga tu factura">Pay your invoice</h2>
+      <p class="sub" data-i18n-es-html="Cayetano acepta <b>Zelle</b> — envíalo directo desde la app de tu banco, sin comisiones. O paga en persona.">Cayetano accepts <b>Zelle</b> — send it straight from your bank app, no fees. Or settle up in person.</p>
       <div class="grid g2">
         <div class="card">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px">
             <div class="ico" style="width:46px;height:46px;border-radius:10px;display:grid;place-items:center;font-size:24px;background:#5B1F9E;color:#fff;font-weight:900">Z</div>
-            <div><h3 style="margin:0">Pay with Zelle</h3><span class="note">Bank-to-bank, usually instant</span></div>
+            <div><h3 style="margin:0" data-i18n-es="Paga con Zelle">Pay with Zelle</h3><span class="note" data-i18n-es="De banco a banco, casi siempre al instante">Bank-to-bank, usually instant</span></div>
           </div>
-          <label class="f">Amount (USD)</label>
+          <label class="f" data-i18n-es="Monto (USD)">Amount (USD)</label>
           <input class="f" id="payAmt" type="number" placeholder="0.00"/>
-          <label class="f">Invoice # or note (optional)</label>
-          <input class="f" id="payNote" placeholder="e.g. Oil change — Civic"/>
+          <label class="f" data-i18n-es="# de factura o nota (opcional)">Invoice # or note (optional)</label>
+          <input class="f" id="payNote" placeholder="e.g. Oil change — Civic" data-i18n-es-ph="ej. Cambio de aceite — Civic"/>
 
-          <label class="f">Send your Zelle payment to</label>
+          <label class="f" data-i18n-es="Envía tu pago de Zelle a">Send your Zelle payment to</label>
           <div class="pay-opt" style="margin-top:0">
             <div class="l"><div class="ico">💸</div><div><b id="zelleHandle">Zelle not set up yet</b><br><span class="note" id="zelleName"></span></div></div>
-            <button class="btn btn-sm btn-primary" id="zelleCopy" onclick="copyZelle()">Copy</button>
+            <button class="btn btn-sm btn-primary" id="zelleCopy" onclick="copyZelle()" data-i18n-es="Copiar">Copy</button>
           </div>
 
           <ol class="note" style="margin:16px 0 0 18px;line-height:1.9">
-            <li>Open your bank's app and choose <b>Zelle / Send Money</b>.</li>
-            <li>Send to the recipient above.</li>
-            <li>Enter the amount, and add the note in the memo so Cayetano knows what it's for.</li>
+            <li data-i18n-es-html="Abre la app de tu banco y elige <b>Zelle / Enviar dinero</b>.">Open your bank's app and choose <b>Zelle / Send Money</b>.</li>
+            <li data-i18n-es="Envía al destinatario de arriba.">Send to the recipient above.</li>
+            <li data-i18n-es="Escribe el monto y agrega la nota en el memo para que Cayetano sepa de qué es.">Enter the amount, and add the note in the memo so Cayetano knows what it's for.</li>
           </ol>
-          <div class="ok-msg" id="zelleCopied" style="display:none">✅ Copied — now paste it into your bank's Zelle screen.</div>
+          <div class="ok-msg" id="zelleCopied" style="display:none" data-i18n-es="✅ ¡Copiado! Ahora pégalo en la pantalla de Zelle de tu banco.">✅ Copied — now paste it into your bank's Zelle screen.</div>
         </div>
         <div class="card">
-          <h3>In-person options</h3>
-          <p>Prefer to pay when I'm there? I also take:</p>
+          <h3 data-i18n-es="Opciones en persona">In-person options</h3>
+          <p data-i18n-es="¿Prefieres pagar cuando esté ahí? También acepto:">Prefer to pay when I'm there? I also take:</p>
           <div style="margin-top:14px;display:flex;flex-direction:column;gap:10px">
-            <div class="pay-opt"><div class="l"><div class="ico">💵</div><div><b>Cash</b><br><span class="note">Exact change appreciated</span></div></div></div>
-            <div class="pay-opt"><div class="l"><div class="ico">📱</div><div><b>Zelle on the spot</b><br><span class="note">Send from your bank app before I leave</span></div></div></div>
+            <div class="pay-opt"><div class="l"><div class="ico">💵</div><div><b data-i18n-es="Efectivo">Cash</b><br><span class="note" data-i18n-es="Se agradece cambio exacto">Exact change appreciated</span></div></div></div>
+            <div class="pay-opt"><div class="l"><div class="ico">📱</div><div><b data-i18n-es="Zelle en el momento">Zelle on the spot</b><br><span class="note" data-i18n-es="Envía desde la app de tu banco antes de que me vaya">Send from your bank app before I leave</span></div></div></div>
           </div>
-          <p class="note" style="margin-top:18px">Payment is due at completion unless we've agreed otherwise. Questions on an invoice? Just reach out on the contact page.</p>
+          <p class="note" style="margin-top:18px" data-i18n-es="El pago se hace al terminar salvo que acordemos otra cosa. ¿Dudas con una factura? Escríbeme en la página de contacto.">Payment is due at completion unless we've agreed otherwise. Questions on an invoice? Just reach out on the contact page.</p>
         </div>
       </div>
     </div>
@@ -522,45 +525,45 @@
 <div id="page-contact" class="page">
   <section>
     <div class="wrap">
-      <div class="eyebrow">Get in Touch</div>
-      <h2 class="title">Contact Cayetano</h2>
-      <p class="sub">Send a message with photos of the problem (a dashboard light, a leak, anything). It goes straight to my inbox and I'll get back to you fast.</p>
+      <div class="eyebrow" data-i18n-es="Ponte en contacto">Get in Touch</div>
+      <h2 class="title" data-i18n-es="Contacta a Cayetano">Contact Cayetano</h2>
+      <p class="sub" data-i18n-es="Envía un mensaje con fotos del problema (una luz del tablero, una fuga, lo que sea). Llega directo a mi correo y te respondo rápido.">Send a message with photos of the problem (a dashboard light, a leak, anything). It goes straight to my inbox and I'll get back to you fast.</p>
       <div class="grid g2">
         <div class="card">
           <form id="contactForm" onsubmit="return submitContact(event)">
             <div class="row2">
-              <div><label class="f">Name *</label><input class="f" id="cName" required placeholder="Your name"/></div>
-              <div><label class="f">Phone *</label><input class="f" id="cPhone" required placeholder="(408) 555-0123"/></div>
+              <div><label class="f" data-i18n-es="Nombre *">Name *</label><input class="f" id="cName" required placeholder="Your name" data-i18n-es-ph="Tu nombre"/></div>
+              <div><label class="f" data-i18n-es="Teléfono *">Phone *</label><input class="f" id="cPhone" required placeholder="(408) 555-0123"/></div>
             </div>
-            <label class="f">Email *</label>
-            <input class="f" id="cEmail" type="email" required placeholder="you@email.com"/>
-            <label class="f">Vehicle</label>
+            <label class="f" data-i18n-es="Correo *">Email *</label>
+            <input class="f" id="cEmail" type="email" required placeholder="you@email.com" data-i18n-es-ph="tu@correo.com"/>
+            <label class="f" data-i18n-es="Vehículo">Vehicle</label>
             <input class="f" id="cVehicle" placeholder="2016 Honda Civic"/>
-            <label class="f">How can I help? *</label>
-            <textarea class="f" id="cMsg" required placeholder="Tell me what's going on with your vehicle…"></textarea>
+            <label class="f" data-i18n-es="¿Cómo te puedo ayudar? *">How can I help? *</label>
+            <textarea class="f" id="cMsg" required placeholder="Tell me what's going on with your vehicle…" data-i18n-es-ph="Cuéntame qué pasa con tu vehículo…"></textarea>
 
-            <label class="f">Add photos (optional)</label>
-            <div class="drop" id="dropZone" onclick="document.getElementById('cPhotos').click()">
+            <label class="f" data-i18n-es="Agrega fotos (opcional)">Add photos (optional)</label>
+            <div class="drop" id="dropZone" onclick="document.getElementById('cPhotos').click()" data-i18n-es="📷 Toca para agregar fotos, o arrástralas aquí">
               📷 Tap to add photos, or drag &amp; drop here
             </div>
             <input type="file" id="cPhotos" accept="image/*" multiple capture="environment" style="display:none" onchange="handlePhotos(this.files)"/>
             <div class="thumbs" id="photoThumbs"></div>
 
-            <button class="btn btn-primary" type="submit" style="margin-top:20px;width:100%;justify-content:center">Send Message</button>
+            <button class="btn btn-primary" type="submit" style="margin-top:20px;width:100%;justify-content:center" data-i18n-es="Enviar mensaje">Send Message</button>
             <div class="ok-msg" id="contactOk" style="display:none"></div>
             <p class="note" id="contactNote"></p>
           </form>
         </div>
         <div class="card">
-          <h3>Reach me directly</h3>
+          <h3 data-i18n-es="Contáctame directo">Reach me directly</h3>
           <div style="margin-top:16px;display:flex;flex-direction:column;gap:14px">
-            <a class="pay-opt" id="ctPhone" href="tel:+14088549221"><div class="l"><div class="ico">📞</div><div><b>Call or text</b><br><span class="note" id="ctPhoneTxt">(408) 854-9221</span></div></div><span class="btn btn-sm btn-ghost">Call</span></a>
-            <a class="pay-opt" id="ctEmail" href="mailto:cayetano@example.com"><div class="l"><div class="ico">✉️</div><div><b>Email</b><br><span class="note" id="ctEmailTxt">cayetano@example.com</span></div></div><span class="btn btn-sm btn-ghost">Email</span></a>
-            <div class="pay-opt"><div class="l"><div class="ico">📍</div><div><b>Service area</b><br><span class="note">San Jose &amp; surrounding cities</span></div></div></div>
-            <div class="pay-opt"><div class="l"><div class="ico">🕒</div><div><b>Hours</b><br><span class="note" id="ctHours">Mon–Sat, 8am–6pm</span></div></div></div>
+            <a class="pay-opt" id="ctPhone" href="tel:+14088549221"><div class="l"><div class="ico">📞</div><div><b data-i18n-es="Llama o escribe">Call or text</b><br><span class="note" id="ctPhoneTxt">(408) 854-9221</span></div></div><span class="btn btn-sm btn-ghost" data-i18n-es="Llamar">Call</span></a>
+            <a class="pay-opt" id="ctEmail" href="mailto:cayetano@example.com"><div class="l"><div class="ico">✉️</div><div><b data-i18n-es="Correo">Email</b><br><span class="note" id="ctEmailTxt">cayetano@example.com</span></div></div><span class="btn btn-sm btn-ghost" data-i18n-es="Correo">Email</span></a>
+            <div class="pay-opt"><div class="l"><div class="ico">📍</div><div><b data-i18n-es="Zona de servicio">Service area</b><br><span class="note" data-i18n-es="San José y ciudades cercanas">San Jose &amp; surrounding cities</span></div></div></div>
+            <div class="pay-opt"><div class="l"><div class="ico">🕒</div><div><b data-i18n-es="Horario">Hours</b><br><span class="note" id="ctHours">Mon–Sat, 8am–6pm</span></div></div></div>
           </div>
           <div style="margin-top:22px">
-            <button class="btn btn-ghost" style="width:100%;justify-content:center" onclick="go('book')">📅 Or book a time directly →</button>
+            <button class="btn btn-ghost" style="width:100%;justify-content:center" onclick="go('book')" data-i18n-es="📅 O reserva una hora directamente →">📅 Or book a time directly →</button>
           </div>
         </div>
       </div>
@@ -575,33 +578,33 @@
       <!-- login gate (shown when not logged in) -->
       <div id="clientsGate" class="gate">
         <div class="ico">🔧</div>
-        <h2 class="title" style="font-size:26px">Cayetano's client book</h2>
-        <p class="sub" style="margin:8px auto 22px">This area is for Cayetano. Log in to manage clients, vehicles, service history, and oil-change follow-ups.</p>
-        <button class="btn btn-primary" onclick="toggleAdmin()">🔒 Mechanic login</button>
+        <h2 class="title" style="font-size:26px" data-i18n-es="Libreta de clientes de Cayetano">Cayetano's client book</h2>
+        <p class="sub" style="margin:8px auto 22px" data-i18n-es="Esta área es para Cayetano. Inicia sesión para administrar clientes, vehículos, historial de servicio y recordatorios de cambio de aceite.">This area is for Cayetano. Log in to manage clients, vehicles, service history, and oil-change follow-ups.</p>
+        <button class="btn btn-primary" onclick="toggleAdmin()" data-i18n-es="🔒 Acceso de mecánico">🔒 Mechanic login</button>
       </div>
 
       <!-- CRM (shown when logged in) -->
       <div id="clientsApp" style="display:none">
         <div class="crm-toolbar">
           <div>
-            <div class="eyebrow">Client Book</div>
-            <h2 class="title" style="font-size:30px">Clients &amp; follow-ups</h2>
+            <div class="eyebrow" data-i18n-es="Libreta de clientes">Client Book</div>
+            <h2 class="title" style="font-size:30px" data-i18n-es="Clientes y seguimientos">Clients &amp; follow-ups</h2>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn btn-sm btn-ghost" onclick="toggleAdmin()">🔓 Log out</button>
-            <button class="btn btn-sm btn-primary" onclick="openClientForm()">＋ New client</button>
+            <button class="btn btn-sm btn-ghost" onclick="toggleAdmin()" data-i18n-es="🔓 Salir">🔓 Log out</button>
+            <button class="btn btn-sm btn-primary" onclick="openClientForm()" data-i18n-es="＋ Nuevo cliente">＋ New client</button>
           </div>
         </div>
 
         <div class="stat-row" id="crmStats"></div>
 
         <!-- Follow-ups due -->
-        <h3 style="margin:8px 0 12px">🔔 Service follow-ups</h3>
+        <h3 style="margin:8px 0 12px" data-i18n-es="🔔 Seguimientos de servicio">🔔 Service follow-ups</h3>
         <div id="followupList"></div>
 
         <!-- Client directory -->
-        <h3 style="margin:28px 0 12px">👥 All clients</h3>
-        <input class="f crm-search" id="clientSearch" placeholder="🔍 Search name, phone, or vehicle…" oninput="renderClients()" style="margin-bottom:14px"/>
+        <h3 style="margin:28px 0 12px" data-i18n-es="👥 Todos los clientes">👥 All clients</h3>
+        <input class="f crm-search" id="clientSearch" placeholder="🔍 Search name, phone, or vehicle…" oninput="renderClients()" style="margin-bottom:14px" data-i18n-es-ph="🔍 Buscar nombre, teléfono o vehículo…"/>
         <div id="clientList"></div>
       </div>
     </div>
@@ -615,62 +618,62 @@
       <!-- login gate -->
       <div id="partsGate" class="gate">
         <div class="ico">🧰</div>
-        <h2 class="title" style="font-size:26px">Parts &amp; estimates</h2>
-        <p class="sub" style="margin:8px auto 22px">For Cayetano — your parts catalog with live price checks at AutoZone, O'Reilly, NAPA and more, plus a quick estimate builder.</p>
-        <button class="btn btn-primary" onclick="toggleAdmin()">🔒 Mechanic login</button>
+        <h2 class="title" style="font-size:26px" data-i18n-es="Piezas y cotizaciones">Parts &amp; estimates</h2>
+        <p class="sub" style="margin:8px auto 22px" data-i18n-es="Para Cayetano — tu catálogo de piezas con precios en vivo en AutoZone, O'Reilly, NAPA y más, además de un armador rápido de cotizaciones.">For Cayetano — your parts catalog with live price checks at AutoZone, O'Reilly, NAPA and more, plus a quick estimate builder.</p>
+        <button class="btn btn-primary" onclick="toggleAdmin()" data-i18n-es="🔒 Acceso de mecánico">🔒 Mechanic login</button>
       </div>
 
       <div id="partsApp" style="display:none">
         <div class="crm-toolbar">
-          <div><div class="eyebrow">Shop Tools</div><h2 class="title" style="font-size:30px">Parts &amp; estimates</h2></div>
-          <button class="btn btn-sm btn-ghost" onclick="toggleAdmin()">🔓 Log out</button>
+          <div><div class="eyebrow" data-i18n-es="Herramientas del taller">Shop Tools</div><h2 class="title" style="font-size:30px" data-i18n-es="Piezas y cotizaciones">Parts &amp; estimates</h2></div>
+          <button class="btn btn-sm btn-ghost" onclick="toggleAdmin()" data-i18n-es="🔓 Salir">🔓 Log out</button>
         </div>
 
         <!-- Quick price check across stores -->
         <div class="card" style="margin-bottom:22px">
-          <h3 style="margin-bottom:10px">⚡ Quick price check</h3>
-          <p class="note" style="margin-bottom:10px">Type a part name or number, then check live pricing at each store (opens in a new tab).</p>
+          <h3 style="margin-bottom:10px" data-i18n-es="⚡ Consulta rápida de precio">⚡ Quick price check</h3>
+          <p class="note" style="margin-bottom:10px" data-i18n-es="Escribe el nombre o número de la pieza y revisa el precio en vivo en cada tienda (abre en una pestaña nueva).">Type a part name or number, then check live pricing at each store (opens in a new tab).</p>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <input class="f" id="priceQuery" placeholder="e.g. PH7317 oil filter, or Duralast Group 35 battery" style="flex:1;min-width:220px"/>
+            <input class="f" id="priceQuery" placeholder="e.g. PH7317 oil filter, or Duralast Group 35 battery" style="flex:1;min-width:220px" data-i18n-es-ph="ej. filtro de aceite PH7317, o batería Duralast Group 35"/>
           </div>
           <div class="chip-row" id="priceCheckStores" style="margin-top:12px"></div>
         </div>
 
         <!-- Estimate builder -->
-        <h3 style="margin:8px 0 12px">🧾 Build an estimate</h3>
+        <h3 style="margin:8px 0 12px" data-i18n-es="🧾 Armar una cotización">🧾 Build an estimate</h3>
         <div class="card" style="margin-bottom:14px">
           <div class="row2">
-            <div><label class="f">Client</label><select class="f" id="estClient" onchange="estClientPick()"></select></div>
-            <div><label class="f">Vehicle</label><input class="f" id="estVehicle" placeholder="2016 Honda Civic"/></div>
+            <div><label class="f" data-i18n-es="Cliente">Client</label><select class="f" id="estClient" onchange="estClientPick()"></select></div>
+            <div><label class="f" data-i18n-es="Vehículo">Vehicle</label><input class="f" id="estVehicle" placeholder="2016 Honda Civic"/></div>
           </div>
-          <label class="f">Labor</label>
+          <label class="f" data-i18n-es="Mano de obra">Labor</label>
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
-            <div style="flex:2;min-width:160px"><input class="f" id="estLaborDesc" placeholder="Describe the work (e.g. front brake job)"/></div>
-            <div style="width:90px"><input class="f" id="estLaborHrs" type="number" step="0.5" placeholder="hrs"/></div>
-            <button class="btn btn-sm btn-ghost" onclick="addLabor()">＋ Labor</button>
+            <div style="flex:2;min-width:160px"><input class="f" id="estLaborDesc" placeholder="Describe the work (e.g. front brake job)" data-i18n-es-ph="Describe el trabajo (ej. frenos delanteros)"/></div>
+            <div style="width:90px"><input class="f" id="estLaborHrs" type="number" step="0.5" placeholder="hrs" data-i18n-es-ph="horas"/></div>
+            <button class="btn btn-sm btn-ghost" onclick="addLabor()" data-i18n-es="＋ Mano de obra">＋ Labor</button>
           </div>
-          <label class="f">Parts</label>
+          <label class="f" data-i18n-es="Piezas">Parts</label>
           <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
             <div style="flex:2;min-width:160px"><select class="f" id="estPartSel"></select></div>
             <div style="width:90px"><input class="f" id="estPartQty" type="number" min="1" value="1"/></div>
-            <button class="btn btn-sm btn-ghost" onclick="addEstPart()">＋ Part</button>
+            <button class="btn btn-sm btn-ghost" onclick="addEstPart()" data-i18n-es="＋ Pieza">＋ Part</button>
           </div>
           <div id="estLines" style="margin-top:16px"></div>
           <div id="estTotals"></div>
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px">
-            <button class="btn btn-sm btn-primary" onclick="saveEstimate()">💾 Save estimate</button>
-            <button class="btn btn-sm btn-ghost" onclick="clearEstimate()">Clear</button>
+            <button class="btn btn-sm btn-primary" onclick="saveEstimate()" data-i18n-es="💾 Guardar cotización">💾 Save estimate</button>
+            <button class="btn btn-sm btn-ghost" onclick="clearEstimate()" data-i18n-es="Limpiar">Clear</button>
           </div>
         </div>
         <div id="savedEstimates" style="margin-bottom:8px"></div>
 
         <!-- Parts catalog -->
         <div class="crm-toolbar" style="margin-top:28px">
-          <h3 style="margin:0">📦 Parts catalog</h3>
-          <button class="btn btn-sm btn-primary" onclick="openPartForm()">＋ Add part</button>
+          <h3 style="margin:0" data-i18n-es="📦 Catálogo de piezas">📦 Parts catalog</h3>
+          <button class="btn btn-sm btn-primary" onclick="openPartForm()" data-i18n-es="＋ Agregar pieza">＋ Add part</button>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-          <input class="f" id="partSearch" placeholder="🔍 Search parts…" oninput="renderParts()" style="flex:1;min-width:200px"/>
+          <input class="f" id="partSearch" placeholder="🔍 Search parts…" oninput="renderParts()" style="flex:1;min-width:200px" data-i18n-es-ph="🔍 Buscar piezas…"/>
           <select class="f" id="partCat" onchange="renderParts()" style="width:200px"></select>
         </div>
         <div id="partList"></div>
@@ -685,26 +688,26 @@
     <div class="foot-grid">
       <div>
         <b>🔧 Cayetano's Mobile Mechanic</b>
-        <p>Honest, convenient auto care for the San Jose area. Oil changes and gas engine repair, brought right to your driveway.</p>
+        <p data-i18n-es="Cuidado automotriz honesto y cómodo para el área de San José. Cambios de aceite y reparación de motores de gasolina, hasta tu entrada.">Honest, convenient auto care for the San Jose area. Oil changes and gas engine repair, brought right to your driveway.</p>
       </div>
       <div>
-        <b>Services</b>
-        <a onclick="go('services')">Oil Changes</a>
-        <a onclick="go('services')">Engine Repair</a>
-        <a onclick="go('reminders')">Service Reminder</a>
-        <a onclick="go('book')">Book Now</a>
+        <b data-i18n-es="Servicios">Services</b>
+        <a onclick="go('services')" data-i18n-es="Cambios de aceite">Oil Changes</a>
+        <a onclick="go('services')" data-i18n-es="Reparación de motor">Engine Repair</a>
+        <a onclick="go('reminders')" data-i18n-es="Recordatorio de servicio">Service Reminder</a>
+        <a onclick="go('book')" data-i18n-es="Reservar ahora">Book Now</a>
       </div>
       <div>
-        <b>Contact</b>
+        <b data-i18n-es="Contacto">Contact</b>
         <a id="footPhone" href="tel:+14088549221">(408) 854-9221</a>
         <a id="footEmail" href="mailto:cayetano@example.com">cayetano@example.com</a>
-        <a onclick="go('pay')">Pay an Invoice</a>
-        <a onclick="go('contact')">Send a Message</a>
+        <a onclick="go('pay')" data-i18n-es="Pagar una factura">Pay an Invoice</a>
+        <a onclick="go('contact')" data-i18n-es="Enviar un mensaje">Send a Message</a>
       </div>
     </div>
     <div class="foot-bottom">
-      <span>© <span id="year"></span> Cayetano's Mobile Mechanic. All rights reserved.</span>
-      <span>San Jose, CA · Gas engines only</span>
+      <span data-i18n-es-html="© <span id='year'></span> Cayetano's Mobile Mechanic. Todos los derechos reservados.">© <span id="year"></span> Cayetano's Mobile Mechanic. All rights reserved.</span>
+      <span data-i18n-es="San José, CA · Solo motores de gasolina">San Jose, CA · Gas engines only</span>
     </div>
   </div>
 </footer>
@@ -712,13 +715,13 @@
 <!-- ============ PIN MODAL ============ -->
 <div class="modal" id="pinModal">
   <div class="modal-box">
-    <h3>🔒 Mechanic login</h3>
-    <p>Enter your PIN to manage the calendar and block off availability.</p>
+    <h3 data-i18n-es="🔒 Acceso de mecánico">🔒 Mechanic login</h3>
+    <p data-i18n-es="Ingresa tu PIN para administrar el calendario y bloquear tu disponibilidad.">Enter your PIN to manage the calendar and block off availability.</p>
     <input class="f" id="pinInput" type="password" inputmode="numeric" placeholder="PIN" onkeydown="if(event.key==='Enter')checkPin()"/>
     <div id="pinErr" class="note" style="color:var(--bad)"></div>
     <div class="modal-x">
-      <button class="btn btn-primary" onclick="checkPin()">Unlock</button>
-      <button class="btn btn-ghost" onclick="closePin()">Cancel</button>
+      <button class="btn btn-primary" onclick="checkPin()" data-i18n-es="Desbloquear">Unlock</button>
+      <button class="btn btn-ghost" onclick="closePin()" data-i18n-es="Cancelar">Cancel</button>
     </div>
   </div>
 </div>
@@ -730,9 +733,9 @@
 
 <!-- ============ INSTALL BANNER ============ -->
 <div id="installBar">
-  <div><b>📲 Install this app</b><br><span>Add Cayetano's to your home screen</span></div>
+  <div><b data-i18n-es="📲 Instala esta app">📲 Install this app</b><br><span data-i18n-es="Agrega Cayetano's a tu pantalla de inicio">Add Cayetano's to your home screen</span></div>
   <div style="display:flex;gap:8px">
-    <button class="btn btn-sm btn-primary" onclick="doInstall()">Install</button>
+    <button class="btn btn-sm btn-primary" onclick="doInstall()" data-i18n-es="Instalar">Install</button>
     <button class="btn btn-sm btn-ghost" onclick="document.getElementById('installBar').style.display='none'">✕</button>
   </div>
 </div>
@@ -749,6 +752,7 @@ const CONFIG = {
   email: "cayetano@example.com",    // where contact form lands
   area: "San Jose, CA",
   hours: "Mon–Sat, 8am–6pm",
+  hoursEs: "Lun–Sáb, 8am–6pm",
   adminPin: "0420",                 // mechanic PIN to manage the calendar
   // Contact form delivery. Create a free form at https://formspree.io,
   // then paste the endpoint here (looks like https://formspree.io/f/abcdwxyz).
@@ -860,6 +864,39 @@ function go(page){
 window.addEventListener('hashchange',()=>{ const p=location.hash.slice(1); if(p&&document.getElementById('page-'+p)) go(p); });
 
 /* =====================================================================
+   LANGUAGE (EN / ES) — co-located translations via data-i18n-es*
+   ===================================================================== */
+let lang = (localStorage.getItem('cmm_lang')==='es') ? 'es' : 'en';
+function t(en,es){ return lang==='es' ? es : en; }          // dynamic strings
+function locale(){ return lang==='es' ? 'es-ES' : 'en-US'; } // date formatting
+const SVC_ES = {"Oil change":"Cambio de aceite","Tune-up":"Afinación","Brake service":"Servicio de frenos","Battery replacement":"Cambio de batería","Diagnostics":"Diagnóstico","Fluids / filters":"Fluidos / filtros","Other repair":"Otra reparación"};
+function svcName(n){ return lang==='es' ? (SVC_ES[n]||n) : n; }  // service-type name
+function applyI18n(){
+  document.querySelectorAll('[data-i18n-es]').forEach(el=>{
+    if(el._en==null) el._en=el.textContent;
+    el.textContent = lang==='es' ? el.getAttribute('data-i18n-es') : el._en;
+  });
+  document.querySelectorAll('[data-i18n-es-html]').forEach(el=>{
+    if(el._enh==null) el._enh=el.innerHTML;
+    el.innerHTML = lang==='es' ? el.getAttribute('data-i18n-es-html') : el._enh;
+  });
+  document.querySelectorAll('[data-i18n-es-ph]').forEach(el=>{
+    if(el._enp==null) el._enp=el.getAttribute('placeholder')||'';
+    el.setAttribute('placeholder', lang==='es' ? el.getAttribute('data-i18n-es-ph') : el._enp);
+  });
+}
+function setLang(l){
+  lang=l; localStorage.setItem('cmm_lang',l); document.documentElement.lang=l;
+  const btn=document.getElementById('langBtn'); if(btn) btn.textContent = (l==='es'?'EN':'ES');
+  applyI18n();
+  applyConfig();                 // re-applies phone/hours in the right language
+  initReminderServices(); renderReminders(); renderCal();
+  if(isAdmin){ renderClients(); renderPartsPage(); }
+  setAdminUI();
+}
+function toggleLang(){ setLang(lang==='es'?'en':'es'); }
+
+/* =====================================================================
    APPLY CONFIG TO DOM
    ===================================================================== */
 function applyConfig(){
@@ -873,7 +910,7 @@ function applyConfig(){
   document.getElementById('ctPhoneTxt').textContent = CONFIG.phone;
   document.getElementById('ctEmail').href = mail;
   document.getElementById('ctEmailTxt').textContent = CONFIG.email;
-  document.getElementById('ctHours').textContent = CONFIG.hours;
+  document.getElementById('ctHours').textContent = t(CONFIG.hours, CONFIG.hoursEs||CONFIG.hours);
   document.getElementById('footPhone').href = tel;
   document.getElementById('footPhone').textContent = CONFIG.phone;
   document.getElementById('footEmail').href = mail;
@@ -885,7 +922,7 @@ function applyConfig(){
 
   // gallery
   document.getElementById('galleryGrid').innerHTML = CONFIG.gallery.map(g=>
-    `<div class="gal-item">${g.img?`<img src="${g.img}" alt="${g.cap}"/>`:`<div class="ph"><div class="ico">${g.ico}</div>Photo coming soon</div>`}<div class="cap">${g.cap}</div></div>`).join('');
+    `<div class="gal-item">${g.img?`<img src="${g.img}" alt="${g.cap}"/>`:`<div class="ph"><div class="ico">${g.ico}</div>${t('Photo coming soon','Foto próximamente')}</div>`}<div class="cap">${g.cap}</div></div>`).join('');
 }
 
 /* =====================================================================
@@ -898,16 +935,18 @@ let viewY, viewM, selectedDate=null;
 function ymd(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
 function todayStr(){ const t=new Date(); return ymd(t.getFullYear(),t.getMonth(),t.getDate()); }
 
+function dowNames(){ const f=new Intl.DateTimeFormat(locale(),{weekday:'short'}); return [0,1,2,3,4,5,6].map(i=>f.format(new Date(2023,0,1+i))); }
+function monthLabel(y,m){ const s=new Intl.DateTimeFormat(locale(),{month:'long',year:'numeric'}).format(new Date(y,m,1)); return s.charAt(0).toUpperCase()+s.slice(1); }
 function initCal(){
   const t=new Date(); viewY=t.getFullYear(); viewM=t.getMonth();
-  document.getElementById('calDow').innerHTML = DOW.map(d=>`<div class="cal-dow">${d}</div>`).join('');
   renderCal();
 }
 function calMove(n){ viewM+=n; if(viewM<0){viewM=11;viewY--} if(viewM>11){viewM=0;viewY++} renderCal(); }
 function calToday(){ const t=new Date(); viewY=t.getFullYear(); viewM=t.getMonth(); renderCal(); }
 
 function renderCal(){
-  document.getElementById('calLabel').textContent = MON[viewM]+' '+viewY;
+  document.getElementById('calDow').innerHTML = dowNames().map(d=>`<div class="cal-dow">${d}</div>`).join('');
+  document.getElementById('calLabel').textContent = monthLabel(viewY,viewM);
   const first=new Date(viewY,viewM,1).getDay();
   const days=new Date(viewY,viewM+1,0).getDate();
   const tstr=todayStr();
@@ -925,7 +964,7 @@ function renderCal(){
     let mark='';
     if(!past && !blocked){
       const free=freeSlots(ds).length;
-      if(free>0){ cls.push('hasslots'); mark=`<span class="mk">${free} open</span>`; }
+      if(free>0){ cls.push('hasslots'); mark=`<span class="mk">${free} ${t('open','libres')}</span>`; }
       else { cls.push('blocked'); }
     }
     const clickable = !past && (isAdmin || !blocked);
@@ -953,9 +992,9 @@ function renderClientDay(ds){
   document.getElementById('hourCard').style.display='none';
   const card=document.getElementById('slotCard'); card.style.display='block';
   const slots=freeSlots(ds);
-  document.getElementById('slotTitle').textContent = 'Available times — '+prettyDate(ds);
+  document.getElementById('slotTitle').textContent = t('Available times — ','Horas disponibles — ')+prettyDate(ds);
   if(slots.length===0){
-    document.getElementById('slotList').innerHTML='<p class="note">No open times that day — please pick another.</p>';
+    document.getElementById('slotList').innerHTML=`<p class="note">${t('No open times that day — please pick another.','No hay horas disponibles ese día — elige otro.')}</p>`;
     document.getElementById('bookForm').style.display='none';
     return;
   }
@@ -975,14 +1014,15 @@ function pickSlot(h,el){
 }
 function submitBooking(){
   const name=val('bkName'), phone=val('bkPhone'), vehicle=val('bkVehicle'), need=val('bkNeed');
-  if(!name||!phone){ alert('Please add your name and phone.'); return; }
-  if(selectedHour==null){ alert('Please pick a time.'); return; }
+  if(!name||!phone){ alert(t('Please add your name and phone.','Agrega tu nombre y teléfono.')); return; }
+  if(selectedHour==null){ alert(t('Please pick a time.','Elige una hora.')); return; }
   const ds=selectedDate;
   store.bookings[ds]=store.bookings[ds]||[];
   store.bookings[ds].push({h:selectedHour,name,phone,vehicle,need,confirmed:false,at:Date.now()});
   save();
   // Notify Cayetano (opens his SMS/email prefilled if he taps; also a record is stored)
-  const msg=`New booking request:\n${prettyDate(ds)} at ${fmtHour(selectedHour)}\n${name} — ${phone}\nVehicle: ${vehicle||'—'}\nNeeds: ${need||'—'}`;
+  const msg=t(`New booking request:\n${prettyDate(ds)} at ${fmtHour(selectedHour)}\n${name} — ${phone}\nVehicle: ${vehicle||'—'}\nNeeds: ${need||'—'}`,
+             `Nueva solicitud de cita:\n${prettyDate(ds)} a las ${fmtHour(selectedHour)}\n${name} — ${phone}\nVehículo: ${vehicle||'—'}\nNecesita: ${need||'—'}`);
   const bookedHour=selectedHour;
   selectedHour=null;
   // refresh the day's slots (the just-booked time is now taken) and calendar
@@ -990,8 +1030,9 @@ function submitBooking(){
   // then show confirmation (renderClientDay resets/hides these)
   const ok=document.getElementById('bookOk');
   ok.style.display='block';
-  ok.innerHTML=`✅ Thanks ${escapeHtml(name)}! Your request for <b>${prettyDate(ds)} at ${fmtHour(bookedHour)}</b> is in. I'll text you at ${escapeHtml(phone)} to confirm.<br><br>
-    <a class="btn btn-sm btn-ghost" href="sms:${CONFIG.phoneRaw}?&body=${encodeURIComponent(msg)}">📱 Text Cayetano now</a>`;
+  ok.innerHTML=t(`✅ Thanks ${escapeHtml(name)}! Your request for <b>${prettyDate(ds)} at ${fmtHour(bookedHour)}</b> is in. I'll text you at ${escapeHtml(phone)} to confirm.`,
+                 `✅ ¡Gracias ${escapeHtml(name)}! Tu solicitud para el <b>${prettyDate(ds)} a las ${fmtHour(bookedHour)}</b> está registrada. Te escribo al ${escapeHtml(phone)} para confirmar.`)
+    +`<br><br><a class="btn btn-sm btn-ghost" href="sms:${CONFIG.phoneRaw}?&body=${encodeURIComponent(msg)}">${t('📱 Text Cayetano now','📱 Escríbele a Cayetano')}</a>`;
   ok.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
@@ -999,28 +1040,28 @@ function submitBooking(){
 function renderAdminDay(ds){
   document.getElementById('slotCard').style.display='none';
   const card=document.getElementById('hourCard'); card.style.display='block';
-  document.getElementById('hourTitle').textContent='Availability — '+prettyDate(ds);
+  document.getElementById('hourTitle').textContent=t('Availability — ','Disponibilidad — ')+prettyDate(ds);
   const isBlocked=store.blockedDays.includes(ds);
   const btn=document.getElementById('blockDayBtn');
-  btn.textContent = isBlocked ? '✅ Unblock this whole day' : '🚫 Block this whole day';
+  btn.textContent = isBlocked ? t('✅ Unblock this whole day','✅ Desbloquear todo el día') : t('🚫 Block this whole day','🚫 Bloquear todo el día');
   btn.className = 'btn btn-sm '+(isBlocked?'btn-primary':'btn-ghost');
   const blockedH=store.blockedHours[ds]||[];
   const booked=(store.bookings[ds]||[]).map(b=>b.h);
   document.getElementById('hourList').innerHTML = CONFIG.bookingHours.map(h=>{
-    if(booked.includes(h)) return `<button class="slot taken" title="Booked">${fmtHour(h)}</button>`;
+    if(booked.includes(h)) return `<button class="slot taken" title="${t('Booked','Reservado')}">${fmtHour(h)}</button>`;
     const off=blockedH.includes(h)||isBlocked;
     return `<button class="slot ${off?'':'selected'}" onclick="toggleHour('${ds}',${h})">${fmtHour(h)} ${off?'🚫':'✓'}</button>`;
   }).join('');
   // list of bookings that day
   const bks=store.bookings[ds]||[];
-  const addBtn=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h3 style="margin:0">Bookings</h3><button class="btn btn-sm btn-primary" onclick="openApptForm({date:'${ds}'})">＋ Add appointment</button></div>`;
+  const addBtn=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h3 style="margin:0">${t('Bookings','Citas')}</h3><button class="btn btn-sm btn-primary" onclick="openApptForm({date:'${ds}'})">${t('＋ Add appointment','＋ Agregar cita')}</button></div>`;
   document.getElementById('dayBookings').innerHTML = addBtn + (bks.length
     ? bks.sort((a,b)=>a.h-b.h).map(b=>{
         const conf=b.confirmed;
-        return `<div class="pay-opt" style="margin-bottom:8px"><div class="l"><div class="ico">📌</div><div><b>${fmtHour(b.h)} — ${escapeHtml(b.name)}</b> <span class="status-badge ${conf?'st-ok':'st-soon'}">${conf?'Confirmed':'Requested'}</span><br><span class="note">${escapeHtml(b.phone||'—')} · ${escapeHtml(b.vehicle||'—')} · ${escapeHtml(b.need||'—')}</span></div></div>
-          <div style="display:flex;gap:6px">${conf?'':`<button class="btn btn-sm btn-primary" onclick="confirmBooking('${ds}',${b.h})">Confirm</button>`}<button class="btn btn-sm btn-ghost" onclick="cancelBooking('${ds}',${b.h})">Remove</button></div></div>`;
+        return `<div class="pay-opt" style="margin-bottom:8px"><div class="l"><div class="ico">📌</div><div><b>${fmtHour(b.h)} — ${escapeHtml(b.name)}</b> <span class="status-badge ${conf?'st-ok':'st-soon'}">${conf?t('Confirmed','Confirmada'):t('Requested','Solicitada')}</span><br><span class="note">${escapeHtml(b.phone||'—')} · ${escapeHtml(b.vehicle||'—')} · ${escapeHtml(b.need||'—')}</span></div></div>
+          <div style="display:flex;gap:6px">${conf?'':`<button class="btn btn-sm btn-primary" onclick="confirmBooking('${ds}',${b.h})">${t('Confirm','Confirmar')}</button>`}<button class="btn btn-sm btn-ghost" onclick="cancelBooking('${ds}',${b.h})">${t('Remove','Quitar')}</button></div></div>`;
       }).join('')
-    : '<p class="note">No bookings that day yet.</p>');
+    : `<p class="note">${t('No bookings that day yet.','Aún no hay citas ese día.')}</p>`);
   card.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function toggleBlockDay(){
@@ -1055,9 +1096,9 @@ function checkPin(){
 function closePin(){ document.getElementById('pinModal').classList.remove('show'); }
 function setAdminUI(){
   document.getElementById('adminStatus').innerHTML = isAdmin
-    ? '🔧 <b>Mechanic mode</b> — click any day to manage availability & bookings.'
-    : '👤 <b>Client view</b> — tap an open day to request a time.';
-  document.getElementById('adminToggle').textContent = isAdmin ? '🔓 Log out' : '🔒 Mechanic login';
+    ? t('🔧 <b>Mechanic mode</b> — click any day to manage availability & bookings.','🔧 <b>Modo mecánico</b> — haz clic en un día para administrar disponibilidad y citas.')
+    : t('👤 <b>Client view</b> — tap an open day to request a time.','👤 <b>Vista de cliente</b> — toca un día disponible para pedir una hora.');
+  document.getElementById('adminToggle').textContent = isAdmin ? t('🔓 Log out','🔓 Salir') : t('🔒 Mechanic login','🔒 Acceso de mecánico');
   document.getElementById('adminHint').style.display = isAdmin ? 'flex' : 'none';
   document.getElementById('slotCard').style.display='none';
   document.getElementById('hourCard').style.display='none';
@@ -1083,11 +1124,11 @@ function openCrm(html){ document.getElementById('crmModalBox').innerHTML=html; d
 function closeCrm(){ document.getElementById('crmModal').classList.remove('show'); }
 
 function serviceStatus(due){
-  if(!due) return {label:'No follow-up', cls:'st-none', days:Infinity};
+  if(!due) return {label:t('No follow-up','Sin seguimiento'), cls:'st-none', days:Infinity};
   const days=Math.round((new Date(due+'T12:00:00')-new Date(todayStr()+'T12:00:00'))/86400000);
-  if(days<0) return {label:`Overdue ${Math.abs(days)}d`, cls:'st-over', days};
-  if(days<=21) return {label:`Due in ${days}d`, cls:'st-soon', days};
-  return {label:`Due ${prettyDate(due)}`, cls:'st-ok', days};
+  if(days<0) return {label:t(`Overdue ${Math.abs(days)}d`,`Vencido ${Math.abs(days)}d`), cls:'st-over', days};
+  if(days<=21) return {label:t(`Due in ${days}d`,`En ${days}d`), cls:'st-soon', days};
+  return {label:t('Due ','Para ')+prettyDate(due), cls:'st-ok', days};
 }
 // the active follow-up per service type = the most recent service of that type
 function activeFollowups(c){
@@ -1110,39 +1151,39 @@ function renderClients(){
   const over=fus.filter(f=>f.status.cls==='st-over').length;
   const soon=fus.filter(f=>f.status.cls==='st-soon').length;
   document.getElementById('crmStats').innerHTML=`
-    <div class="stat"><b>${store.clients.length}</b><span>Clients</span></div>
-    <div class="stat ${over?'bad':''}"><b>${over}</b><span>Overdue follow-ups</span></div>
-    <div class="stat ${soon?'warn':''}"><b>${soon}</b><span>Due soon (≤3 wks)</span></div>`;
+    <div class="stat"><b>${store.clients.length}</b><span>${t('Clients','Clientes')}</span></div>
+    <div class="stat ${over?'bad':''}"><b>${over}</b><span>${t('Overdue follow-ups','Seguimientos vencidos')}</span></div>
+    <div class="stat ${soon?'warn':''}"><b>${soon}</b><span>${t('Due soon (≤3 wks)','Pronto (≤3 sem)')}</span></div>`;
 
   // follow-ups (soonest first)
   const fl=document.getElementById('followupList');
   fl.innerHTML = fus.length ? fus.map(f=>{
     const c=f.client, s=f.service;
     return `<div class="fu-row"><div class="top">
-        <div><b>${escapeHtml(c.name)}</b> — ${escapeHtml(s.type)}<br><span class="note">${escapeHtml(vehSummary(c.vehicle))} · last done ${prettyDate(s.date)}</span></div>
+        <div><b>${escapeHtml(c.name)}</b> — ${escapeHtml(svcName(s.type))}<br><span class="note">${escapeHtml(vehSummary(c.vehicle))} · ${t('last done','último')} ${prettyDate(s.date)}</span></div>
         <span class="status-badge ${f.status.cls}">${f.status.label}</span>
       </div>
       <div class="acts">
-        <button class="btn btn-sm btn-primary" onclick="scheduleFollowup('${c.id}','${s.id}')">📅 Schedule</button>
-        <button class="btn btn-sm btn-ghost" onclick="textReminder('${c.id}','${s.id}')">📱 Text reminder</button>
-        <button class="btn btn-sm btn-ghost" onclick="openClientDetail('${c.id}')">Open client</button>
+        <button class="btn btn-sm btn-primary" onclick="scheduleFollowup('${c.id}','${s.id}')">${t('📅 Schedule','📅 Agendar')}</button>
+        <button class="btn btn-sm btn-ghost" onclick="textReminder('${c.id}','${s.id}')">${t('📱 Text reminder','📱 Enviar recordatorio')}</button>
+        <button class="btn btn-sm btn-ghost" onclick="openClientDetail('${c.id}')">${t('Open client','Abrir cliente')}</button>
       </div></div>`;
-  }).join('') : '<p class="note">No follow-ups yet. Log an oil change on a client and a reminder appears here automatically.</p>';
+  }).join('') : `<p class="note">${t('No follow-ups yet. Log an oil change on a client and a reminder appears here automatically.','Aún no hay seguimientos. Registra un cambio de aceite en un cliente y aparece aquí automáticamente.')}</p>`;
 
   // client directory
   const q=(document.getElementById('clientSearch').value||'').toLowerCase();
   const list=store.clients.filter(c=>matchClient(c,q)).sort((a,b)=>a.name.localeCompare(b.name));
   const cl=document.getElementById('clientList');
   cl.innerHTML = store.clients.length===0
-    ? '<p class="note">No clients yet. Tap “＋ New client” to add your first one.</p>'
+    ? `<p class="note">${t('No clients yet. Tap “＋ New client” to add your first one.','Aún no hay clientes. Toca “＋ Nuevo cliente” para agregar el primero.')}</p>`
     : (list.length? list.map(c=>{
         const top=activeFollowups(c).sort((a,b)=>a.status.days-b.status.days)[0];
-        const st=top?top.status:{label:'No follow-up',cls:'st-none'};
+        const st=top?top.status:{label:t('No follow-up','Sin seguimiento'),cls:'st-none'};
         return `<div class="client-card" onclick="openClientDetail('${c.id}')">
-            <div class="who"><b>${escapeHtml(c.name)}</b><span>${escapeHtml(c.phone||'no phone')} · ${escapeHtml(vehSummary(c.vehicle))}</span></div>
+            <div class="who"><b>${escapeHtml(c.name)}</b><span>${escapeHtml(c.phone||t('no phone','sin teléfono'))} · ${escapeHtml(vehSummary(c.vehicle))}</span></div>
             <span class="status-badge ${st.cls}">${st.label}</span>
           </div>`;
-      }).join('') : '<p class="note">No clients match that search.</p>');
+      }).join('') : `<p class="note">${t('No clients match that search.','Ningún cliente coincide con la búsqueda.')}</p>`);
 }
 
 /* ---- add / edit client ---- */
@@ -1150,34 +1191,34 @@ function openClientForm(id){
   const c = id ? store.clients.find(x=>x.id===id) : {vehicle:{}};
   const v=c.vehicle||{};
   openCrm(`
-    <div class="detail-head"><h3>${id?'Edit client':'New client'}</h3><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
-    <label class="f">Name *</label><input class="f" id="cf_name" value="${attr(c.name)}" placeholder="Full name"/>
+    <div class="detail-head"><h3>${id?t('Edit client','Editar cliente'):t('New client','Nuevo cliente')}</h3><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
+    <label class="f">${t('Name *','Nombre *')}</label><input class="f" id="cf_name" value="${attr(c.name)}" placeholder="${t('Full name','Nombre completo')}"/>
     <div class="row2">
-      <div><label class="f">Phone</label><input class="f" id="cf_phone" value="${attr(c.phone)}" placeholder="(408) 555-0123"/></div>
-      <div><label class="f">Email</label><input class="f" id="cf_email" value="${attr(c.email)}" placeholder="name@email.com"/></div>
+      <div><label class="f">${t('Phone','Teléfono')}</label><input class="f" id="cf_phone" value="${attr(c.phone)}" placeholder="(408) 555-0123"/></div>
+      <div><label class="f">${t('Email','Correo')}</label><input class="f" id="cf_email" value="${attr(c.email)}" placeholder="name@email.com"/></div>
     </div>
-    <label class="f">Address</label><input class="f" id="cf_address" value="${attr(c.address)}" placeholder="Street, City"/>
-    <h3 style="margin:20px 0 4px;font-size:16px">🚗 Vehicle</h3>
+    <label class="f">${t('Address','Dirección')}</label><input class="f" id="cf_address" value="${attr(c.address)}" placeholder="${t('Street, City','Calle, Ciudad')}"/>
+    <h3 style="margin:20px 0 4px;font-size:16px">🚗 ${t('Vehicle','Vehículo')}</h3>
     <div class="row2">
-      <div><label class="f">Year</label><input class="f" id="cf_year" value="${attr(v.year)}" placeholder="2016"/></div>
-      <div><label class="f">Make</label><input class="f" id="cf_make" value="${attr(v.make)}" placeholder="Honda"/></div>
-    </div>
-    <div class="row2">
-      <div><label class="f">Model</label><input class="f" id="cf_model" value="${attr(v.model)}" placeholder="Civic"/></div>
-      <div><label class="f">Color</label><input class="f" id="cf_color" value="${attr(v.color)}" placeholder="Silver"/></div>
+      <div><label class="f">${t('Year','Año')}</label><input class="f" id="cf_year" value="${attr(v.year)}" placeholder="2016"/></div>
+      <div><label class="f">${t('Make','Marca')}</label><input class="f" id="cf_make" value="${attr(v.make)}" placeholder="Honda"/></div>
     </div>
     <div class="row2">
-      <div><label class="f">License plate</label><input class="f" id="cf_plate" value="${attr(v.plate)}" placeholder="8ABC123"/></div>
-      <div><label class="f">Mileage</label><input class="f" id="cf_mileage" value="${attr(v.mileage)}" placeholder="82,000"/></div>
+      <div><label class="f">${t('Model','Modelo')}</label><input class="f" id="cf_model" value="${attr(v.model)}" placeholder="Civic"/></div>
+      <div><label class="f">${t('Color','Color')}</label><input class="f" id="cf_color" value="${attr(v.color)}" placeholder="${t('Silver','Plata')}"/></div>
     </div>
-    <label class="f">VIN (optional)</label><input class="f" id="cf_vin" value="${attr(v.vin)}" placeholder="1HGBH41JXMN109186"/>
-    <label class="f">Notes</label><textarea class="f" id="cf_notes" placeholder="Gate code, preferred times, anything to remember…">${attr(c.notes)}</textarea>
-    <div class="modal-x"><button class="btn btn-primary" onclick="saveClient(${id?`'${id}'`:'null'})">${id?'Save changes':'Add client'}</button><button class="btn btn-ghost" onclick="closeCrm()">Cancel</button></div>
+    <div class="row2">
+      <div><label class="f">${t('License plate','Placa')}</label><input class="f" id="cf_plate" value="${attr(v.plate)}" placeholder="8ABC123"/></div>
+      <div><label class="f">${t('Mileage','Millaje')}</label><input class="f" id="cf_mileage" value="${attr(v.mileage)}" placeholder="82,000"/></div>
+    </div>
+    <label class="f">${t('VIN (optional)','VIN (opcional)')}</label><input class="f" id="cf_vin" value="${attr(v.vin)}" placeholder="1HGBH41JXMN109186"/>
+    <label class="f">${t('Notes','Notas')}</label><textarea class="f" id="cf_notes" placeholder="${t('Gate code, preferred times, anything to remember…','Código de portón, horas preferidas, algo que recordar…')}">${attr(c.notes)}</textarea>
+    <div class="modal-x"><button class="btn btn-primary" onclick="saveClient(${id?`'${id}'`:'null'})">${id?t('Save changes','Guardar cambios'):t('Add client','Agregar cliente')}</button><button class="btn btn-ghost" onclick="closeCrm()">${t('Cancel','Cancelar')}</button></div>
   `);
   setTimeout(()=>document.getElementById('cf_name').focus(),60);
 }
 function saveClient(id){
-  const name=mval('cf_name'); if(!name){ alert('Please enter the client\'s name.'); return; }
+  const name=mval('cf_name'); if(!name){ alert(t("Please enter the client's name.",'Ingresa el nombre del cliente.')); return; }
   const data={ name, phone:mval('cf_phone'), email:mval('cf_email'), address:mval('cf_address'), notes:mval('cf_notes'),
     vehicle:{ year:mval('cf_year'), make:mval('cf_make'), model:mval('cf_model'), color:mval('cf_color'), plate:mval('cf_plate'), mileage:mval('cf_mileage'), vin:mval('cf_vin') } };
   if(id){ Object.assign(store.clients.find(x=>x.id===id), data); }
@@ -1186,7 +1227,7 @@ function saveClient(id){
 }
 function deleteClient(id){
   const c=store.clients.find(x=>x.id===id);
-  if(!confirm(`Delete ${c.name} and their service history? This can't be undone.`)) return;
+  if(!confirm(t(`Delete ${c.name} and their service history? This can't be undone.`,`¿Eliminar a ${c.name} y su historial de servicio? No se puede deshacer.`))) return;
   store.clients=store.clients.filter(x=>x.id!==id); save(); closeCrm(); renderClients();
 }
 
@@ -1197,54 +1238,54 @@ function openClientDetail(id){
   const fus=activeFollowups(c).sort((a,b)=>a.status.days-b.status.days);
   openCrm(`
     <div class="detail-head">
-      <div><h3 style="margin:0">${escapeHtml(c.name)}</h3><span class="note">${escapeHtml(c.phone||'no phone')}${c.email?' · '+escapeHtml(c.email):''}</span></div>
+      <div><h3 style="margin:0">${escapeHtml(c.name)}</h3><span class="note">${escapeHtml(c.phone||t('no phone','sin teléfono'))}${c.email?' · '+escapeHtml(c.email):''}</span></div>
       <button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button>
     </div>
     <div class="chip-row">
-      ${c.phone?`<a class="btn btn-sm btn-ghost" href="tel:${encodeURIComponent(c.phone)}">📞 Call</a>`:''}
-      ${c.phone?`<a class="btn btn-sm btn-ghost" href="sms:${encodeURIComponent(c.phone)}">💬 Text</a>`:''}
-      <button class="btn btn-sm btn-ghost" onclick="exportVcard('${c.id}')">📇 Save to Contacts</button>
-      <button class="btn btn-sm btn-ghost" onclick="openClientForm('${c.id}')">✏️ Edit</button>
+      ${c.phone?`<a class="btn btn-sm btn-ghost" href="tel:${encodeURIComponent(c.phone)}">${t('📞 Call','📞 Llamar')}</a>`:''}
+      ${c.phone?`<a class="btn btn-sm btn-ghost" href="sms:${encodeURIComponent(c.phone)}">${t('💬 Text','💬 Texto')}</a>`:''}
+      <button class="btn btn-sm btn-ghost" onclick="exportVcard('${c.id}')">${t('📇 Save to Contacts','📇 Guardar en Contactos')}</button>
+      <button class="btn btn-sm btn-ghost" onclick="openClientForm('${c.id}')">${t('✏️ Edit','✏️ Editar')}</button>
     </div>
     <dl class="kv">
-      <dt>Vehicle</dt><dd>${escapeHtml(vehSummary(v))}${v.color?' · '+escapeHtml(v.color):''}</dd>
-      ${v.plate?`<dt>Plate</dt><dd>${escapeHtml(v.plate)}</dd>`:''}
-      ${v.mileage?`<dt>Mileage</dt><dd>${escapeHtml(v.mileage)}</dd>`:''}
+      <dt>${t('Vehicle','Vehículo')}</dt><dd>${escapeHtml(vehSummary(v))}${v.color?' · '+escapeHtml(v.color):''}</dd>
+      ${v.plate?`<dt>${t('Plate','Placa')}</dt><dd>${escapeHtml(v.plate)}</dd>`:''}
+      ${v.mileage?`<dt>${t('Mileage','Millaje')}</dt><dd>${escapeHtml(v.mileage)}</dd>`:''}
       ${v.vin?`<dt>VIN</dt><dd>${escapeHtml(v.vin)}</dd>`:''}
-      ${c.address?`<dt>Address</dt><dd>${escapeHtml(c.address)}</dd>`:''}
-      ${c.notes?`<dt>Notes</dt><dd>${escapeHtml(c.notes)}</dd>`:''}
+      ${c.address?`<dt>${t('Address','Dirección')}</dt><dd>${escapeHtml(c.address)}</dd>`:''}
+      ${c.notes?`<dt>${t('Notes','Notas')}</dt><dd>${escapeHtml(c.notes)}</dd>`:''}
     </dl>
-    ${fus.length?`<div class="chip-row" style="margin-top:14px">${fus.map(f=>`<span class="status-badge ${f.status.cls}">${escapeHtml(f.service.type)}: ${f.status.label}</span>`).join('')}</div>`:''}
+    ${fus.length?`<div class="chip-row" style="margin-top:14px">${fus.map(f=>`<span class="status-badge ${f.status.cls}">${escapeHtml(svcName(f.service.type))}: ${f.status.label}</span>`).join('')}</div>`:''}
     <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 8px">
-      <h3 style="font-size:16px;margin:0">🧰 Service history</h3>
-      <button class="btn btn-sm btn-primary" onclick="openServiceForm('${c.id}')">＋ Log service</button>
+      <h3 style="font-size:16px;margin:0">${t('🧰 Service history','🧰 Historial de servicio')}</h3>
+      <button class="btn btn-sm btn-primary" onclick="openServiceForm('${c.id}')">${t('＋ Log service','＋ Registrar servicio')}</button>
     </div>
     ${svcs.length? svcs.map(s=>`<div class="svc-row"><div class="top">
-        <div><b>${escapeHtml(s.type)}</b> · ${prettyDate(s.date)}<br><span class="note">${[s.mileage?('at '+escapeHtml(s.mileage)+' mi'):'', s.cost?('$'+escapeHtml(s.cost)):'', s.nextDue?('next '+prettyDate(s.nextDue)):''].filter(Boolean).join(' · ')||'—'}${s.notes?'<br>'+escapeHtml(s.notes):''}</span></div>
-        <button class="btn btn-sm btn-ghost" onclick="deleteService('${c.id}','${s.id}')">Remove</button>
-      </div></div>`).join('') : '<p class="note">No services logged yet.</p>'}
-    <div class="modal-x"><button class="btn btn-ghost" onclick="deleteClient('${c.id}')" style="color:var(--bad)">Delete client</button></div>
+        <div><b>${escapeHtml(svcName(s.type))}</b> · ${prettyDate(s.date)}<br><span class="note">${[s.mileage?(t('at ','a ')+escapeHtml(s.mileage)+' mi'):'', s.cost?('$'+escapeHtml(s.cost)):'', s.nextDue?(t('next ','próx. ')+prettyDate(s.nextDue)):''].filter(Boolean).join(' · ')||'—'}${s.notes?'<br>'+escapeHtml(s.notes):''}</span></div>
+        <button class="btn btn-sm btn-ghost" onclick="deleteService('${c.id}','${s.id}')">${t('Remove','Quitar')}</button>
+      </div></div>`).join('') : `<p class="note">${t('No services logged yet.','Aún no hay servicios registrados.')}</p>`}
+    <div class="modal-x"><button class="btn btn-ghost" onclick="deleteClient('${c.id}')" style="color:var(--bad)">${t('Delete client','Eliminar cliente')}</button></div>
   `);
 }
 
 /* ---- log a service (auto-schedules the follow-up) ---- */
 function openServiceForm(clientId){
-  const opts=CONFIG.serviceTypes.map((t,i)=>`<option value="${i}">${escapeHtml(t.name)}</option>`).join('');
+  const opts=CONFIG.serviceTypes.map((s,i)=>`<option value="${i}">${escapeHtml(svcName(s.name))}</option>`).join('');
   openCrm(`
-    <div class="detail-head"><h3>Log a service</h3><button class="btn btn-sm btn-ghost" onclick="openClientDetail('${clientId}')">✕</button></div>
-    <label class="f">Service</label>
+    <div class="detail-head"><h3>${t('Log a service','Registrar un servicio')}</h3><button class="btn btn-sm btn-ghost" onclick="openClientDetail('${clientId}')">✕</button></div>
+    <label class="f">${t('Service','Servicio')}</label>
     <select class="f" id="sf_type" onchange="syncFollowup()">${opts}</select>
     <div class="row2">
-      <div><label class="f">Date performed</label><input class="f" id="sf_date" type="date" value="${todayStr()}" onchange="syncFollowup()"/></div>
-      <div><label class="f">Mileage</label><input class="f" id="sf_mileage" placeholder="82,000"/></div>
+      <div><label class="f">${t('Date performed','Fecha realizada')}</label><input class="f" id="sf_date" type="date" value="${todayStr()}" onchange="syncFollowup()"/></div>
+      <div><label class="f">${t('Mileage','Millaje')}</label><input class="f" id="sf_mileage" placeholder="82,000"/></div>
     </div>
     <div class="row2">
-      <div><label class="f">Cost ($)</label><input class="f" id="sf_cost" type="number" placeholder="0"/></div>
-      <div><label class="f">Remind again in (months)</label><input class="f" id="sf_months" type="number" min="0" onchange="syncFollowup()"/></div>
+      <div><label class="f">${t('Cost ($)','Costo ($)')}</label><input class="f" id="sf_cost" type="number" placeholder="0"/></div>
+      <div><label class="f">${t('Remind again in (months)','Recordar de nuevo en (meses)')}</label><input class="f" id="sf_months" type="number" min="0" onchange="syncFollowup()"/></div>
     </div>
-    <label class="f">Notes</label><textarea class="f" id="sf_notes" placeholder="Oil type, parts used, what you noticed…"></textarea>
+    <label class="f">${t('Notes','Notas')}</label><textarea class="f" id="sf_notes" placeholder="${t('Oil type, parts used, what you noticed…','Tipo de aceite, piezas usadas, lo que notaste…')}"></textarea>
     <div class="ok-msg" id="sf_hint" style="display:block"></div>
-    <div class="modal-x"><button class="btn btn-primary" onclick="saveService('${clientId}')">Save service</button><button class="btn btn-ghost" onclick="openClientDetail('${clientId}')">Cancel</button></div>
+    <div class="modal-x"><button class="btn btn-primary" onclick="saveService('${clientId}')">${t('Save service','Guardar servicio')}</button><button class="btn btn-ghost" onclick="openClientDetail('${clientId}')">${t('Cancel','Cancelar')}</button></div>
   `);
   // default the months to the selected type's interval
   document.getElementById('sf_months').value=CONFIG.serviceTypes[0].followupMonths;
@@ -1258,8 +1299,10 @@ function syncFollowup(){
   const months=parseInt(monthsEl.value,10)||0;
   const date=mval('sf_date')||todayStr();
   const hint=document.getElementById('sf_hint');
-  if(months>0){ hint.style.display='block'; hint.textContent=`🔔 Follow-up reminder will be set for ${prettyDate(addMonths(date,months))} (${months} month${months>1?'s':''} out).`; }
-  else { hint.style.display='block'; hint.style.background='var(--bg2)'; hint.style.color='var(--muted)'; hint.style.borderColor='var(--line)'; hint.textContent='No automatic follow-up for this service.'; }
+  if(months>0){ hint.style.display='block'; hint.style.background=''; hint.style.color=''; hint.style.borderColor='';
+    hint.textContent=t(`🔔 Follow-up reminder will be set for ${prettyDate(addMonths(date,months))} (${months} month${months>1?'s':''} out).`,
+                       `🔔 Se programará un recordatorio para el ${prettyDate(addMonths(date,months))} (en ${months} ${months>1?'meses':'mes'}).`); }
+  else { hint.style.display='block'; hint.style.background='var(--bg2)'; hint.style.color='var(--muted)'; hint.style.borderColor='var(--line)'; hint.textContent=t('No automatic follow-up for this service.','Sin recordatorio automático para este servicio.'); }
 }
 function saveService(clientId){
   const c=store.clients.find(x=>x.id===clientId); if(!c) return;
@@ -1287,7 +1330,7 @@ function exportVcard(id){
     'BEGIN:VCARD','VERSION:3.0',
     `N:${esc(last)};${esc(first)};;;`,
     `FN:${esc(c.name)}`,
-    'ORG:Client — Cayetano\'s Mobile Mechanic',
+    'ORG:'+t('Client — ','Cliente — ')+CONFIG.businessName,
     c.phone?`TEL;TYPE=CELL:${esc(c.phone)}`:'',
     c.email?`EMAIL;TYPE=INTERNET:${esc(c.email)}`:'',
     c.address?`ADR;TYPE=HOME:;;${esc(c.address)};;;;`:'',
@@ -1305,9 +1348,10 @@ function textReminder(clientId,sid){
   const c=store.clients.find(x=>x.id===clientId); if(!c) return;
   const s=(c.services||[]).find(x=>x.id===sid); const st=s?serviceStatus(s.nextDue):{label:''};
   const url=location.origin+location.pathname+'#book';
-  const msg=`Hi ${c.name}, it's ${CONFIG.name} from ${CONFIG.businessName}. Your ${vehSummary(c.vehicle)} is due for a ${s?s.type.toLowerCase():'service'} (${st.label.toLowerCase()}). Reply or book a time here: ${url} — I'll confirm your appointment. Thanks!`;
+  const msg=t(`Hi ${c.name}, it's ${CONFIG.name} from ${CONFIG.businessName}. Your ${vehSummary(c.vehicle)} is due for a ${s?svcName(s.type).toLowerCase():'service'} (${st.label.toLowerCase()}). Reply or book a time here: ${url} — I'll confirm your appointment. Thanks!`,
+              `Hola ${c.name}, soy ${CONFIG.name} de ${CONFIG.businessName}. Tu ${vehSummary(c.vehicle)} necesita ${s?svcName(s.type).toLowerCase():'un servicio'} (${st.label.toLowerCase()}). Responde o reserva aquí: ${url} — confirmo tu cita. ¡Gracias!`);
   if(c.phone){ window.location.href=`sms:${encodeURIComponent(c.phone)}?&body=${encodeURIComponent(msg)}`; }
-  else { alert('No phone number on file for this client. Add one to text a reminder.'); }
+  else { alert(t('No phone number on file for this client. Add one to text a reminder.','No hay teléfono registrado para este cliente. Agrega uno para enviar un recordatorio.')); }
 }
 
 /* ---- schedule a follow-up onto Cayetano's booking calendar ---- */
@@ -1315,7 +1359,7 @@ function scheduleFollowup(clientId,sid){
   const c=store.clients.find(x=>x.id===clientId); if(!c) return;
   const s=(c.services||[]).find(x=>x.id===sid);
   const suggested = s&&s.nextDue ? s.nextDue : todayStr();
-  openApptForm({ date: suggested<todayStr()?todayStr():suggested, name:c.name, phone:c.phone, vehicle:vehSummary(c.vehicle), need:(s?s.type:'Service')+' (follow-up)' });
+  openApptForm({ date: suggested<todayStr()?todayStr():suggested, name:c.name, phone:c.phone, vehicle:vehSummary(c.vehicle), need:(s?svcName(s.type):t('Service','Servicio'))+t(' (follow-up)',' (seguimiento)') });
 }
 
 /* ---- add / confirm an appointment on the calendar ---- */
@@ -1323,27 +1367,27 @@ function openApptForm(pf){
   pf=pf||{};
   const timeOpts=CONFIG.bookingHours.map(h=>`<option value="${h}">${fmtHour(h)}</option>`).join('');
   openCrm(`
-    <div class="detail-head"><h3>Add appointment</h3><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
-    <p class="note" style="margin-bottom:8px">This drops a confirmed appointment onto your calendar.</p>
+    <div class="detail-head"><h3>${t('Add appointment','Agregar cita')}</h3><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
+    <p class="note" style="margin-bottom:8px">${t('This drops a confirmed appointment onto your calendar.','Esto agrega una cita confirmada a tu calendario.')}</p>
     <div class="row2">
-      <div><label class="f">Date</label><input class="f" id="af_date" type="date" value="${attr(pf.date||todayStr())}"/></div>
-      <div><label class="f">Time</label><select class="f" id="af_time">${timeOpts}</select></div>
+      <div><label class="f">${t('Date','Fecha')}</label><input class="f" id="af_date" type="date" value="${attr(pf.date||todayStr())}"/></div>
+      <div><label class="f">${t('Time','Hora')}</label><select class="f" id="af_time">${timeOpts}</select></div>
     </div>
     <div class="row2">
-      <div><label class="f">Client name</label><input class="f" id="af_name" value="${attr(pf.name)}"/></div>
-      <div><label class="f">Phone</label><input class="f" id="af_phone" value="${attr(pf.phone)}"/></div>
+      <div><label class="f">${t('Client name','Nombre del cliente')}</label><input class="f" id="af_name" value="${attr(pf.name)}"/></div>
+      <div><label class="f">${t('Phone','Teléfono')}</label><input class="f" id="af_phone" value="${attr(pf.phone)}"/></div>
     </div>
-    <label class="f">Vehicle</label><input class="f" id="af_vehicle" value="${attr(pf.vehicle)}"/>
-    <label class="f">Service needed</label><input class="f" id="af_need" value="${attr(pf.need)}"/>
-    <div class="modal-x"><button class="btn btn-primary" onclick="saveAppt()">Add to calendar</button><button class="btn btn-ghost" onclick="closeCrm()">Cancel</button></div>
+    <label class="f">${t('Vehicle','Vehículo')}</label><input class="f" id="af_vehicle" value="${attr(pf.vehicle)}"/>
+    <label class="f">${t('Service needed','Servicio requerido')}</label><input class="f" id="af_need" value="${attr(pf.need)}"/>
+    <div class="modal-x"><button class="btn btn-primary" onclick="saveAppt()">${t('Add to calendar','Agregar al calendario')}</button><button class="btn btn-ghost" onclick="closeCrm()">${t('Cancel','Cancelar')}</button></div>
   `);
 }
 function saveAppt(){
   const ds=mval('af_date'); const h=parseInt(document.getElementById('af_time').value,10);
-  if(!ds){ alert('Pick a date.'); return; }
-  const name=mval('af_name')||'Appointment';
+  if(!ds){ alert(t('Pick a date.','Elige una fecha.')); return; }
+  const name=mval('af_name')||t('Appointment','Cita');
   store.bookings[ds]=store.bookings[ds]||[];
-  if(store.bookings[ds].some(b=>b.h===h)){ if(!confirm('That time already has a booking. Add anyway?')) return; }
+  if(store.bookings[ds].some(b=>b.h===h)){ if(!confirm(t('That time already has a booking. Add anyway?','Esa hora ya tiene una cita. ¿Agregar de todos modos?'))) return; }
   store.bookings[ds].push({ h, name, phone:mval('af_phone'), vehicle:mval('af_vehicle'), need:mval('af_need'), confirmed:true, at:Date.now() });
   save(); closeCrm(); renderCal();
   go('book'); if(isAdmin){ selectedDate=ds; renderAdminDay(ds); }
@@ -1374,7 +1418,7 @@ function initPartsUI(){
 }
 function priceCheck(store){
   const q=document.getElementById('priceQuery').value.trim();
-  if(!q){ alert('Type a part name or number first.'); return; }
+  if(!q){ alert(t('Type a part name or number first.','Escribe el nombre o número de la pieza primero.')); return; }
   window.open(supplierUrl(store,q),'_blank','noopener');
 }
 
@@ -1397,60 +1441,59 @@ function renderParts(){
   const cat=document.getElementById('partCat').value;
   const list=store.parts.filter(p=>(!cat||p.category===cat) && (!q || [p.name,p.brand,p.partNo,p.category,p.supplier].join(' ').toLowerCase().includes(q)));
   const el=document.getElementById('partList');
-  if(store.parts.length===0){ el.innerHTML='<p class="note">Catalog is empty. Tap “＋ Add part”.</p>'; return; }
+  if(store.parts.length===0){ el.innerHTML=`<p class="note">${t('Catalog is empty. Tap “＋ Add part”.','El catálogo está vacío. Toca “＋ Agregar pieza”.')}</p>`; return; }
   el.innerHTML = list.length ? list.map(p=>{
-    const q2=encodeURIComponent(p.partNo||p.name);
     const stores=CONFIG.partSuppliers.map(s=>`<a class="store-btn" href="${supplierUrl(s.name,p.partNo||p.name)}" target="_blank" rel="noopener">${escapeHtml(s.name)}</a>`).join('');
     const margin=(+p.price)-(+p.cost);
     return `<div class="part-row">
       <div class="head">
         <div class="nm"><b>${escapeHtml(p.name)}</b><span>${[p.brand,p.partNo,p.category].filter(Boolean).map(escapeHtml).join(' · ')}</span></div>
-        <div class="price-tag"><b>${money(p.price)}</b><span>cost ${money(p.cost)} · margin ${money(margin)}</span></div>
+        <div class="price-tag"><b>${money(p.price)}</b><span>${t('cost','costo')} ${money(p.cost)} · ${t('margin','margen')} ${money(margin)}</span></div>
       </div>
-      <div class="store-links"><span class="lbl">Live price:</span>${stores}
+      <div class="store-links"><span class="lbl">${t('Live price:','Precio en vivo:')}</span>${stores}
         <span style="flex:1"></span>
-        <button class="store-btn" onclick="addPartToEstimate('${p.id}')">＋ Estimate</button>
-        <button class="store-btn" onclick="openPartForm('${p.id}')">Edit</button>
+        <button class="store-btn" onclick="addPartToEstimate('${p.id}')">${t('＋ Estimate','＋ Cotización')}</button>
+        <button class="store-btn" onclick="openPartForm('${p.id}')">${t('Edit','Editar')}</button>
       </div>
     </div>`;
-  }).join('') : '<p class="note">No parts match that search.</p>';
+  }).join('') : `<p class="note">${t('No parts match that search.','Ninguna pieza coincide con la búsqueda.')}</p>`;
 }
 function openPartForm(id){
   const p = id ? store.parts.find(x=>x.id===id) : {};
   const catOpts=CONFIG.partCategories.map(c=>`<option value="${escapeHtml(c)}" ${p.category===c?'selected':''}>${escapeHtml(c)}</option>`).join('');
   const supOpts=CONFIG.partSuppliers.map(s=>`<option value="${escapeHtml(s.name)}" ${p.supplier===s.name?'selected':''}>${escapeHtml(s.name)}</option>`).join('');
   openCrm(`
-    <div class="detail-head"><h3>${id?'Edit part':'Add part'}</h3><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
-    <label class="f">Part name *</label><input class="f" id="pf_name" value="${attr(p.name)}" placeholder="Front brake pads"/>
+    <div class="detail-head"><h3>${id?t('Edit part','Editar pieza'):t('Add part','Agregar pieza')}</h3><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
+    <label class="f">${t('Part name *','Nombre de la pieza *')}</label><input class="f" id="pf_name" value="${attr(p.name)}" placeholder="Front brake pads"/>
     <div class="row2">
-      <div><label class="f">Brand</label><input class="f" id="pf_brand" value="${attr(p.brand)}" placeholder="Duralast Gold"/></div>
-      <div><label class="f">Part #</label><input class="f" id="pf_partNo" value="${attr(p.partNo)}" placeholder="DG-1234"/></div>
+      <div><label class="f">${t('Brand','Marca')}</label><input class="f" id="pf_brand" value="${attr(p.brand)}" placeholder="Duralast Gold"/></div>
+      <div><label class="f">${t('Part #','# de pieza')}</label><input class="f" id="pf_partNo" value="${attr(p.partNo)}" placeholder="DG-1234"/></div>
     </div>
     <div class="row2">
-      <div><label class="f">Category</label><select class="f" id="pf_category">${catOpts}</select></div>
-      <div><label class="f">Preferred store</label><select class="f" id="pf_supplier"><option value="">—</option>${supOpts}</select></div>
+      <div><label class="f">${t('Category','Categoría')}</label><select class="f" id="pf_category">${catOpts}</select></div>
+      <div><label class="f">${t('Preferred store','Tienda preferida')}</label><select class="f" id="pf_supplier"><option value="">—</option>${supOpts}</select></div>
     </div>
     <div class="row2">
-      <div><label class="f">Your cost ($)</label><input class="f" id="pf_cost" type="number" step="0.01" value="${attr(p.cost)}" placeholder="0"/></div>
-      <div><label class="f">Customer price ($)</label><input class="f" id="pf_price" type="number" step="0.01" value="${attr(p.price)}" placeholder="0"/></div>
+      <div><label class="f">${t('Your cost ($)','Tu costo ($)')}</label><input class="f" id="pf_cost" type="number" step="0.01" value="${attr(p.cost)}" placeholder="0"/></div>
+      <div><label class="f">${t('Customer price ($)','Precio al cliente ($)')}</label><input class="f" id="pf_price" type="number" step="0.01" value="${attr(p.price)}" placeholder="0"/></div>
     </div>
     <div class="modal-x">
-      <button class="btn btn-primary" onclick="savePart(${id?`'${id}'`:'null'})">${id?'Save':'Add part'}</button>
-      ${id?`<button class="btn btn-ghost" onclick="deletePart('${id}')" style="color:var(--bad)">Delete</button>`:''}
-      <button class="btn btn-ghost" onclick="closeCrm()">Cancel</button>
+      <button class="btn btn-primary" onclick="savePart(${id?`'${id}'`:'null'})">${id?t('Save','Guardar'):t('Add part','Agregar pieza')}</button>
+      ${id?`<button class="btn btn-ghost" onclick="deletePart('${id}')" style="color:var(--bad)">${t('Delete','Eliminar')}</button>`:''}
+      <button class="btn btn-ghost" onclick="closeCrm()">${t('Cancel','Cancelar')}</button>
     </div>
   `);
   setTimeout(()=>document.getElementById('pf_name').focus(),60);
 }
 function savePart(id){
-  const name=mval('pf_name'); if(!name){ alert('Enter a part name.'); return; }
+  const name=mval('pf_name'); if(!name){ alert(t('Enter a part name.','Ingresa el nombre de la pieza.')); return; }
   const data={ name, brand:mval('pf_brand'), partNo:mval('pf_partNo'), category:document.getElementById('pf_category').value, supplier:document.getElementById('pf_supplier').value, cost:+mval('pf_cost')||0, price:+mval('pf_price')||0 };
   if(id){ Object.assign(store.parts.find(x=>x.id===id), data); }
   else { store.parts.push({ id:uid('p'), ...data }); }
   save(); closeCrm(); renderPartsPage();
 }
 function deletePart(id){
-  if(!confirm('Delete this part from the catalog?')) return;
+  if(!confirm(t('Delete this part from the catalog?','¿Eliminar esta pieza del catálogo?'))) return;
   store.parts=store.parts.filter(x=>x.id!==id); save(); closeCrm(); renderPartsPage();
 }
 
@@ -1462,14 +1505,14 @@ function estClientPick(){
 }
 function addLabor(){
   const desc=mval('estLaborDesc'); const hours=+mval('estLaborHrs')||0;
-  if(!hours){ alert('Enter labor hours.'); return; }
-  estDraft.labor.push({desc:desc||'Labor', hours});
+  if(!hours){ alert(t('Enter labor hours.','Ingresa las horas de mano de obra.')); return; }
+  estDraft.labor.push({desc:desc||t('Labor','Mano de obra'), hours});
   document.getElementById('estLaborDesc').value=''; document.getElementById('estLaborHrs').value='';
   renderEstimate();
 }
 function addEstPart(){
   const id=document.getElementById('estPartSel').value; const qty=+document.getElementById('estPartQty').value||1;
-  const p=store.parts.find(x=>x.id===id); if(!p){ alert('Add a part to the catalog first.'); return; }
+  const p=store.parts.find(x=>x.id===id); if(!p){ alert(t('Add a part to the catalog first.','Primero agrega una pieza al catálogo.')); return; }
   estDraft.items.push({name:p.name, qty, price:+p.price||0});
   document.getElementById('estPartQty').value=1;
   renderEstimate();
@@ -1492,31 +1535,31 @@ function renderEstimate(){
   const lines=document.getElementById('estLines');
   const L=estDraft.labor.map((l,i)=>`<div class="est-line"><span>🔧 ${escapeHtml(l.desc)} — ${l.hours} hr × ${money(CONFIG.laborRate)}</span><span><span class="tnum">${money(l.hours*CONFIG.laborRate)}</span> <button class="x" onclick="removeLabor(${i})">✕</button></span></div>`).join('');
   const P=estDraft.items.map((it,i)=>`<div class="est-line"><span>📦 ${escapeHtml(it.name)} × ${it.qty}</span><span><span class="tnum">${money(it.qty*it.price)}</span> <button class="x" onclick="removeItem(${i})">✕</button></span></div>`).join('');
-  lines.innerHTML = (L+P) || '<p class="note">Add labor and parts to build the estimate.</p>';
-  const t=estTotals();
+  lines.innerHTML = (L+P) || `<p class="note">${t('Add labor and parts to build the estimate.','Agrega mano de obra y piezas para armar la cotización.')}</p>`;
+  const tot=estTotals();
   document.getElementById('estTotals').innerHTML = (estDraft.labor.length||estDraft.items.length) ? `<div class="totals">
-    <div class="tr"><span>Labor</span><span class="tnum">${money(t.labor)}</span></div>
-    <div class="tr"><span>Parts</span><span class="tnum">${money(t.parts)}</span></div>
-    <div class="tr"><span>Tax on parts (${CONFIG.taxRate}%)</span><span class="tnum">${money(t.tax)}</span></div>
-    <div class="tr grand"><span>Estimate total</span><span class="tnum">${money(t.grand)}</span></div>
+    <div class="tr"><span>${t('Labor','Mano de obra')}</span><span class="tnum">${money(tot.labor)}</span></div>
+    <div class="tr"><span>${t('Parts','Piezas')}</span><span class="tnum">${money(tot.parts)}</span></div>
+    <div class="tr"><span>${t('Tax on parts','Impuesto sobre piezas')} (${CONFIG.taxRate}%)</span><span class="tnum">${money(tot.tax)}</span></div>
+    <div class="tr grand"><span>${t('Estimate total','Total de la cotización')}</span><span class="tnum">${money(tot.grand)}</span></div>
   </div>` : '';
 }
 function clearEstimate(){ estDraft={labor:[],items:[]}; renderEstimate(); }
 function saveEstimate(){
-  if(!estDraft.labor.length && !estDraft.items.length){ alert('Add labor or parts first.'); return; }
+  if(!estDraft.labor.length && !estDraft.items.length){ alert(t('Add labor or parts first.','Agrega mano de obra o piezas primero.')); return; }
   const cid=document.getElementById('estClient').value;
   const c=store.clients.find(x=>x.id===cid);
-  store.estimates.push({ id:uid('e'), clientId:cid||'', clientName:c?c.name:'Walk-in', phone:c?c.phone:'', vehicle:mval('estVehicle'),
+  store.estimates.push({ id:uid('e'), clientId:cid||'', clientName:c?c.name:t('Walk-in','Sin cita'), phone:c?c.phone:'', vehicle:mval('estVehicle'),
     date:todayStr(), laborRate:CONFIG.laborRate, taxRate:CONFIG.taxRate, labor:estDraft.labor.slice(), items:estDraft.items.slice(), createdAt:Date.now() });
   save(); clearEstimate(); renderSavedEstimates();
-  alert('Estimate saved.');
+  alert(t('Estimate saved.','Cotización guardada.'));
 }
 function renderSavedEstimates(){
   const el=document.getElementById('savedEstimates');
   if(!store.estimates.length){ el.innerHTML=''; return; }
-  el.innerHTML='<h3 style="margin:6px 0 12px;font-size:16px">Saved estimates</h3>'+store.estimates.slice().reverse().map(e=>{
-    const t=estimateTotals(e);
-    return `<div class="client-card" onclick="viewEstimate('${e.id}')"><div class="who"><b>${escapeHtml(e.clientName)} — ${money(t.grand)}</b><span>${escapeHtml(e.vehicle||'—')} · ${prettyDate(e.date)}</span></div><span class="status-badge st-ok">View</span></div>`;
+  el.innerHTML=`<h3 style="margin:6px 0 12px;font-size:16px">${t('Saved estimates','Cotizaciones guardadas')}</h3>`+store.estimates.slice().reverse().map(e=>{
+    const tot=estimateTotals(e);
+    return `<div class="client-card" onclick="viewEstimate('${e.id}')"><div class="who"><b>${escapeHtml(e.clientName)} — ${money(tot.grand)}</b><span>${escapeHtml(e.vehicle||'—')} · ${prettyDate(e.date)}</span></div><span class="status-badge st-ok">${t('View','Ver')}</span></div>`;
   }).join('');
 }
 function estimateTotals(e){
@@ -1526,61 +1569,62 @@ function estimateTotals(e){
   return {labor,parts,tax,grand:labor+parts+tax};
 }
 function estimateText(e){
-  const t=estimateTotals(e);
+  const tot=estimateTotals(e);
   const lines=[
-    `${CONFIG.businessName} — Estimate`,
+    `${CONFIG.businessName} — ${t('Estimate','Cotización')}`,
     `${prettyDate(e.date)}`,
-    `Client: ${e.clientName}${e.vehicle?'  ·  '+e.vehicle:''}`,
+    `${t('Client','Cliente')}: ${e.clientName}${e.vehicle?'  ·  '+e.vehicle:''}`,
     '',
-    ...(e.labor||[]).map(l=>`Labor: ${l.desc} — ${l.hours}hr = ${money(l.hours*(e.laborRate||CONFIG.laborRate))}`),
-    ...(e.items||[]).map(it=>`Part: ${it.name} x${it.qty} = ${money(it.qty*it.price)}`),
+    ...(e.labor||[]).map(l=>`${t('Labor','Mano de obra')}: ${l.desc} — ${l.hours}hr = ${money(l.hours*(e.laborRate||CONFIG.laborRate))}`),
+    ...(e.items||[]).map(it=>`${t('Part','Pieza')}: ${it.name} x${it.qty} = ${money(it.qty*it.price)}`),
     '',
-    `Labor ${money(t.labor)} | Parts ${money(t.parts)} | Tax ${money(t.tax)}`,
-    `TOTAL: ${money(t.grand)}`,
+    `${t('Labor','Mano de obra')} ${money(tot.labor)} | ${t('Parts','Piezas')} ${money(tot.parts)} | ${t('Tax','Impuesto')} ${money(tot.tax)}`,
+    `TOTAL: ${money(tot.grand)}`,
     '',
-    `Questions? Call ${CONFIG.phone}`
+    `${t('Questions? Call','¿Dudas? Llama al')} ${CONFIG.phone}`
   ];
   return lines.join('\n');
 }
 function viewEstimate(id){
-  const e=store.estimates.find(x=>x.id===id); if(!e) return; const t=estimateTotals(e);
+  const e=store.estimates.find(x=>x.id===id); if(!e) return; const tot=estimateTotals(e);
   openCrm(`
-    <div class="detail-head"><div><h3 style="margin:0">Estimate — ${escapeHtml(e.clientName)}</h3><span class="note">${escapeHtml(e.vehicle||'')} · ${prettyDate(e.date)}</span></div><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
+    <div class="detail-head"><div><h3 style="margin:0">${t('Estimate','Cotización')} — ${escapeHtml(e.clientName)}</h3><span class="note">${escapeHtml(e.vehicle||'')} · ${prettyDate(e.date)}</span></div><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
     ${(e.labor||[]).map(l=>`<div class="est-line"><span>🔧 ${escapeHtml(l.desc)} — ${l.hours}hr</span><span class="tnum">${money(l.hours*(e.laborRate||CONFIG.laborRate))}</span></div>`).join('')}
     ${(e.items||[]).map(it=>`<div class="est-line"><span>📦 ${escapeHtml(it.name)} × ${it.qty}</span><span class="tnum">${money(it.qty*it.price)}</span></div>`).join('')}
     <div class="totals">
-      <div class="tr"><span>Labor</span><span class="tnum">${money(t.labor)}</span></div>
-      <div class="tr"><span>Parts</span><span class="tnum">${money(t.parts)}</span></div>
-      <div class="tr"><span>Tax (${e.taxRate}%)</span><span class="tnum">${money(t.tax)}</span></div>
-      <div class="tr grand"><span>Total</span><span class="tnum">${money(t.grand)}</span></div>
+      <div class="tr"><span>${t('Labor','Mano de obra')}</span><span class="tnum">${money(tot.labor)}</span></div>
+      <div class="tr"><span>${t('Parts','Piezas')}</span><span class="tnum">${money(tot.parts)}</span></div>
+      <div class="tr"><span>${t('Tax','Impuesto')} (${e.taxRate}%)</span><span class="tnum">${money(tot.tax)}</span></div>
+      <div class="tr grand"><span>Total</span><span class="tnum">${money(tot.grand)}</span></div>
     </div>
     <div class="chip-row" style="margin-top:16px">
-      ${e.phone?`<a class="btn btn-sm btn-primary" href="sms:${encodeURIComponent(e.phone)}?&body=${encodeURIComponent(estimateText(e))}">📱 Text to client</a>`:''}
-      <button class="btn btn-sm btn-ghost" onclick="printEstimate('${e.id}')">🖨️ Print / PDF</button>
-      <button class="btn btn-sm btn-ghost" onclick="deleteEstimate('${e.id}')" style="color:var(--bad)">Delete</button>
+      ${e.phone?`<a class="btn btn-sm btn-primary" href="sms:${encodeURIComponent(e.phone)}?&body=${encodeURIComponent(estimateText(e))}">${t('📱 Text to client','📱 Enviar al cliente')}</a>`:''}
+      <button class="btn btn-sm btn-ghost" onclick="printEstimate('${e.id}')">${t('🖨️ Print / PDF','🖨️ Imprimir / PDF')}</button>
+      <button class="btn btn-sm btn-ghost" onclick="deleteEstimate('${e.id}')" style="color:var(--bad)">${t('Delete','Eliminar')}</button>
     </div>
   `);
 }
 function deleteEstimate(id){
-  if(!confirm('Delete this estimate?')) return;
+  if(!confirm(t('Delete this estimate?','¿Eliminar esta cotización?'))) return;
   store.estimates=store.estimates.filter(x=>x.id!==id); save(); closeCrm(); renderSavedEstimates();
 }
 function printEstimate(id){
-  const e=store.estimates.find(x=>x.id===id); if(!e) return; const t=estimateTotals(e);
-  const rows=[...(e.labor||[]).map(l=>`<tr><td>Labor — ${escapeHtml(l.desc)} (${l.hours}hr)</td><td style="text-align:right">${money(l.hours*(e.laborRate||CONFIG.laborRate))}</td></tr>`),
+  const e=store.estimates.find(x=>x.id===id); if(!e) return; const tot=estimateTotals(e);
+  const LB=t('Labor','Mano de obra'), PT=t('Parts','Piezas'), TX=t('Tax','Impuesto'), EST=t('Estimate','Cotización');
+  const rows=[...(e.labor||[]).map(l=>`<tr><td>${LB} — ${escapeHtml(l.desc)} (${l.hours}hr)</td><td style="text-align:right">${money(l.hours*(e.laborRate||CONFIG.laborRate))}</td></tr>`),
     ...(e.items||[]).map(it=>`<tr><td>${escapeHtml(it.name)} × ${it.qty}</td><td style="text-align:right">${money(it.qty*it.price)}</td></tr>`)].join('');
-  const w=window.open('','_blank'); if(!w){ alert('Allow pop-ups to print.'); return; }
-  w.document.write(`<html><head><title>Estimate — ${escapeHtml(e.clientName)}</title>
+  const w=window.open('','_blank'); if(!w){ alert(t('Allow pop-ups to print.','Permite ventanas emergentes para imprimir.')); return; }
+  w.document.write(`<html><head><title>${EST} — ${escapeHtml(e.clientName)}</title>
     <style>body{font-family:Arial,sans-serif;padding:32px;color:#111;max-width:640px;margin:auto}h1{margin:0 0 4px}table{width:100%;border-collapse:collapse;margin-top:16px}td{padding:8px 4px;border-bottom:1px solid #ddd}.tot td{border:none;font-weight:bold}.grand td{font-size:20px;color:#c60}.muted{color:#666;font-size:14px}</style></head><body>
     <h1>${escapeHtml(CONFIG.businessName)}</h1><div class="muted">${escapeHtml(CONFIG.area)} · ${escapeHtml(CONFIG.phone)}</div>
-    <h2>Estimate</h2><div class="muted">${prettyDate(e.date)} · ${escapeHtml(e.clientName)}${e.vehicle?' · '+escapeHtml(e.vehicle):''}</div>
+    <h2>${EST}</h2><div class="muted">${prettyDate(e.date)} · ${escapeHtml(e.clientName)}${e.vehicle?' · '+escapeHtml(e.vehicle):''}</div>
     <table>${rows}
-      <tr class="tot"><td>Labor</td><td style="text-align:right">${money(t.labor)}</td></tr>
-      <tr class="tot"><td>Parts</td><td style="text-align:right">${money(t.parts)}</td></tr>
-      <tr class="tot"><td>Tax (${e.taxRate}%)</td><td style="text-align:right">${money(t.tax)}</td></tr>
-      <tr class="tot grand"><td>Total</td><td style="text-align:right">${money(t.grand)}</td></tr>
+      <tr class="tot"><td>${LB}</td><td style="text-align:right">${money(tot.labor)}</td></tr>
+      <tr class="tot"><td>${PT}</td><td style="text-align:right">${money(tot.parts)}</td></tr>
+      <tr class="tot"><td>${TX} (${e.taxRate}%)</td><td style="text-align:right">${money(tot.tax)}</td></tr>
+      <tr class="tot grand"><td>Total</td><td style="text-align:right">${money(tot.grand)}</td></tr>
     </table>
-    <p class="muted" style="margin-top:24px">Estimate only — final total may vary with actual parts and labor. Thank you!</p>
+    <p class="muted" style="margin-top:24px">${t('Estimate only — final total may vary with actual parts and labor. Thank you!','Solo cotización — el total final puede variar según las piezas y la mano de obra reales. ¡Gracias!')}</p>
     </body></html>`);
   w.document.close(); w.focus(); setTimeout(()=>w.print(),300);
 }
@@ -1591,8 +1635,9 @@ function printEstimate(id){
 function initReminderServices(){
   const sel=document.getElementById('remService');
   // offer the services that recur on a schedule (have a follow-up interval)
-  const recurring=CONFIG.serviceTypes.filter(t=>t.followupMonths>0);
-  sel.innerHTML=recurring.map(t=>`<option value="${CONFIG.serviceTypes.indexOf(t)}" ${t.name==='Oil change'?'selected':''}>${escapeHtml(t.name)} (~${t.followupMonths} mo)</option>`).join('');
+  const recurring=CONFIG.serviceTypes.filter(s=>s.followupMonths>0);
+  const moLbl=t('mo','meses');
+  sel.innerHTML=recurring.map(s=>`<option value="${CONFIG.serviceTypes.indexOf(s)}" ${s.name==='Oil change'?'selected':''}>${escapeHtml(svcName(s.name))} (~${s.followupMonths} ${moLbl})</option>`).join('');
   onServiceChange();
 }
 function selectedService(){ return CONFIG.serviceTypes[parseInt(document.getElementById('remService').value,10)]; }
@@ -1600,7 +1645,7 @@ function onServiceChange(){
   const st=selectedService(); if(!st) return;
   const isOil = st.name==='Oil change';
   document.getElementById('remOilWrap').style.display = isOil ? 'block' : 'none';
-  document.getElementById('remDateLabel').textContent = `Date of last ${st.name.toLowerCase()}`;
+  document.getElementById('remDateLabel').textContent = t('Date of last ','Fecha del último ')+svcName(st.name).toLowerCase();
 }
 function calcReminder(){
   const name=val('remName'), contact=val('remContact'), vehicle=val('remVehicle');
@@ -1608,41 +1653,43 @@ function calcReminder(){
   let months = st?st.followupMonths:6;
   if(st && st.name==='Oil change'){ months=parseInt(document.getElementById('remOil').value,10)||months; }
   const dateStr=val('remDate');
-  if(!dateStr){ alert(`Please enter the date of your last ${service.toLowerCase()}.`); return; }
+  if(!dateStr){ alert(t('Please enter the date of your last service.','Ingresa la fecha de tu último servicio.')); return; }
   const last=new Date(dateStr+'T12:00:00');
   const next=new Date(last); next.setMonth(next.getMonth()+months);
   const now=new Date(); const days=Math.round((next-now)/86400000);
   let status,color;
-  if(days<0){ status='Overdue — book soon!'; color='var(--bad)'; }
-  else if(days<=21){ status='Due soon'; color='var(--accent2)'; }
-  else { status='On track'; color='var(--good)'; }
-  const nextStr=next.toLocaleDateString(undefined,{weekday:'short',year:'numeric',month:'long',day:'numeric'});
+  if(days<0){ status=t('Overdue — book soon!','Vencido — ¡reserva pronto!'); color='var(--bad)'; }
+  else if(days<=21){ status=t('Due soon','Pronto'); color='var(--accent2)'; }
+  else { status=t('On track','Al día'); color='var(--good)'; }
+  const nextStr=next.toLocaleDateString(locale(),{weekday:'short',year:'numeric',month:'long',day:'numeric'});
+  const svc=svcName(service);
   const res=document.getElementById('remResult'); res.classList.add('show');
   // Google Calendar add link
   const gcalDate=`${next.getFullYear()}${String(next.getMonth()+1).padStart(2,'0')}${String(next.getDate()).padStart(2,'0')}`;
-  const gcal=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(service+' due — '+(vehicle||'my car'))}&dates=${gcalDate}/${gcalDate}&details=${encodeURIComponent('Reminder from '+CONFIG.businessName+'. Book: call '+CONFIG.phone)}`;
+  const gcal=`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(svc+t(' due — ',' — ')+(vehicle||t('my car','mi carro')))}&dates=${gcalDate}/${gcalDate}&details=${encodeURIComponent(t('Reminder from ','Recordatorio de ')+CONFIG.businessName+t('. Book: call ','. Reserva: llama al ')+CONFIG.phone)}`;
+  const ago=days<0 ? (Math.abs(days)+t(' days ago',' días atrás')) : (t('in ','en ')+days+t(' days',' días'));
   res.innerHTML=`
-    <div class="note">Your next ${escapeHtml(service.toLowerCase())} is estimated for</div>
+    <div class="note">${t('Your next','Tu próximo')} ${escapeHtml(svc.toLowerCase())} ${t('is estimated for','se estima para el')}</div>
     <div class="rem-big">${nextStr}</div>
-    <span class="badge-due" style="background:${color}22;color:${color};border:1px solid ${color}">${status} · ${days<0?Math.abs(days)+' days ago':'in '+days+' days'}</span>
+    <span class="badge-due" style="background:${color}22;color:${color};border:1px solid ${color}">${status} · ${ago}</span>
     <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
-      <a class="btn btn-sm btn-primary" href="${gcal}" target="_blank" rel="noopener">➕ Add to Google Calendar</a>
-      <button class="btn btn-sm btn-ghost" onclick="saveReminder('${nextStr.replace(/'/g,'')}','${(vehicle||'').replace(/'/g,'')}','${(name||'').replace(/'/g,'')}','${(contact||'').replace(/'/g,'')}','${service.replace(/'/g,'')}')">🔔 Save reminder with Cayetano</button>
-      <button class="btn btn-sm btn-ghost" onclick="go('book')">📅 Book it now</button>
+      <a class="btn btn-sm btn-primary" href="${gcal}" target="_blank" rel="noopener">${t('➕ Add to Google Calendar','➕ Agregar a Google Calendar')}</a>
+      <button class="btn btn-sm btn-ghost" onclick="saveReminder('${nextStr.replace(/'/g,'')}','${(vehicle||'').replace(/'/g,'')}','${(name||'').replace(/'/g,'')}','${(contact||'').replace(/'/g,'')}','${service.replace(/'/g,'')}')">${t('🔔 Save reminder with Cayetano','🔔 Guardar recordatorio con Cayetano')}</button>
+      <button class="btn btn-sm btn-ghost" onclick="go('book')">${t('📅 Book it now','📅 Reservar ahora')}</button>
     </div>`;
   res.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function saveReminder(nextStr,vehicle,name,contact,service){
-  if(!name||!contact){ alert('Add your name and email/phone above so Cayetano can reach you.'); return; }
+  if(!name||!contact){ alert(t('Add your name and email/phone above so Cayetano can reach you.','Agrega tu nombre y correo/teléfono arriba para que Cayetano pueda contactarte.')); return; }
   store.reminders.push({name,contact,vehicle,service:service||'Service',due:nextStr,at:Date.now()});
   save(); renderReminders();
-  alert('Saved! Cayetano will reach out around '+nextStr+'.');
+  alert(t('Saved! Cayetano will reach out around ','¡Guardado! Cayetano te contactará alrededor del ')+nextStr+'.');
 }
 function renderReminders(){
   const box=document.getElementById('remSaved');
-  if(!store.reminders.length){ box.innerHTML='<p class="note">None yet.</p>'; return; }
+  if(!store.reminders.length){ box.innerHTML=`<p class="note">${t('None yet.','Aún ninguno.')}</p>`; return; }
   box.innerHTML=store.reminders.slice(-5).reverse().map(r=>
-    `<div class="pay-opt" style="margin-bottom:8px"><div class="l"><div class="ico">🔔</div><div><b>${escapeHtml(r.service||'Service')} · ${escapeHtml(r.vehicle||'Vehicle')}</b><br><span class="note">Due ${escapeHtml(r.due)} · ${escapeHtml(r.name)}</span></div></div></div>`).join('');
+    `<div class="pay-opt" style="margin-bottom:8px"><div class="l"><div class="ico">🔔</div><div><b>${escapeHtml(svcName(r.service||'Service'))} · ${escapeHtml(r.vehicle||'')}</b><br><span class="note">${t('Due','Para el')} ${escapeHtml(r.due)} · ${escapeHtml(r.name)}</span></div></div></div>`).join('');
 }
 
 /* =====================================================================
@@ -1657,18 +1704,19 @@ function updatePayLinks(){
     document.getElementById('zelleName').textContent=CONFIG.pay.zelleName||'';
     copyBtn.disabled=false;
   } else {
-    handle.textContent='Zelle handle coming soon';
+    handle.textContent=t('Zelle handle coming soon','Datos de Zelle próximamente');
     handle.style.opacity='.6';
-    document.getElementById('zelleName').textContent='Cayetano will add his Zelle details here';
+    document.getElementById('zelleName').textContent=t('Cayetano will add his Zelle details here','Cayetano agregará aquí sus datos de Zelle');
     copyBtn.disabled=true;
   }
 }
 function copyZelle(){
   const z=CONFIG.pay.zelle;
-  if(!z){ alert('Cayetano hasn\'t added his Zelle details yet — please pay in cash or ask him directly.'); return; }
+  if(!z){ alert(t("Cayetano hasn't added his Zelle details yet — please pay in cash or ask him directly.",'Cayetano aún no agrega sus datos de Zelle — paga en efectivo o pregúntale directamente.')); return; }
   const done=()=>{ const m=document.getElementById('zelleCopied'); m.style.display='block'; setTimeout(()=>m.style.display='none',3000); };
-  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(z).then(done).catch(()=>{prompt('Copy the Zelle recipient:', z);}); }
-  else { prompt('Copy the Zelle recipient:', z); }
+  const label=t('Copy the Zelle recipient:','Copia el destinatario de Zelle:');
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(z).then(done).catch(()=>{prompt(label, z);}); }
+  else { prompt(label, z); }
 }
 
 /* =====================================================================
@@ -1710,17 +1758,19 @@ async function submitContact(e){
       const r=await fetch(CONFIG.formEndpoint,{method:'POST',body:fd,headers:{Accept:'application/json'}});
       if(!r.ok) throw new Error('bad response');
       ok.style.display='block';
-      ok.textContent=`✅ Thanks ${data.name}! Your message${photos.length?` and ${photos.length} photo(s)`:''} were sent. Cayetano will get back to you shortly.`;
+      ok.textContent=t(`✅ Thanks ${data.name}! Your message${photos.length?` and ${photos.length} photo(s)`:''} were sent. Cayetano will get back to you shortly.`,
+                       `✅ ¡Gracias ${data.name}! Tu mensaje${photos.length?` y ${photos.length} foto(s)`:''} se enviaron. Cayetano te contactará pronto.`);
       e.target.reset(); photos=[]; renderThumbs(); note.textContent='';
     }catch(err){
-      note.innerHTML=`⚠️ Couldn't send automatically. <a href="#" onclick="mailtoFallback();return false" style="color:var(--accent)">Tap here to email instead</a>.`;
+      note.innerHTML=t('⚠️ Couldn\'t send automatically. <a href="#" onclick="mailtoFallback();return false" style="color:var(--accent)">Tap here to email instead</a>.',
+                       '⚠️ No se pudo enviar automáticamente. <a href="#" onclick="mailtoFallback();return false" style="color:var(--accent)">Toca aquí para enviar por correo</a>.');
     }
   } else {
     // No backend configured -> open the visitor's email app, prefilled.
     mailtoFallback();
     ok.style.display='block';
-    ok.textContent=`✅ Your email app is opening with your message ready to send to Cayetano.`;
-    note.innerHTML = photos.length ? `📎 Heads up: email links can't carry attachments automatically — please attach your ${photos.length} photo(s) in your email app before sending.` : '';
+    ok.textContent=t('✅ Your email app is opening with your message ready to send to Cayetano.','✅ Se está abriendo tu app de correo con el mensaje listo para enviar a Cayetano.');
+    note.innerHTML = photos.length ? t(`📎 Heads up: email links can't carry attachments automatically — please attach your ${photos.length} photo(s) in your email app before sending.`,`📎 Aviso: los enlaces de correo no adjuntan archivos automáticamente — adjunta tus ${photos.length} foto(s) en tu app de correo antes de enviar.`) : '';
   }
   return false;
 }
@@ -1734,7 +1784,7 @@ function mailtoFallback(){
    HELPERS
    ===================================================================== */
 function val(id){ return document.getElementById(id).value.trim(); }
-function prettyDate(ds){ const [y,m,d]=ds.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString(undefined,{weekday:'short',month:'long',day:'numeric'}); }
+function prettyDate(ds){ const [y,m,d]=ds.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString(locale(),{weekday:'short',month:'long',day:'numeric'}); }
 function escapeHtml(s){ return (s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 /* =====================================================================
@@ -1754,7 +1804,8 @@ initReminderServices();
 renderReminders();
 updatePayLinks();
 setAdminUI();
-{ const t=new Date(); document.getElementById('remDate').value=ymd(t.getFullYear(),t.getMonth(),t.getDate()); }
+setLang(lang);   // apply saved language to static + dynamic content, set toggle label
+{ const d=new Date(); document.getElementById('remDate').value=ymd(d.getFullYear(),d.getMonth(),d.getDate()); }
 { const p=location.hash.slice(1); if(p&&document.getElementById('page-'+p)) go(p); }
 </script>
 </body>
