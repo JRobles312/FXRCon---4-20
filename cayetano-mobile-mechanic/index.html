@@ -180,6 +180,33 @@
     .modal-box p{color:var(--muted);font-size:14px;margin-bottom:16px}
     .modal-x{display:flex;gap:10px;margin-top:20px}
 
+    /* ---------- CLIENTS / CRM ---------- */
+    .gate{max-width:420px;margin:40px auto;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:40px 28px}
+    .gate .ico{font-size:44px;margin-bottom:14px}
+    .crm-toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:20px}
+    .crm-search{flex:1;min-width:200px}
+    .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:24px}
+    .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+    .stat b{display:block;font-size:26px;font-weight:900}
+    .stat span{font-size:12px;color:var(--muted)}
+    .stat.warn b{color:var(--accent2)} .stat.bad b{color:var(--bad)} .stat.ok b{color:var(--good)}
+    .client-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:10px;cursor:pointer;transition:.12s;display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .client-card:hover{border-color:var(--accent)}
+    .client-card .who b{font-size:16px} .client-card .who span{display:block;font-size:13px;color:var(--muted);margin-top:2px}
+    .status-badge{display:inline-block;padding:3px 11px;border-radius:20px;font-size:11px;font-weight:800;white-space:nowrap}
+    .st-ok{background:rgba(57,196,110,.15);color:var(--good)}
+    .st-soon{background:rgba(255,176,32,.15);color:var(--accent2)}
+    .st-over{background:rgba(229,72,77,.15);color:var(--bad)}
+    .st-none{background:var(--bg2);color:var(--muted)}
+    .svc-row,.fu-row{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+    .svc-row .top,.fu-row .top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .fu-row .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:14px;margin-top:8px}
+    .kv dt{color:var(--muted)} .kv dd{color:var(--text)}
+    .detail-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+    .chip-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+    .modal-box.wide{max-width:560px;max-height:88vh;overflow-y:auto}
+
     /* install banner */
     #installBar{display:none;position:fixed;bottom:16px;left:16px;right:16px;max-width:520px;margin:0 auto;background:var(--card);border:1px solid var(--accent);border-radius:12px;padding:12px 16px;z-index:400;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 10px 40px rgba(0,0,0,.5)}
     #installBar b{font-size:14px}
@@ -203,6 +230,7 @@
       <a onclick="go('reminders')" data-nav="reminders">Oil Reminders</a>
       <a onclick="go('pay')" data-nav="pay">Pay</a>
       <a onclick="go('contact')" data-nav="contact" class="nav-cta">Contact</a>
+      <a onclick="go('clients')" data-nav="clients" title="For Cayetano — mechanic login">🔧 Clients</a>
     </div>
     <button class="menu-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
   </div>
@@ -519,6 +547,46 @@
   </section>
 </div>
 
+<!-- ============ CLIENTS / CRM (mechanic-only) ============ -->
+<div id="page-clients" class="page">
+  <section>
+    <div class="wrap">
+      <!-- login gate (shown when not logged in) -->
+      <div id="clientsGate" class="gate">
+        <div class="ico">🔧</div>
+        <h2 class="title" style="font-size:26px">Cayetano's client book</h2>
+        <p class="sub" style="margin:8px auto 22px">This area is for Cayetano. Log in to manage clients, vehicles, service history, and oil-change follow-ups.</p>
+        <button class="btn btn-primary" onclick="toggleAdmin()">🔒 Mechanic login</button>
+      </div>
+
+      <!-- CRM (shown when logged in) -->
+      <div id="clientsApp" style="display:none">
+        <div class="crm-toolbar">
+          <div>
+            <div class="eyebrow">Client Book</div>
+            <h2 class="title" style="font-size:30px">Clients &amp; follow-ups</h2>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-sm btn-ghost" onclick="toggleAdmin()">🔓 Log out</button>
+            <button class="btn btn-sm btn-primary" onclick="openClientForm()">＋ New client</button>
+          </div>
+        </div>
+
+        <div class="stat-row" id="crmStats"></div>
+
+        <!-- Follow-ups due -->
+        <h3 style="margin:8px 0 12px">🔔 Service follow-ups</h3>
+        <div id="followupList"></div>
+
+        <!-- Client directory -->
+        <h3 style="margin:28px 0 12px">👥 All clients</h3>
+        <input class="f crm-search" id="clientSearch" placeholder="🔍 Search name, phone, or vehicle…" oninput="renderClients()" style="margin-bottom:14px"/>
+        <div id="clientList"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
 <!-- ============ FOOTER ============ -->
 <footer>
   <div class="wrap">
@@ -563,6 +631,11 @@
   </div>
 </div>
 
+<!-- ============ CRM MODAL (client form / detail / service log) ============ -->
+<div class="modal" id="crmModal" onclick="if(event.target===this)closeCrm()">
+  <div class="modal-box wide" id="crmModalBox"></div>
+</div>
+
 <!-- ============ INSTALL BANNER ============ -->
 <div id="installBar">
   <div><b>📲 Install this app</b><br><span>Add Cayetano's to your home screen</span></div>
@@ -599,6 +672,17 @@ const CONFIG = {
   },
   // Working hours offered as bookable slots (24h). Edit as you like.
   bookingHours: [8,9,10,11,13,14,15,16,17],
+  // Services Cayetano logs, each with a default follow-up interval in months
+  // (0 = no automatic follow-up reminder). Oil change defaults to 3 months.
+  serviceTypes: [
+    {name:"Oil change",            followupMonths:3},
+    {name:"Tune-up",               followupMonths:12},
+    {name:"Brake service",         followupMonths:12},
+    {name:"Battery replacement",   followupMonths:0},
+    {name:"Diagnostics",           followupMonths:0},
+    {name:"Fluids / filters",      followupMonths:6},
+    {name:"Other repair",          followupMonths:0}
+  ],
   // Vehicles shown on the home page (placeholders).
   vehicles: [
     {logo:"🚙", make:"Ford",      note:"F-150, Escape, Focus"},
@@ -634,9 +718,10 @@ let store = {
   blockedDays: DB.get('blockedDays', []),      // ["2026-07-10", ...]
   blockedHours: DB.get('blockedHours', {}),    // { "2026-07-10":[13,14] }
   bookings: DB.get('bookings', {}),            // { "2026-07-10":[{h:9,name,phone,vehicle,need}] }
-  reminders: DB.get('reminders', [])
+  reminders: DB.get('reminders', []),
+  clients: DB.get('clients', [])               // [{id,name,phone,email,address,notes,vehicle:{...},services:[{...}]}]
 };
-function save(){ DB.set('blockedDays',store.blockedDays); DB.set('blockedHours',store.blockedHours); DB.set('bookings',store.bookings); DB.set('reminders',store.reminders); }
+function save(){ DB.set('blockedDays',store.blockedDays); DB.set('blockedHours',store.blockedHours); DB.set('bookings',store.bookings); DB.set('reminders',store.reminders); DB.set('clients',store.clients); }
 let isAdmin = false;
 
 /* =====================================================================
@@ -772,7 +857,7 @@ function submitBooking(){
   if(selectedHour==null){ alert('Please pick a time.'); return; }
   const ds=selectedDate;
   store.bookings[ds]=store.bookings[ds]||[];
-  store.bookings[ds].push({h:selectedHour,name,phone,vehicle,need,at:Date.now()});
+  store.bookings[ds].push({h:selectedHour,name,phone,vehicle,need,confirmed:false,at:Date.now()});
   save();
   // Notify Cayetano (opens his SMS/email prefilled if he taps; also a record is stored)
   const msg=`New booking request:\n${prettyDate(ds)} at ${fmtHour(selectedHour)}\n${name} — ${phone}\nVehicle: ${vehicle||'—'}\nNeeds: ${need||'—'}`;
@@ -806,10 +891,14 @@ function renderAdminDay(ds){
   }).join('');
   // list of bookings that day
   const bks=store.bookings[ds]||[];
-  document.getElementById('dayBookings').innerHTML = bks.length
-    ? '<h3 style="margin-bottom:10px">Booked</h3>'+bks.sort((a,b)=>a.h-b.h).map(b=>
-        `<div class="pay-opt" style="margin-bottom:8px"><div class="l"><div class="ico">📌</div><div><b>${fmtHour(b.h)} — ${escapeHtml(b.name)}</b><br><span class="note">${escapeHtml(b.phone)} · ${escapeHtml(b.vehicle||'—')} · ${escapeHtml(b.need||'—')}</span></div></div><button class="btn btn-sm btn-ghost" onclick="cancelBooking('${ds}',${b.h})">Remove</button></div>`).join('')
-    : '<p class="note">No bookings that day yet.</p>';
+  const addBtn=`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><h3 style="margin:0">Bookings</h3><button class="btn btn-sm btn-primary" onclick="openApptForm({date:'${ds}'})">＋ Add appointment</button></div>`;
+  document.getElementById('dayBookings').innerHTML = addBtn + (bks.length
+    ? bks.sort((a,b)=>a.h-b.h).map(b=>{
+        const conf=b.confirmed;
+        return `<div class="pay-opt" style="margin-bottom:8px"><div class="l"><div class="ico">📌</div><div><b>${fmtHour(b.h)} — ${escapeHtml(b.name)}</b> <span class="status-badge ${conf?'st-ok':'st-soon'}">${conf?'Confirmed':'Requested'}</span><br><span class="note">${escapeHtml(b.phone||'—')} · ${escapeHtml(b.vehicle||'—')} · ${escapeHtml(b.need||'—')}</span></div></div>
+          <div style="display:flex;gap:6px">${conf?'':`<button class="btn btn-sm btn-primary" onclick="confirmBooking('${ds}',${b.h})">Confirm</button>`}<button class="btn btn-sm btn-ghost" onclick="cancelBooking('${ds}',${b.h})">Remove</button></div></div>`;
+      }).join('')
+    : '<p class="note">No bookings that day yet.</p>');
   card.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 function toggleBlockDay(){
@@ -851,6 +940,292 @@ function setAdminUI(){
   document.getElementById('slotCard').style.display='none';
   document.getElementById('hourCard').style.display='none';
   selectedDate=null; renderCal();
+  // Clients area follows the same login
+  document.getElementById('clientsGate').style.display = isAdmin ? 'none' : 'block';
+  document.getElementById('clientsApp').style.display = isAdmin ? 'block' : 'none';
+  if(isAdmin) renderClients();
+}
+
+/* =====================================================================
+   CLIENTS / CRM  (mechanic-only — add clients, vehicles, service history,
+   automatic oil-change follow-ups, vCard export to phone/Google Contacts)
+   ===================================================================== */
+function uid(p){ return p+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36); }
+function mval(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
+function attr(v){ return escapeHtml(v||''); }
+function vehSummary(v){ if(!v) return '—'; const s=[v.year,v.make,v.model].filter(Boolean).join(' '); return s||'—'; }
+function addMonths(dateStr,m){ const d=new Date(dateStr+'T12:00:00'); d.setMonth(d.getMonth()+m); return ymd(d.getFullYear(),d.getMonth(),d.getDate()); }
+function openCrm(html){ document.getElementById('crmModalBox').innerHTML=html; document.getElementById('crmModal').classList.add('show'); }
+function closeCrm(){ document.getElementById('crmModal').classList.remove('show'); }
+
+function serviceStatus(due){
+  if(!due) return {label:'No follow-up', cls:'st-none', days:Infinity};
+  const days=Math.round((new Date(due+'T12:00:00')-new Date(todayStr()+'T12:00:00'))/86400000);
+  if(days<0) return {label:`Overdue ${Math.abs(days)}d`, cls:'st-over', days};
+  if(days<=21) return {label:`Due in ${days}d`, cls:'st-soon', days};
+  return {label:`Due ${prettyDate(due)}`, cls:'st-ok', days};
+}
+// the active follow-up per service type = the most recent service of that type
+function activeFollowups(c){
+  const byType={};
+  (c.services||[]).forEach(s=>{ if(s.nextDue && (!byType[s.type] || s.date>byType[s.type].date)) byType[s.type]=s; });
+  return Object.values(byType).map(s=>({client:c, service:s, status:serviceStatus(s.nextDue)}));
+}
+function allFollowups(){
+  return store.clients.flatMap(activeFollowups).sort((a,b)=>(a.service.nextDue||'').localeCompare(b.service.nextDue||''));
+}
+function matchClient(c,q){
+  if(!q) return true;
+  const hay=[c.name,c.phone,c.email,c.address, c.vehicle&&[c.vehicle.year,c.vehicle.make,c.vehicle.model,c.vehicle.plate].join(' ')].join(' ').toLowerCase();
+  return hay.includes(q);
+}
+
+function renderClients(){
+  if(!isAdmin) return;
+  const fus=allFollowups();
+  const over=fus.filter(f=>f.status.cls==='st-over').length;
+  const soon=fus.filter(f=>f.status.cls==='st-soon').length;
+  document.getElementById('crmStats').innerHTML=`
+    <div class="stat"><b>${store.clients.length}</b><span>Clients</span></div>
+    <div class="stat ${over?'bad':''}"><b>${over}</b><span>Overdue follow-ups</span></div>
+    <div class="stat ${soon?'warn':''}"><b>${soon}</b><span>Due soon (≤3 wks)</span></div>`;
+
+  // follow-ups (soonest first)
+  const fl=document.getElementById('followupList');
+  fl.innerHTML = fus.length ? fus.map(f=>{
+    const c=f.client, s=f.service;
+    return `<div class="fu-row"><div class="top">
+        <div><b>${escapeHtml(c.name)}</b> — ${escapeHtml(s.type)}<br><span class="note">${escapeHtml(vehSummary(c.vehicle))} · last done ${prettyDate(s.date)}</span></div>
+        <span class="status-badge ${f.status.cls}">${f.status.label}</span>
+      </div>
+      <div class="acts">
+        <button class="btn btn-sm btn-primary" onclick="scheduleFollowup('${c.id}','${s.id}')">📅 Schedule</button>
+        <button class="btn btn-sm btn-ghost" onclick="textReminder('${c.id}','${s.id}')">📱 Text reminder</button>
+        <button class="btn btn-sm btn-ghost" onclick="openClientDetail('${c.id}')">Open client</button>
+      </div></div>`;
+  }).join('') : '<p class="note">No follow-ups yet. Log an oil change on a client and a reminder appears here automatically.</p>';
+
+  // client directory
+  const q=(document.getElementById('clientSearch').value||'').toLowerCase();
+  const list=store.clients.filter(c=>matchClient(c,q)).sort((a,b)=>a.name.localeCompare(b.name));
+  const cl=document.getElementById('clientList');
+  cl.innerHTML = store.clients.length===0
+    ? '<p class="note">No clients yet. Tap “＋ New client” to add your first one.</p>'
+    : (list.length? list.map(c=>{
+        const top=activeFollowups(c).sort((a,b)=>a.status.days-b.status.days)[0];
+        const st=top?top.status:{label:'No follow-up',cls:'st-none'};
+        return `<div class="client-card" onclick="openClientDetail('${c.id}')">
+            <div class="who"><b>${escapeHtml(c.name)}</b><span>${escapeHtml(c.phone||'no phone')} · ${escapeHtml(vehSummary(c.vehicle))}</span></div>
+            <span class="status-badge ${st.cls}">${st.label}</span>
+          </div>`;
+      }).join('') : '<p class="note">No clients match that search.</p>');
+}
+
+/* ---- add / edit client ---- */
+function openClientForm(id){
+  const c = id ? store.clients.find(x=>x.id===id) : {vehicle:{}};
+  const v=c.vehicle||{};
+  openCrm(`
+    <div class="detail-head"><h3>${id?'Edit client':'New client'}</h3><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
+    <label class="f">Name *</label><input class="f" id="cf_name" value="${attr(c.name)}" placeholder="Full name"/>
+    <div class="row2">
+      <div><label class="f">Phone</label><input class="f" id="cf_phone" value="${attr(c.phone)}" placeholder="(408) 555-0123"/></div>
+      <div><label class="f">Email</label><input class="f" id="cf_email" value="${attr(c.email)}" placeholder="name@email.com"/></div>
+    </div>
+    <label class="f">Address</label><input class="f" id="cf_address" value="${attr(c.address)}" placeholder="Street, City"/>
+    <h3 style="margin:20px 0 4px;font-size:16px">🚗 Vehicle</h3>
+    <div class="row2">
+      <div><label class="f">Year</label><input class="f" id="cf_year" value="${attr(v.year)}" placeholder="2016"/></div>
+      <div><label class="f">Make</label><input class="f" id="cf_make" value="${attr(v.make)}" placeholder="Honda"/></div>
+    </div>
+    <div class="row2">
+      <div><label class="f">Model</label><input class="f" id="cf_model" value="${attr(v.model)}" placeholder="Civic"/></div>
+      <div><label class="f">Color</label><input class="f" id="cf_color" value="${attr(v.color)}" placeholder="Silver"/></div>
+    </div>
+    <div class="row2">
+      <div><label class="f">License plate</label><input class="f" id="cf_plate" value="${attr(v.plate)}" placeholder="8ABC123"/></div>
+      <div><label class="f">Mileage</label><input class="f" id="cf_mileage" value="${attr(v.mileage)}" placeholder="82,000"/></div>
+    </div>
+    <label class="f">VIN (optional)</label><input class="f" id="cf_vin" value="${attr(v.vin)}" placeholder="1HGBH41JXMN109186"/>
+    <label class="f">Notes</label><textarea class="f" id="cf_notes" placeholder="Gate code, preferred times, anything to remember…">${attr(c.notes)}</textarea>
+    <div class="modal-x"><button class="btn btn-primary" onclick="saveClient(${id?`'${id}'`:'null'})">${id?'Save changes':'Add client'}</button><button class="btn btn-ghost" onclick="closeCrm()">Cancel</button></div>
+  `);
+  setTimeout(()=>document.getElementById('cf_name').focus(),60);
+}
+function saveClient(id){
+  const name=mval('cf_name'); if(!name){ alert('Please enter the client\'s name.'); return; }
+  const data={ name, phone:mval('cf_phone'), email:mval('cf_email'), address:mval('cf_address'), notes:mval('cf_notes'),
+    vehicle:{ year:mval('cf_year'), make:mval('cf_make'), model:mval('cf_model'), color:mval('cf_color'), plate:mval('cf_plate'), mileage:mval('cf_mileage'), vin:mval('cf_vin') } };
+  if(id){ Object.assign(store.clients.find(x=>x.id===id), data); }
+  else { store.clients.push({ id:uid('c'), ...data, services:[], createdAt:Date.now() }); }
+  save(); closeCrm(); renderClients();
+}
+function deleteClient(id){
+  const c=store.clients.find(x=>x.id===id);
+  if(!confirm(`Delete ${c.name} and their service history? This can't be undone.`)) return;
+  store.clients=store.clients.filter(x=>x.id!==id); save(); closeCrm(); renderClients();
+}
+
+/* ---- client detail ---- */
+function openClientDetail(id){
+  const c=store.clients.find(x=>x.id===id); if(!c) return; const v=c.vehicle||{};
+  const svcs=(c.services||[]).slice().sort((a,b)=>b.date.localeCompare(a.date));
+  const fus=activeFollowups(c).sort((a,b)=>a.status.days-b.status.days);
+  openCrm(`
+    <div class="detail-head">
+      <div><h3 style="margin:0">${escapeHtml(c.name)}</h3><span class="note">${escapeHtml(c.phone||'no phone')}${c.email?' · '+escapeHtml(c.email):''}</span></div>
+      <button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button>
+    </div>
+    <div class="chip-row">
+      ${c.phone?`<a class="btn btn-sm btn-ghost" href="tel:${encodeURIComponent(c.phone)}">📞 Call</a>`:''}
+      ${c.phone?`<a class="btn btn-sm btn-ghost" href="sms:${encodeURIComponent(c.phone)}">💬 Text</a>`:''}
+      <button class="btn btn-sm btn-ghost" onclick="exportVcard('${c.id}')">📇 Save to Contacts</button>
+      <button class="btn btn-sm btn-ghost" onclick="openClientForm('${c.id}')">✏️ Edit</button>
+    </div>
+    <dl class="kv">
+      <dt>Vehicle</dt><dd>${escapeHtml(vehSummary(v))}${v.color?' · '+escapeHtml(v.color):''}</dd>
+      ${v.plate?`<dt>Plate</dt><dd>${escapeHtml(v.plate)}</dd>`:''}
+      ${v.mileage?`<dt>Mileage</dt><dd>${escapeHtml(v.mileage)}</dd>`:''}
+      ${v.vin?`<dt>VIN</dt><dd>${escapeHtml(v.vin)}</dd>`:''}
+      ${c.address?`<dt>Address</dt><dd>${escapeHtml(c.address)}</dd>`:''}
+      ${c.notes?`<dt>Notes</dt><dd>${escapeHtml(c.notes)}</dd>`:''}
+    </dl>
+    ${fus.length?`<div class="chip-row" style="margin-top:14px">${fus.map(f=>`<span class="status-badge ${f.status.cls}">${escapeHtml(f.service.type)}: ${f.status.label}</span>`).join('')}</div>`:''}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 8px">
+      <h3 style="font-size:16px;margin:0">🧰 Service history</h3>
+      <button class="btn btn-sm btn-primary" onclick="openServiceForm('${c.id}')">＋ Log service</button>
+    </div>
+    ${svcs.length? svcs.map(s=>`<div class="svc-row"><div class="top">
+        <div><b>${escapeHtml(s.type)}</b> · ${prettyDate(s.date)}<br><span class="note">${[s.mileage?('at '+escapeHtml(s.mileage)+' mi'):'', s.cost?('$'+escapeHtml(s.cost)):'', s.nextDue?('next '+prettyDate(s.nextDue)):''].filter(Boolean).join(' · ')||'—'}${s.notes?'<br>'+escapeHtml(s.notes):''}</span></div>
+        <button class="btn btn-sm btn-ghost" onclick="deleteService('${c.id}','${s.id}')">Remove</button>
+      </div></div>`).join('') : '<p class="note">No services logged yet.</p>'}
+    <div class="modal-x"><button class="btn btn-ghost" onclick="deleteClient('${c.id}')" style="color:var(--bad)">Delete client</button></div>
+  `);
+}
+
+/* ---- log a service (auto-schedules the follow-up) ---- */
+function openServiceForm(clientId){
+  const opts=CONFIG.serviceTypes.map((t,i)=>`<option value="${i}">${escapeHtml(t.name)}</option>`).join('');
+  openCrm(`
+    <div class="detail-head"><h3>Log a service</h3><button class="btn btn-sm btn-ghost" onclick="openClientDetail('${clientId}')">✕</button></div>
+    <label class="f">Service</label>
+    <select class="f" id="sf_type" onchange="syncFollowup()">${opts}</select>
+    <div class="row2">
+      <div><label class="f">Date performed</label><input class="f" id="sf_date" type="date" value="${todayStr()}" onchange="syncFollowup()"/></div>
+      <div><label class="f">Mileage</label><input class="f" id="sf_mileage" placeholder="82,000"/></div>
+    </div>
+    <div class="row2">
+      <div><label class="f">Cost ($)</label><input class="f" id="sf_cost" type="number" placeholder="0"/></div>
+      <div><label class="f">Remind again in (months)</label><input class="f" id="sf_months" type="number" min="0" onchange="syncFollowup()"/></div>
+    </div>
+    <label class="f">Notes</label><textarea class="f" id="sf_notes" placeholder="Oil type, parts used, what you noticed…"></textarea>
+    <div class="ok-msg" id="sf_hint" style="display:block"></div>
+    <div class="modal-x"><button class="btn btn-primary" onclick="saveService('${clientId}')">Save service</button><button class="btn btn-ghost" onclick="openClientDetail('${clientId}')">Cancel</button></div>
+  `);
+  // default the months to the selected type's interval
+  document.getElementById('sf_months').value=CONFIG.serviceTypes[0].followupMonths;
+  syncFollowup();
+}
+function syncFollowup(){
+  const ti=parseInt(document.getElementById('sf_type').value,10);
+  const monthsEl=document.getElementById('sf_months');
+  // when switching type, reset months to that type's default
+  if(document.activeElement===document.getElementById('sf_type')) monthsEl.value=CONFIG.serviceTypes[ti].followupMonths;
+  const months=parseInt(monthsEl.value,10)||0;
+  const date=mval('sf_date')||todayStr();
+  const hint=document.getElementById('sf_hint');
+  if(months>0){ hint.style.display='block'; hint.textContent=`🔔 Follow-up reminder will be set for ${prettyDate(addMonths(date,months))} (${months} month${months>1?'s':''} out).`; }
+  else { hint.style.display='block'; hint.style.background='var(--bg2)'; hint.style.color='var(--muted)'; hint.style.borderColor='var(--line)'; hint.textContent='No automatic follow-up for this service.'; }
+}
+function saveService(clientId){
+  const c=store.clients.find(x=>x.id===clientId); if(!c) return;
+  const ti=parseInt(document.getElementById('sf_type').value,10);
+  const date=mval('sf_date')||todayStr();
+  const months=parseInt(mval('sf_months'),10)||0;
+  c.services=c.services||[];
+  c.services.push({ id:uid('s'), type:CONFIG.serviceTypes[ti].name, date, mileage:mval('sf_mileage'), cost:mval('sf_cost'), notes:mval('sf_notes'), nextDue: months>0?addMonths(date,months):'' });
+  // keep the vehicle mileage current
+  if(mval('sf_mileage')){ c.vehicle=c.vehicle||{}; c.vehicle.mileage=mval('sf_mileage'); }
+  save(); openClientDetail(clientId); renderClients();
+}
+function deleteService(clientId,sid){
+  const c=store.clients.find(x=>x.id===clientId); if(!c) return;
+  c.services=(c.services||[]).filter(s=>s.id!==sid); save(); openClientDetail(clientId); renderClients();
+}
+
+/* ---- export to phone / Google Contacts (vCard .vcf) ---- */
+function exportVcard(id){
+  const c=store.clients.find(x=>x.id===id); if(!c) return; const v=c.vehicle||{};
+  const parts=c.name.trim().split(/\s+/); const first=parts[0]||c.name; const last=parts.slice(1).join(' ');
+  const vehicleNote=[ vehSummary(v)!=='—'?('Vehicle: '+vehSummary(v)):'', v.color?('Color: '+v.color):'', v.plate?('Plate: '+v.plate):'', v.mileage?('Mileage: '+v.mileage):'', v.vin?('VIN: '+v.vin):'', c.notes?('Notes: '+c.notes):'' ].filter(Boolean).join(' | ');
+  const esc=s=>String(s||'').replace(/([,;\\])/g,'\\$1').replace(/\n/g,'\\n');
+  const vcf=[
+    'BEGIN:VCARD','VERSION:3.0',
+    `N:${esc(last)};${esc(first)};;;`,
+    `FN:${esc(c.name)}`,
+    'ORG:Client — Cayetano\'s Mobile Mechanic',
+    c.phone?`TEL;TYPE=CELL:${esc(c.phone)}`:'',
+    c.email?`EMAIL;TYPE=INTERNET:${esc(c.email)}`:'',
+    c.address?`ADR;TYPE=HOME:;;${esc(c.address)};;;;`:'',
+    vehicleNote?`NOTE:${esc(vehicleNote)}`:'',
+    'END:VCARD'
+  ].filter(Boolean).join('\r\n');
+  const blob=new Blob([vcf],{type:'text/vcard'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=`${c.name.replace(/[^a-z0-9]+/gi,'_')}.vcf`;
+  document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+
+/* ---- text a client their reminder + booking link ---- */
+function textReminder(clientId,sid){
+  const c=store.clients.find(x=>x.id===clientId); if(!c) return;
+  const s=(c.services||[]).find(x=>x.id===sid); const st=s?serviceStatus(s.nextDue):{label:''};
+  const url=location.origin+location.pathname+'#book';
+  const msg=`Hi ${c.name}, it's ${CONFIG.name} from ${CONFIG.businessName}. Your ${vehSummary(c.vehicle)} is due for a ${s?s.type.toLowerCase():'service'} (${st.label.toLowerCase()}). Reply or book a time here: ${url} — I'll confirm your appointment. Thanks!`;
+  if(c.phone){ window.location.href=`sms:${encodeURIComponent(c.phone)}?&body=${encodeURIComponent(msg)}`; }
+  else { alert('No phone number on file for this client. Add one to text a reminder.'); }
+}
+
+/* ---- schedule a follow-up onto Cayetano's booking calendar ---- */
+function scheduleFollowup(clientId,sid){
+  const c=store.clients.find(x=>x.id===clientId); if(!c) return;
+  const s=(c.services||[]).find(x=>x.id===sid);
+  const suggested = s&&s.nextDue ? s.nextDue : todayStr();
+  openApptForm({ date: suggested<todayStr()?todayStr():suggested, name:c.name, phone:c.phone, vehicle:vehSummary(c.vehicle), need:(s?s.type:'Service')+' (follow-up)' });
+}
+
+/* ---- add / confirm an appointment on the calendar ---- */
+function openApptForm(pf){
+  pf=pf||{};
+  const timeOpts=CONFIG.bookingHours.map(h=>`<option value="${h}">${fmtHour(h)}</option>`).join('');
+  openCrm(`
+    <div class="detail-head"><h3>Add appointment</h3><button class="btn btn-sm btn-ghost" onclick="closeCrm()">✕</button></div>
+    <p class="note" style="margin-bottom:8px">This drops a confirmed appointment onto your calendar.</p>
+    <div class="row2">
+      <div><label class="f">Date</label><input class="f" id="af_date" type="date" value="${attr(pf.date||todayStr())}"/></div>
+      <div><label class="f">Time</label><select class="f" id="af_time">${timeOpts}</select></div>
+    </div>
+    <div class="row2">
+      <div><label class="f">Client name</label><input class="f" id="af_name" value="${attr(pf.name)}"/></div>
+      <div><label class="f">Phone</label><input class="f" id="af_phone" value="${attr(pf.phone)}"/></div>
+    </div>
+    <label class="f">Vehicle</label><input class="f" id="af_vehicle" value="${attr(pf.vehicle)}"/>
+    <label class="f">Service needed</label><input class="f" id="af_need" value="${attr(pf.need)}"/>
+    <div class="modal-x"><button class="btn btn-primary" onclick="saveAppt()">Add to calendar</button><button class="btn btn-ghost" onclick="closeCrm()">Cancel</button></div>
+  `);
+}
+function saveAppt(){
+  const ds=mval('af_date'); const h=parseInt(document.getElementById('af_time').value,10);
+  if(!ds){ alert('Pick a date.'); return; }
+  const name=mval('af_name')||'Appointment';
+  store.bookings[ds]=store.bookings[ds]||[];
+  if(store.bookings[ds].some(b=>b.h===h)){ if(!confirm('That time already has a booking. Add anyway?')) return; }
+  store.bookings[ds].push({ h, name, phone:mval('af_phone'), vehicle:mval('af_vehicle'), need:mval('af_need'), confirmed:true, at:Date.now() });
+  save(); closeCrm(); renderCal();
+  go('book'); if(isAdmin){ selectedDate=ds; renderAdminDay(ds); }
+}
+function confirmBooking(ds,h){
+  const b=(store.bookings[ds]||[]).find(x=>x.h===h); if(b){ b.confirmed=true; save(); renderAdminDay(ds); renderCal(); }
 }
 
 /* =====================================================================

@@ -18,6 +18,19 @@ mechanic serving the **San Jose** area. Oil changes and gas engine repair
   and step-by-step instructions, plus in-person (cash) options.
 - **Contact** — name/phone/email/message **with photo upload** that goes to
   Cayetano's email.
+- **Clients (mechanic-only)** — a client book behind the mechanic PIN:
+  - Add clients with full **vehicle details** (year, make, model, color, plate,
+    mileage, VIN) — always viewable and searchable in the app.
+  - **Save to phone / Google Contacts** — exports a `.vcf` vCard the phone
+    imports into Contacts (vehicle details ride along in the note).
+  - **Log each service performed** (oil change, brakes, etc.). Logging a
+    service with a follow-up interval **auto-schedules a reminder** — an oil
+    change today creates a "due again in 3 months" follow-up.
+  - **Follow-ups dashboard** — every client's next due service, color-coded
+    (overdue / due soon / on track), with one tap to **text the customer** a
+    reminder + booking link, or **Schedule** it straight onto the calendar.
+  - **Booking calendar** shows client requests as *Requested* for Cayetano to
+    **Confirm**; he can also add confirmed appointments himself.
 - **Installable app** — "Add to Home Screen" on a phone; works offline.
 
 ## Files
@@ -43,6 +56,7 @@ const CONFIG = {
   formEndpoint: "",                 // see "Contact form" below
   pay: { zelle:"", zelleName:"Cayetano" },    // Zelle recipient (email or phone)
   bookingHours: [8,9,10,11,13,14,15,16,17],   // bookable hours (24h)
+  serviceTypes: [ {name:"Oil change", followupMonths:3}, … ], // reminder intervals
   vehicles: [ ... ],                // makes/models on the home page
   gallery:  [ ... ]                 // work photos (add `img:"url"` to show a real photo)
 };
@@ -69,13 +83,17 @@ page displays the recipient with a **Copy** button and clear step-by-step
 instructions. The amount/note fields are shown as a reminder for the client to
 enter in their bank app.
 
-### About the calendar data
-Blocked days, hours, bookings, and saved reminders are stored **in the browser
-on each device** (localStorage). That's perfect for a single phone/tablet that
-Cayetano uses. If he needs the calendar synced across multiple devices, or
-clients' bookings to reach him automatically, wire the booking/reminder actions
-to a small backend or a service like Formspree/Zapier/Google Sheets later — the
-functions to hook are `submitBooking()`, `saveReminder()`, and `submitContact()`.
+### About the calendar & client data
+Blocked days, hours, bookings, saved reminders, **and the client book** are
+stored **in the browser on each device** (localStorage). That's perfect for a
+single phone/tablet that Cayetano uses as his business device. Two implications:
+- Use one main device for the Clients book (or export vCards to keep contacts on
+  his phone, which the app already does).
+- Reminder **texts are one-tap, not automatic** — the app surfaces who's due and
+  pre-writes the SMS, and Cayetano taps send. To sync across devices or send
+  reminders automatically, wire the hooks to a small backend or Zapier/Google
+  Sheets later. The functions to hook are `submitBooking()`, `saveService()`
+  (creates follow-ups), `textReminder()`, and `submitContact()`.
 
 ## Run / preview locally
 
