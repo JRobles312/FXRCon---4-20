@@ -499,8 +499,11 @@
 
           <label class="f" data-i18n-es="Envía tu pago de Zelle a">Send your Zelle payment to</label>
           <div class="pay-opt" style="margin-top:0">
-            <div class="l"><div class="ico">💸</div><div><b id="zelleHandle">Zelle not set up yet</b><br><span class="note" id="zelleName"></span></div></div>
-            <button class="btn btn-sm btn-primary" id="zelleCopy" onclick="copyZelle()" data-i18n-es="Copiar">Copy</button>
+            <div class="l"><div class="ico">💸</div><div><b id="zelleHandle">Zelle</b><br><span class="note" id="zelleName"></span></div></div>
+            <div style="display:flex;gap:6px;flex-shrink:0">
+              <button class="btn btn-sm btn-ghost" id="zelleReveal" onclick="revealZelle()">👁 Reveal</button>
+              <button class="btn btn-sm btn-primary" id="zelleCopy" onclick="copyZelle()" data-i18n-es="Copiar">Copy</button>
+            </div>
           </div>
 
           <ol class="note" style="margin:16px 0 0 18px;line-height:1.9">
@@ -561,7 +564,7 @@
           <h3 data-i18n-es="Contáctame directo">Reach me directly</h3>
           <div style="margin-top:16px;display:flex;flex-direction:column;gap:14px">
             <a class="pay-opt" id="ctPhone" href="tel:+14088549221"><div class="l"><div class="ico">📞</div><div><b data-i18n-es="Llama o escribe">Call or text</b><br><span class="note" id="ctPhoneTxt">(408) 854-9221</span></div></div><span class="btn btn-sm btn-ghost" data-i18n-es="Llamar">Call</span></a>
-            <a class="pay-opt" id="ctEmail" href="mailto:cayetano@example.com"><div class="l"><div class="ico">✉️</div><div><b data-i18n-es="Correo">Email</b><br><span class="note" id="ctEmailTxt">cayetano@example.com</span></div></div><span class="btn btn-sm btn-ghost" data-i18n-es="Correo">Email</span></a>
+            <div class="pay-opt" id="ctEmail" onclick="emailUs()" style="cursor:pointer"><div class="l"><div class="ico">✉️</div><div><b data-i18n-es="Correo">Email</b><br><span class="note" data-i18n-es="Toca para escribirnos">Tap to send us an email</span></div></div><span class="btn btn-sm btn-ghost" data-i18n-es="Enviar correo">Email us</span></div>
             <div class="pay-opt"><div class="l"><div class="ico">📍</div><div><b data-i18n-es="Zona de servicio">Service area</b><br><span class="note" data-i18n-es="San José y ciudades cercanas">San Jose &amp; surrounding cities</span></div></div></div>
             <div class="pay-opt"><div class="l"><div class="ico">🕒</div><div><b data-i18n-es="Horario">Hours</b><br><span class="note" id="ctHours">Mon–Sat, 8am–6pm</span></div></div></div>
           </div>
@@ -703,7 +706,7 @@
       <div>
         <b data-i18n-es="Contacto">Contact</b>
         <a id="footPhone" href="tel:+14088549221">(408) 854-9221</a>
-        <a id="footEmail" href="mailto:cayetano@example.com">cayetano@example.com</a>
+        <a id="footEmail" onclick="emailUs()" style="cursor:pointer" data-i18n-es="Enviar correo">Email us</a>
         <a onclick="go('pay')" data-i18n-es="Pagar una factura">Pay an Invoice</a>
         <a onclick="go('contact')" data-i18n-es="Enviar un mensaje">Send a Message</a>
       </div>
@@ -752,7 +755,7 @@ const CONFIG = {
   businessName: "Cayetano's Mobile Mechanic",
   phone: "(408) 854-9221",          // display phone
   phoneRaw: "+14088549221",         // tel: link
-  email: "cayetano@example.com",    // where contact form lands
+  email: "Sjpd.avila911@gmail.com", // where contact form lands (never shown as text; used behind the Email button)
   area: "San Jose, CA",
   hours: "Mon–Sat, 8am–6pm",
   hoursEs: "Lun–Sáb, 8am–6pm",
@@ -766,7 +769,7 @@ const CONFIG = {
   // Cayetano's Zelle is registered to. Leave "" to show a "not set up yet"
   // placeholder. zelleName is the name that shows in the client's bank app.
   pay: {
-    zelle: "",                 // e.g. "cayetano@example.com" or "(408) 555-0123"
+    zelle: "(408) 218-3204",   // shown only masked; revealed/copied on demand
     zelleName: "Cayetano"      // display name (optional)
   },
   // Working hours offered as bookable slots (24h). Edit as you like.
@@ -893,6 +896,7 @@ function setLang(l){
   const btn=document.getElementById('langBtn'); if(btn) btn.textContent = (l==='es'?'🌐 English':'🌐 Español');
   applyI18n();
   applyConfig();                 // re-applies phone/hours in the right language
+  updatePayLinks();              // re-localizes masked Zelle / reveal labels
   initReminderServices(); renderReminders(); renderCal();
   if(isAdmin){ renderClients(); renderPartsPage(); }
   setAdminUI();
@@ -906,18 +910,15 @@ function applyConfig(){
   document.getElementById('brandName').textContent = CONFIG.name + "'s";
   document.getElementById('heroName').textContent = CONFIG.name;
   document.getElementById('year').textContent = '2026';
-  // phones/emails
-  const tel = 'tel:'+CONFIG.phoneRaw, mail='mailto:'+CONFIG.email;
+  // phones (visible) — the email is intentionally NOT rendered as text anywhere;
+  // it's only used behind the "Email us" buttons via emailUs().
+  const tel = 'tel:'+CONFIG.phoneRaw;
   document.getElementById('heroCall').href = tel;
   document.getElementById('ctPhone').href = tel;
   document.getElementById('ctPhoneTxt').textContent = CONFIG.phone;
-  document.getElementById('ctEmail').href = mail;
-  document.getElementById('ctEmailTxt').textContent = CONFIG.email;
   document.getElementById('ctHours').textContent = t(CONFIG.hours, CONFIG.hoursEs||CONFIG.hours);
   document.getElementById('footPhone').href = tel;
   document.getElementById('footPhone').textContent = CONFIG.phone;
-  document.getElementById('footEmail').href = mail;
-  document.getElementById('footEmail').textContent = CONFIG.email;
 
   // vehicles
   document.getElementById('vehicleGrid').innerHTML = CONFIG.vehicles.map(v=>
@@ -1698,21 +1699,30 @@ function renderReminders(){
 /* =====================================================================
    PAYMENTS
    ===================================================================== */
+let zelleRevealed=false;
+function maskZelle(z){
+  if(!z) return '';
+  if(z.includes('@')){ const [a,b]=z.split('@'); return (a[0]||'')+'•••@'+(b||''); }
+  const d=z.replace(/\D/g,''); return d.length>=4 ? '(•••) •••-'+d.slice(-4) : '••••';
+}
 function updatePayLinks(){
   const z=CONFIG.pay.zelle, handle=document.getElementById('zelleHandle');
-  const copyBtn=document.getElementById('zelleCopy');
+  const copyBtn=document.getElementById('zelleCopy'), revBtn=document.getElementById('zelleReveal');
   if(z){
-    handle.textContent=z;
+    handle.textContent = zelleRevealed ? z : maskZelle(z);
     handle.style.opacity='1';
     document.getElementById('zelleName').textContent=CONFIG.pay.zelleName||'';
     copyBtn.disabled=false;
+    if(revBtn){ revBtn.style.display='inline-flex'; revBtn.textContent = zelleRevealed ? t('🙈 Hide','🙈 Ocultar') : t('👁 Reveal','👁 Mostrar'); }
   } else {
     handle.textContent=t('Zelle handle coming soon','Datos de Zelle próximamente');
     handle.style.opacity='.6';
     document.getElementById('zelleName').textContent=t('Cayetano will add his Zelle details here','Cayetano agregará aquí sus datos de Zelle');
     copyBtn.disabled=true;
+    if(revBtn) revBtn.style.display='none';
   }
 }
+function revealZelle(){ zelleRevealed=!zelleRevealed; updatePayLinks(); }
 function copyZelle(){
   const z=CONFIG.pay.zelle;
   if(!z){ alert(t("Cayetano hasn't added his Zelle details yet — please pay in cash or ask him directly.",'Cayetano aún no agrega sus datos de Zelle — paga en efectivo o pregúntale directamente.')); return; }
@@ -1777,6 +1787,8 @@ async function submitContact(e){
   }
   return false;
 }
+// opens the visitor's mail app to Cayetano's address without ever showing it on the page
+function emailUs(){ window.location.href='mailto:'+CONFIG.email+'?subject='+encodeURIComponent(t('Question for ','Consulta para ')+CONFIG.businessName); }
 function mailtoFallback(){
   const s=encodeURIComponent(`Message from ${val('cName')} — ${CONFIG.businessName}`);
   const b=encodeURIComponent(`Name: ${val('cName')}\nPhone: ${val('cPhone')}\nEmail: ${val('cEmail')}\nVehicle: ${val('cVehicle')||'—'}\n\n${val('cMsg')}`);

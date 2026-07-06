@@ -86,6 +86,14 @@ For **automatic delivery including photos**, create a free form at
 `CONFIG.formEndpoint` (looks like `https://formspree.io/f/abcdwxyz`). Photos are
 then emailed straight to Cayetano — no manual attaching needed.
 
+### Privacy — email & Zelle are shielded
+Cayetano's **email is never shown as text** and there's no static `mailto:`
+link in the HTML — the "Email us" buttons build the message in JavaScript on
+tap, so bots that scrape visible text or `mailto:` links can't harvest it. His
+**Zelle number is masked** on the Pay page (`(•••) •••-3204`); customers tap
+**Reveal** to see it or **Copy** to paste it into their bank app. Both values
+live only in the `CONFIG` block (needed to function); update them there.
+
 ### Payments (Zelle)
 Payments are received by **Zelle**. In `CONFIG.pay`, set `zelle` to the email
 address or phone number Cayetano's Zelle is registered to (e.g.
