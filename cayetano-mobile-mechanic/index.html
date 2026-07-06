@@ -36,9 +36,10 @@
     .nav-links a:hover,.nav-links a.active{color:#fff;background:var(--card)}
     .nav-cta{background:var(--accent);color:#0E0F12 !important;font-weight:800 !important}
     .nav-cta:hover{background:var(--accent2) !important}
+    .nav-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
     .menu-btn{display:none;background:var(--card);border:1px solid var(--line);color:#fff;border-radius:8px;padding:8px 12px;font-size:18px}
-    .lang-btn{background:var(--bg2);border:1px solid var(--accent);color:var(--accent);border-radius:8px;padding:7px 12px;font-size:12px;font-weight:800;letter-spacing:.5px;cursor:pointer;transition:.15s}
-    .lang-btn:hover{background:var(--accent);color:#0E0F12}
+    .lang-btn{background:var(--accent);border:1px solid var(--accent);color:#0E0F12;border-radius:20px;padding:8px 14px;font-size:13px;font-weight:800;letter-spacing:.3px;cursor:pointer;transition:.15s;white-space:nowrap}
+    .lang-btn:hover{background:var(--accent2);border-color:var(--accent2)}
     @media(max-width:860px){
       .menu-btn{display:block}
       .nav-links{position:fixed;top:67px;left:0;right:0;flex-direction:column;background:var(--bg2);border-bottom:1px solid var(--line);padding:10px 16px;gap:4px;display:none}
@@ -250,9 +251,11 @@
       <a onclick="go('contact')" data-nav="contact" class="nav-cta" data-i18n-es="Contacto">Contact</a>
       <a onclick="go('clients')" data-nav="clients" title="For Cayetano — mechanic login" data-i18n-es="🔧 Clientes">🔧 Clients</a>
       <a onclick="go('parts')" data-nav="parts" title="For Cayetano — mechanic login" data-i18n-es="🧰 Piezas">🧰 Parts</a>
-      <button class="lang-btn" id="langBtn" onclick="toggleLang()" title="Cambiar idioma / Switch language">ES</button>
     </div>
-    <button class="menu-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+    <div class="nav-right">
+      <button class="lang-btn" id="langBtn" onclick="toggleLang()" title="Cambiar idioma / Switch language">🌐 Español</button>
+      <button class="menu-btn" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+    </div>
   </div>
 </nav>
 
@@ -887,7 +890,7 @@ function applyI18n(){
 }
 function setLang(l){
   lang=l; localStorage.setItem('cmm_lang',l); document.documentElement.lang=l;
-  const btn=document.getElementById('langBtn'); if(btn) btn.textContent = (l==='es'?'EN':'ES');
+  const btn=document.getElementById('langBtn'); if(btn) btn.textContent = (l==='es'?'🌐 English':'🌐 Español');
   applyI18n();
   applyConfig();                 // re-applies phone/hours in the right language
   initReminderServices(); renderReminders(); renderCal();
