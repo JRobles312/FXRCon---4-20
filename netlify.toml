@@ -1,0 +1,4 @@
+# Publish Cayetano's Mobile Mechanic site (static, no build step).
+[build]
+  publish = "cayetano-mobile-mechanic"
+  command = ""
