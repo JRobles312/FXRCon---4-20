@@ -1,6 +1,6 @@
 {
-  "name": "Cayetano's Mobile Mechanic",
-  "short_name": "Cayetano's",
+  "name": "Ramirez Mobile Mechanic",
+  "short_name": "Ramirez",
   "description": "Oil changes & gas engine repair that come to you in the San Jose area. Book, pay, and get oil-change reminders.",
   "start_url": "./index.html",
   "scope": "./",

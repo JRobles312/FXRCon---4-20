@@ -1,6 +1,6 @@
-# Cayetano's Mobile Mechanic — Website & Phone App
+# Ramirez Mobile Mechanic — Website & Phone App
 
-A single-page website + installable phone app (PWA) for Cayetano, a mobile
+A single-page website + installable phone app (PWA) for Ramirez, a mobile
 mechanic serving the **San Jose** area. Oil changes and gas engine repair
 (no diesel). Everything runs client-side — no server or database required.
 
@@ -9,15 +9,15 @@ mechanic serving the **San Jose** area. Oil changes and gas engine repair
 - **Home / Services** — hero, service list, and the makes & models worked on.
 - **Our Work** — photo gallery with placeholder tiles (drop in real photos anytime).
 - **Book** — a working calendar. Clients pick an open day + time and submit a
-  request. Cayetano can **log in ("Mechanic login")** to block whole days,
+  request. Ramirez can **log in ("Mechanic login")** to block whole days,
   block individual hours, and view/remove bookings.
 - **Oil Reminders** — clients enter their last oil change + oil type; the app
   estimates the next due date, offers an **"Add to Google Calendar"** link, and
-  can save the reminder for Cayetano to follow up.
-- **Pay** — Zelle-based. Shows Cayetano's Zelle recipient with a copy button
+  can save the reminder for Ramirez to follow up.
+- **Pay** — Zelle-based. Shows Ramirez Zelle recipient with a copy button
   and step-by-step instructions, plus in-person (cash) options.
 - **Contact** — name/phone/email/message **with photo upload** that goes to
-  Cayetano's email.
+  Ramirez email.
 - **Clients (mechanic-only)** — a client book behind the mechanic PIN:
   - Add clients with full **vehicle details** (year, make, model, color, plate,
     mileage, VIN) — always viewable and searchable in the app.
@@ -29,7 +29,7 @@ mechanic serving the **San Jose** area. Oil changes and gas engine repair
   - **Follow-ups dashboard** — every client's next due service, color-coded
     (overdue / due soon / on track), with one tap to **text the customer** a
     reminder + booking link, or **Schedule** it straight onto the calendar.
-  - **Booking calendar** shows client requests as *Requested* for Cayetano to
+  - **Booking calendar** shows client requests as *Requested* for Ramirez to
     **Confirm**; he can also add confirmed appointments himself.
 - **Parts & Estimates (mechanic-only)** — a parts catalog + quote builder:
   - **Parts catalog** with his cost, customer price, and margin. Each part has
@@ -59,13 +59,13 @@ Open `index.html` and edit the `CONFIG` object near the top of the `<script>`:
 
 ```js
 const CONFIG = {
-  name: "Cayetano",
+  name: "Ramirez",
   phone: "(408) 555-0123",          // shown on the site
   phoneRaw: "+14085550123",         // used by call/text links
-  email: "cayetano@example.com",    // where the contact form is delivered
+  email: "ramirez@example.com",    // where the contact form is delivered
   adminPin: "0420",                 // PIN for "Mechanic login" on the Book page
   formEndpoint: "",                 // see "Contact form" below
-  pay: { zelle:"", zelleName:"Cayetano" },    // Zelle recipient (email or phone)
+  pay: { zelle:"", zelleName:"Ramirez" },    // Zelle recipient (email or phone)
   bookingHours: [8,9,10,11,13,14,15,16,17],   // bookable hours (24h)
   serviceTypes: [ {name:"Oil change", followupMonths:3}, … ], // reminder intervals
   laborRate: 90, taxRate: 9.125,              // estimate defaults ($/hr, parts tax %)
@@ -78,16 +78,16 @@ const CONFIG = {
 
 ### Contact form (photo upload → email)
 By default, submitting the contact form opens the visitor's email app with the
-message pre-filled to Cayetano. Email links can't carry photo attachments, so
+message pre-filled to Ramirez. Email links can't carry photo attachments, so
 the app reminds the visitor to attach their photos manually.
 
 For **automatic delivery including photos**, create a free form at
 [formspree.io](https://formspree.io), then paste its endpoint into
 `CONFIG.formEndpoint` (looks like `https://formspree.io/f/abcdwxyz`). Photos are
-then emailed straight to Cayetano — no manual attaching needed.
+then emailed straight to Ramirez — no manual attaching needed.
 
 ### Privacy — email & Zelle are shielded
-Cayetano's **email is never shown as text** and there's no static `mailto:`
+Ramirez **email is never shown as text** and there's no static `mailto:`
 link in the HTML — the "Email us" buttons build the message in JavaScript on
 tap, so bots that scrape visible text or `mailto:` links can't harvest it. His
 **Zelle number is masked** on the Pay page (`(•••) •••-3204`); customers tap
@@ -96,8 +96,8 @@ live only in the `CONFIG` block (needed to function); update them there.
 
 ### Payments (Zelle)
 Payments are received by **Zelle**. In `CONFIG.pay`, set `zelle` to the email
-address or phone number Cayetano's Zelle is registered to (e.g.
-`"cayetano@example.com"` or `"(408) 555-0123"`), and optionally `zelleName`.
+address or phone number Ramirez Zelle is registered to (e.g.
+`"ramirez@example.com"` or `"(408) 555-0123"`), and optionally `zelleName`.
 While `zelle` is empty, the Pay page shows a "coming soon" placeholder.
 
 Zelle has no payment link — clients send money from their own bank app — so the
@@ -118,7 +118,7 @@ the script.
 The big local chains (AutoZone, O'Reilly, NAPA, Advance) don't offer a public
 pricing API, so the app links **out** to each store's live search for the part
 number/name — giving current pricing in one tap without any paid account. If
-Cayetano later gets a **PartsTech** account (an aggregator with a real
+Ramirez later gets a **PartsTech** account (an aggregator with a real
 parts-ordering API for shops), true in-app wholesale pricing can be added behind
 a small serverless proxy; the store links here keep it useful in the meantime.
 Edit `CONFIG.partSuppliers` if any store changes its search URL format.
@@ -126,11 +126,11 @@ Edit `CONFIG.partSuppliers` if any store changes its search URL format.
 ### About the calendar & client data
 Blocked days, hours, bookings, saved reminders, **and the client book** are
 stored **in the browser on each device** (localStorage). That's perfect for a
-single phone/tablet that Cayetano uses as his business device. Two implications:
+single phone/tablet that Ramirez uses as his business device. Two implications:
 - Use one main device for the Clients book (or export vCards to keep contacts on
   his phone, which the app already does).
 - Reminder **texts are one-tap, not automatic** — the app surfaces who's due and
-  pre-writes the SMS, and Cayetano taps send. To sync across devices or send
+  pre-writes the SMS, and Ramirez taps send. To sync across devices or send
   reminders automatically, wire the hooks to a small backend or Zapier/Google
   Sheets later. The functions to hook are `submitBooking()`, `saveService()`
   (creates follow-ups), `textReminder()`, and `submitContact()`.
@@ -138,7 +138,7 @@ single phone/tablet that Cayetano uses as his business device. Two implications:
 ## Run / preview locally
 
 ```bash
-cd cayetano-mobile-mechanic
+cd ramirez-mobile-mechanic
 python3 -m http.server 8080
 # open http://127.0.0.1:8080/index.html
 ```
