@@ -1226,7 +1226,7 @@ function saveClient(id){
   const data={ name, phone:mval('cf_phone'), email:mval('cf_email'), address:mval('cf_address'), notes:mval('cf_notes'),
     vehicle:{ year:mval('cf_year'), make:mval('cf_make'), model:mval('cf_model'), color:mval('cf_color'), plate:mval('cf_plate'), mileage:mval('cf_mileage'), vin:mval('cf_vin') } };
   if(id){ Object.assign(store.clients.find(x=>x.id===id), data); }
-  else { store.clients.push({ id:uid('c'), ...data, services:[], createdAt:Date.now() }); }
+  else { store.clients.push({ id:uid('c'), ...data, services:[], photos:[], createdAt:Date.now() }); }
   save(); closeCrm(); renderClients();
 }
 function deleteClient(id){
@@ -1261,6 +1261,13 @@ function openClientDetail(id){
     </dl>
     ${fus.length?`<div class="chip-row" style="margin-top:14px">${fus.map(f=>`<span class="status-badge ${f.status.cls}">${escapeHtml(svcName(f.service.type))}: ${f.status.label}</span>`).join('')}</div>`:''}
     <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 8px">
+      <h3 style="font-size:16px;margin:0">${t('📸 Vehicle photos','📸 Fotos del vehículo')}</h3>
+      <label class="btn btn-sm btn-primary" style="cursor:pointer">${t('＋ Add photo','＋ Agregar foto')}<input type="file" accept="image/*" multiple style="display:none" onchange="addClientPhoto('${c.id}', this.files)"/></label>
+    </div>
+    ${(c.photos||[]).length
+      ? `<div class="thumbs">${c.photos.slice().reverse().map(ph=>`<div class="t" style="width:90px;height:90px" title="${attr(ph.caption)}" onclick="viewClientPhoto('${c.id}','${ph.id}')"><img src="${ph.dataUrl}" alt="${attr(ph.caption)}"/><button type="button" onclick="event.stopPropagation();deleteClientPhoto('${c.id}','${ph.id}')">✕</button></div>`).join('')}</div>`
+      : `<p class="note">${t('No photos yet. Tap “＋ Add photo” to snap the vehicle or any condition (dents, leaks, wear).','Aún no hay fotos. Toca “＋ Agregar foto” para tomar el vehículo o alguna condición (golpes, fugas, desgaste).')}</p>`}
+    <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0 8px">
       <h3 style="font-size:16px;margin:0">${t('🧰 Service history','🧰 Historial de servicio')}</h3>
       <button class="btn btn-sm btn-primary" onclick="openServiceForm('${c.id}')">${t('＋ Log service','＋ Registrar servicio')}</button>
     </div>
@@ -1270,6 +1277,68 @@ function openClientDetail(id){
       </div></div>`).join('') : `<p class="note">${t('No services logged yet.','Aún no hay servicios registrados.')}</p>`}
     <div class="modal-x"><button class="btn btn-ghost" onclick="deleteClient('${c.id}')" style="color:var(--bad)">${t('Delete client','Eliminar cliente')}</button></div>
   `);
+}
+
+/* ---- vehicle / condition photos on a client (camera or library) ---- */
+function downscaleImage(file, maxDim, quality, cb){
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      let w=img.width, h=img.height;
+      if(w>maxDim || h>maxDim){ const s=Math.min(maxDim/w, maxDim/h); w=Math.round(w*s); h=Math.round(h*s); }
+      try{
+        const cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+        cv.getContext('2d').drawImage(img,0,0,w,h);
+        cb(cv.toDataURL('image/jpeg', quality));
+      }catch(err){ cb(e.target.result); }
+    };
+    img.onerror=()=>cb(e.target.result);
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function addClientPhoto(clientId, files){
+  const c=store.clients.find(x=>x.id===clientId); if(!c) return;
+  const imgs=[...files].filter(f=>f.type.startsWith('image/')); if(!imgs.length) return;
+  c.photos=c.photos||[];
+  let remaining=imgs.length; const added=[];
+  imgs.forEach(f=>downscaleImage(f, 1280, 0.72, url=>{
+    const ph={id:uid('ph'), dataUrl:url, caption:'', at:Date.now()};
+    c.photos.push(ph); added.push(ph.id);
+    if(--remaining===0){
+      try{ save(); }
+      catch(err){
+        c.photos=c.photos.filter(p=>!added.includes(p.id));
+        alert(t('Not enough storage on this device to save those photos. Delete a few older ones and try again.','No hay suficiente espacio en este dispositivo para guardar esas fotos. Elimina algunas viejas e intenta de nuevo.'));
+      }
+      openClientDetail(clientId); renderClients();
+    }
+  }));
+}
+function deleteClientPhoto(clientId, photoId){
+  const c=store.clients.find(x=>x.id===clientId); if(!c) return;
+  if(!confirm(t('Delete this photo?','¿Eliminar esta foto?'))) return;
+  c.photos=(c.photos||[]).filter(p=>p.id!==photoId); save(); openClientDetail(clientId);
+}
+function viewClientPhoto(clientId, photoId){
+  const c=store.clients.find(x=>x.id===clientId); if(!c) return;
+  const ph=(c.photos||[]).find(p=>p.id===photoId); if(!ph) return;
+  openCrm(`
+    <div class="detail-head"><h3>${t('Vehicle photo','Foto del vehículo')}</h3><button class="btn btn-sm btn-ghost" onclick="openClientDetail('${clientId}')">✕</button></div>
+    <img src="${ph.dataUrl}" alt="" style="width:100%;border-radius:12px;border:1px solid var(--line)"/>
+    <label class="f">${t('Note — condition, damage, what you saw','Nota — condición, daño, lo que viste')}</label>
+    <textarea class="f" id="ph_caption" placeholder="${t('e.g. Small dent, rear driver door','ej. Pequeño golpe, puerta trasera izquierda')}">${attr(ph.caption)}</textarea>
+    <div class="modal-x">
+      <button class="btn btn-primary" onclick="saveClientPhotoCaption('${clientId}','${photoId}')">${t('Save note','Guardar nota')}</button>
+      <button class="btn btn-ghost" onclick="deleteClientPhoto('${clientId}','${photoId}')" style="color:var(--bad)">${t('Delete photo','Eliminar foto')}</button>
+    </div>
+  `);
+}
+function saveClientPhotoCaption(clientId, photoId){
+  const c=store.clients.find(x=>x.id===clientId); if(!c) return;
+  const ph=(c.photos||[]).find(p=>p.id===photoId); if(!ph) return;
+  ph.caption=mval('ph_caption'); save(); openClientDetail(clientId);
 }
 
 /* ---- log a service (auto-schedules the follow-up) ---- */
