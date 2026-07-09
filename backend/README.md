@@ -57,7 +57,7 @@ a working default.
 | Var | Needed for | Notes |
 |-----|-----------|-------|
 | `PUBLIC_BASE_URL` | WhatsApp | Public URL of this API; used to build the PDF link Twilio fetches. |
-| `WHATSAPP_TO` | WhatsApp | Defaults to `+14087699928`. |
+| `WHATSAPP_TO` | WhatsApp | Guild's WhatsApp number. Defaults to `+19038903834`. |
 | `NOTIFY_EMAIL` | Email | Defaults to `info@fxrcon.com`. |
 | `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_WHATSAPP_FROM` | WhatsApp | Leave blank until Twilio is set up. |
 | `SMTP_HOST` / `SMTP_USER` / `SMTP_PASS` (+ `SMTP_PORT`, `SMTP_SECURE`, `SMTP_FROM`) | Email | Leave blank to disable email. |

@@ -59,6 +59,15 @@
     .chip { background: #0F2040; border: 1.5px solid #1E3A5F; color: #8A9BC0; border-radius: 22px; padding: 11px 16px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; user-select: none; -webkit-user-select: none; }
     .chip.on { background: rgba(33,150,243,0.16); border-color: #2196F3; color: #fff; }
 
+    /* ---- DICTATION ---- */
+    .dictate-row { display: none; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .mic-btn { display: inline-flex; align-items: center; gap: 8px; background: #0F2040; border: 1.5px solid #1E3A5F; color: #8A9BC0; border-radius: 22px; padding: 10px 16px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit; }
+    .mic-btn.rec { background: rgba(198,40,40,0.18); border-color: #C62828; color: #FF9E9E; animation: micpulse 1.2s infinite; }
+    @keyframes micpulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+    .lang-toggle { display: flex; gap: 4px; margin-left: auto; }
+    .lang-btn { background: #0F2040; border: 1.5px solid #1E3A5F; color: #8A9BC0; border-radius: 8px; padding: 8px 12px; font-size: 12px; font-weight: 800; cursor: pointer; font-family: inherit; }
+    .lang-btn.on { background: rgba(33,150,243,0.16); border-color: #2196F3; color: #fff; }
+
     /* ---- SUCCESS ---- */
     #done { display: none; text-align: center; padding: 60px 24px; }
     #done .check { width: 84px; height: 84px; border-radius: 50%; background: rgba(27,94,32,0.25); border: 2px solid #4CAF50; display: flex; align-items: center; justify-content: center; font-size: 44px; margin: 0 auto 24px; }
@@ -160,7 +169,14 @@
     </div>
 
     <label>Scope of Work / Notes</label>
-    <textarea id="f-scope" placeholder="What did the owner want? Solar, re-roof, additions, damage, timeline, objections… anything Guild needs for takeoff."></textarea>
+    <div class="dictate-row" id="dictate-row">
+      <button type="button" class="mic-btn" id="mic-btn" onclick="toggleDictation()">🎤 <span id="mic-label">Dictate</span></button>
+      <div class="lang-toggle">
+        <button type="button" class="lang-btn on" id="lang-en" onclick="setDictLang('en-US', this)">EN</button>
+        <button type="button" class="lang-btn" id="lang-es" onclick="setDictLang('es-US', this)">ES</button>
+      </div>
+    </div>
+    <textarea id="f-scope" placeholder="What did the owner want? Solar, re-roof, additions, damage, timeline, objections… anything Guild needs for takeoff. Or tap 🎤 Dictate and just talk."></textarea>
 
     <label>Photos <span style="color:#48597A;font-weight:600;text-transform:none;letter-spacing:0">(up to 5)</span></label>
     <div class="photo-zone">
@@ -211,6 +227,59 @@
     function getWorkTypes() {
       return Array.prototype.slice.call(document.querySelectorAll('#work-chips .chip.on'))
         .map(function (c) { return c.textContent.trim(); });
+    }
+
+    /* ---------- VOICE DICTATION (speech-to-text) ---------- */
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var recognition = null, dictating = false, dictLang = 'en-US';
+
+    if (SR) {
+      // Only show the mic if the browser actually supports speech recognition.
+      document.getElementById('dictate-row').style.display = 'flex';
+      recognition = new SR();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.onresult = function (e) {
+        var finalText = '';
+        for (var i = e.resultIndex; i < e.results.length; i++) {
+          if (e.results[i].isFinal) finalText += e.results[i][0].transcript;
+        }
+        if (finalText.trim()) {
+          var ta = document.getElementById('f-scope');
+          ta.value = (ta.value ? ta.value.replace(/\s*$/, '') + ' ' : '') + finalText.trim();
+        }
+      };
+      // Keep listening through natural pauses until the user taps stop.
+      recognition.onend = function () { if (dictating) { try { recognition.start(); } catch (e) {} } };
+      recognition.onerror = function (e) { if (e.error === 'not-allowed' || e.error === 'service-not-allowed') { alert('Microphone blocked. Allow mic access, or use your keyboard’s mic button.'); } stopDictation(); };
+    }
+
+    function setDictLang(lang, btn) {
+      dictLang = lang;
+      var was = dictating;
+      if (was) stopDictation();
+      Array.prototype.slice.call(document.querySelectorAll('.lang-btn')).forEach(function (b) { b.classList.remove('on'); });
+      btn.classList.add('on');
+      if (recognition) recognition.lang = lang;
+      if (was) startDictation();
+    }
+    function toggleDictation() { dictating ? stopDictation() : startDictation(); }
+    function startDictation() {
+      if (!recognition) return;
+      recognition.lang = dictLang;
+      try { recognition.start(); dictating = true; } catch (e) { /* already started */ }
+      updateMic();
+    }
+    function stopDictation() {
+      dictating = false;
+      if (recognition) { try { recognition.stop(); } catch (e) {} }
+      updateMic();
+    }
+    function updateMic() {
+      var b = document.getElementById('mic-btn');
+      if (!b) return;
+      b.classList.toggle('rec', dictating);
+      document.getElementById('mic-label').textContent = dictating ? 'Listening… tap to stop' : 'Dictate';
     }
 
     /* ---------- PHOTO UPLOAD (direct to Cloudinary) ---------- */
@@ -295,6 +364,7 @@
         alert('Hang on — photos are still uploading.');
         return;
       }
+      stopDictation();
 
       var btn = document.getElementById('submit-btn');
       btn.disabled = true;
@@ -346,6 +416,7 @@
     }
 
     function resetForm() {
+      stopDictation();
       ['f-owner','f-address','f-phone','f-email','f-sqft','f-scope'].forEach(function (id) { document.getElementById(id).value = ''; });
       document.getElementById('f-roof').value = '';
       Array.prototype.slice.call(document.querySelectorAll('#work-chips .chip.on')).forEach(function (c) { c.classList.remove('on'); });

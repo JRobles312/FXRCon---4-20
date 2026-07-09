@@ -30,7 +30,7 @@ const router = express.Router();
 // Config (all secrets come from Render environment variables — none hardcoded)
 // ---------------------------------------------------------------------------
 const PUBLIC_BASE_URL   = process.env.PUBLIC_BASE_URL   || 'https://fxrcon-construction.onrender.com';
-const WHATSAPP_TO       = process.env.WHATSAPP_TO        || '+14087699928';   // Guild forwarding number
+const WHATSAPP_TO       = process.env.WHATSAPP_TO        || '+19038903834';   // Guild's WhatsApp number
 const NOTIFY_EMAIL      = process.env.NOTIFY_EMAIL       || 'info@fxrcon.com';
 
 const TWILIO_ACCOUNT_SID   = process.env.TWILIO_ACCOUNT_SID   || '';
