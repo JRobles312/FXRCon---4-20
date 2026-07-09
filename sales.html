@@ -70,6 +70,24 @@
 </head>
 <body>
 
+  <!-- ===== NETLIFY FORMS DETECTION (hidden) =====
+       Netlify scans the deployed HTML for this form at build time so it knows
+       to capture submissions. The real submit is done via AJAX in submitLead()
+       so the custom UI/success screen is preserved. Field names must match. -->
+  <form name="sales-lead" data-netlify="true" netlify-honeypot="bot-field" hidden>
+    <input type="text" name="ownerName"/>
+    <input type="text" name="address"/>
+    <input type="text" name="phone"/>
+    <input type="email" name="email"/>
+    <input type="text" name="workTypes"/>
+    <input type="text" name="roof"/>
+    <input type="text" name="sqft"/>
+    <textarea name="scope"></textarea>
+    <textarea name="photos"></textarea>
+    <input type="text" name="rep"/>
+    <input type="text" name="bot-field"/>
+  </form>
+
   <!-- ===== PIN GATE ===== -->
   <div id="gate">
     <div class="logo-box">FXR</div>
@@ -167,7 +185,6 @@
   <script>
     /* ---------- CONFIG ---------- */
     var PIN            = '9928';
-    var API_BASE       = 'https://fxrcon-construction.onrender.com';
     var CLOUD_NAME     = 'dj18slpap';
     var UPLOAD_PRESET  = 'fxr_portfolio';
     var MAX_PHOTOS     = 5;
@@ -283,28 +300,29 @@
       btn.disabled = true;
       btn.textContent = 'Sending…';
 
-      var payload = {
-        ownerName:  owner,
-        address:    address,
-        phone:      phone,
-        email:      document.getElementById('f-email').value.trim(),
-        workTypes:  getWorkTypes(),
-        roof:       document.getElementById('f-roof').value,
-        sqft:       document.getElementById('f-sqft').value.trim(),
-        scope:      document.getElementById('f-scope').value.trim(),
-        photos:     photoUrls,
-        source:     'door-to-door',
-        rep:        localStorage.getItem('fxr_rep') || ''
+      // Submitted to Netlify Forms (no backend). Netlify emails the office on
+      // each submission once a form notification is configured for the site.
+      var fields = {
+        'form-name': 'sales-lead',
+        ownerName:   owner,
+        address:     address,
+        phone:       phone,
+        email:       document.getElementById('f-email').value.trim(),
+        workTypes:   getWorkTypes().join(', '),
+        roof:        document.getElementById('f-roof').value,
+        sqft:        document.getElementById('f-sqft').value.trim(),
+        scope:       document.getElementById('f-scope').value.trim(),
+        photos:      photoUrls.join('\n'),
+        rep:         localStorage.getItem('fxr_rep') || ''
       };
 
-      fetch(API_BASE + '/api/sales-leads', {
+      fetch('/', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: encodeForm(fields)
       })
-        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
-        .then(function (res) {
-          if (res.ok && res.d && res.d.success !== false) {
+        .then(function (r) {
+          if (r.ok) {
             document.getElementById('form-area').style.display = 'none';
             document.getElementById('done').style.display = 'block';
             window.scrollTo(0, 0);
@@ -313,6 +331,12 @@
           }
         })
         .catch(function () { fail(btn); });
+    }
+
+    function encodeForm(data) {
+      return Object.keys(data).map(function (k) {
+        return encodeURIComponent(k) + '=' + encodeURIComponent(data[k]);
+      }).join('&');
     }
 
     function fail(btn) {
