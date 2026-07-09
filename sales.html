@@ -97,6 +97,8 @@
     <textarea name="photos"></textarea>
     <textarea name="photoCaptions"></textarea>
     <input type="text" name="rep"/>
+    <input type="text" name="leadType"/>
+    <input type="text" name="subject"/>
     <input type="text" name="bot-field"/>
   </form>
 
@@ -421,15 +423,22 @@
         }).then(function (r) { return r.ok; });
       } else {
         // Interim (no backend yet): Netlify Forms emails the field values.
+        // Photos paired with their descriptors, one per line, for the email.
+        var photoLines = p.urls.map(function (u, i) {
+          return (p.caps[i] ? p.caps[i] + ': ' : '') + u;
+        }).join('\n');
         req = fetch('/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: encodeForm({
             'form-name': 'sales-lead',
+            // Tags the email so it's identifiable in the inbox / FXR Bridge.
+            leadType: 'Sales Lead to Bid',
+            subject: 'SALES LEAD TO BID — ' + (address || owner),
             ownerName: owner, address: address, phone: phone,
             email: lead.email, workTypes: lead.workTypes.join(', '),
             roof: lead.roof, sqft: lead.sqft, scope: lead.scope,
-            photos: p.urls.join('\n'),
+            photos: photoLines,
             photoCaptions: p.caps.join('\n'),
             rep: lead.rep
           })
