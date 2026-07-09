@@ -43,12 +43,14 @@
     .photo-zone { margin-top: 8px; }
     .photo-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; border: 2px dashed #1E3A5F; border-radius: 12px; padding: 22px; background: #0F2040; color: #8A9BC0; font-size: 14px; font-weight: 700; cursor: pointer; }
     .photo-btn.disabled { opacity: .4; pointer-events: none; }
-    .grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 12px; }
-    .thumb { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; border: 1px solid #1E3A5F; background: #0A1628; }
-    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .thumb .rm { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%; background: rgba(198,40,40,0.92); color: #fff; border: none; font-size: 15px; font-weight: 900; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-    .thumb .load { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #0F2040; color: #2196F3; font-size: 11px; font-weight: 700; letter-spacing: 1px; }
-    .thumb.err .load { color: #FF6E6E; }
+    .photo-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+    .pcard { display: flex; align-items: center; gap: 10px; background: #0F2040; border: 1px solid #1E3A5F; border-radius: 10px; padding: 8px; }
+    .pcard img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; flex-shrink: 0; }
+    .pcard .pcap { flex: 1; min-width: 0; padding: 11px 12px; border-radius: 8px; border: 1.5px solid #1E3A5F; background: #0A1628; color: #fff; font-size: 14px; font-family: inherit; outline: none; }
+    .pcard .pcap:focus { border-color: #2196F3; }
+    .pcard .rm { width: 34px; height: 34px; border-radius: 8px; background: rgba(198,40,40,0.9); color: #fff; border: none; font-size: 18px; font-weight: 900; cursor: pointer; flex-shrink: 0; }
+    .pcard.loading { justify-content: center; color: #2196F3; font-size: 12px; font-weight: 700; letter-spacing: 1px; padding: 20px; }
+    .pcard.err { color: #FF6E6E; justify-content: center; padding: 20px; font-weight: 700; }
     .photo-count { font-size: 11px; color: #8A9BC0; margin-top: 8px; letter-spacing: 1px; }
 
     .submit { margin-top: 28px; width: 100%; background: #FF8F00; color: #0A1628; border: none; border-radius: 12px; padding: 18px; font-size: 17px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 28px rgba(255,143,0,0.35); }
@@ -93,6 +95,7 @@
     <input type="text" name="sqft"/>
     <textarea name="scope"></textarea>
     <textarea name="photos"></textarea>
+    <textarea name="photoCaptions"></textarea>
     <input type="text" name="rep"/>
     <input type="text" name="bot-field"/>
   </form>
@@ -182,8 +185,8 @@
     <div class="photo-zone">
       <label class="photo-btn" id="photo-btn" for="photo-input">📷 &nbsp;Add Photos</label>
       <input id="photo-input" type="file" accept="image/*" capture="environment" multiple style="display:none" onchange="handleFiles(this.files)"/>
-      <div class="grid" id="photo-grid"></div>
-      <div class="photo-count" id="photo-count">0 / 5 uploaded</div>
+      <div class="photo-list" id="photo-grid"></div>
+      <div class="photo-count" id="photo-count">0 / 5 uploaded — add a short note under each photo</div>
     </div>
 
     <button class="submit" id="submit-btn" onclick="submitLead()">Send Lead to Office</button>
@@ -204,10 +207,11 @@
     var CLOUD_NAME     = 'dj18slpap';
     var UPLOAD_PRESET  = 'fxr_portfolio';
     var MAX_PHOTOS     = 5;
-    // Once the backend is deployed, set this to its notify-guild URL to also
-    // text Guild (scope + photos) on Send. Leave '' and only the email fires.
-    // e.g. 'https://fxrcon-construction.onrender.com/api/sales-leads/notify-guild'
-    var GUILD_ENDPOINT = '';
+    // Once the backend is deployed, set this to its create URL so Send builds
+    // the PDF report and emails it to the office. Leave '' and the form uses
+    // Netlify email (field values only, no PDF) in the meantime.
+    // e.g. 'https://fxrcon-construction.onrender.com/api/sales-leads'
+    var API_ENDPOINT = '';
 
     /* ---------- PIN GATE ---------- */
     var pinEl = document.getElementById('pin');
@@ -287,13 +291,27 @@
     }
 
     /* ---------- PHOTO UPLOAD (direct to Cloudinary) ---------- */
-    var photoUrls = [];           // successfully uploaded secure URLs
-    var pending   = 0;            // in-flight uploads
+    // The DOM is the source of truth: each uploaded photo is a .pcard[data-url]
+    // holding the Cloudinary URL and a descriptor input.
+    var pending = 0;              // in-flight uploads
+
+    function photoCells() { return document.querySelectorAll('#photo-grid .pcard[data-url]'); }
+    function photoCount() { return photoCells().length; }
+
+    function collectPhotos() {
+      var urls = [], caps = [];
+      Array.prototype.slice.call(photoCells()).forEach(function (c) {
+        urls.push(c.getAttribute('data-url'));
+        var inp = c.querySelector('.pcap');
+        caps.push(inp ? inp.value.trim() : '');
+      });
+      return { urls: urls, caps: caps };
+    }
 
     function handleFiles(fileList) {
       var files = Array.prototype.slice.call(fileList);
       for (var i = 0; i < files.length; i++) {
-        if (photoUrls.length + pending >= MAX_PHOTOS) {
+        if (photoCount() + pending >= MAX_PHOTOS) {
           alert('Max ' + MAX_PHOTOS + ' photos.');
           break;
         }
@@ -306,11 +324,10 @@
       pending++;
       updatePhotoUI();
 
-      // placeholder thumbnail while uploading
       var grid = document.getElementById('photo-grid');
       var cell = document.createElement('div');
-      cell.className = 'thumb';
-      cell.innerHTML = '<div class="load">UPLOADING…</div>';
+      cell.className = 'pcard loading';
+      cell.textContent = 'Uploading…';
       grid.appendChild(cell);
 
       var fd = new FormData();
@@ -322,35 +339,40 @@
         .then(function (data) {
           pending--;
           if (data.secure_url) {
-            photoUrls.push(data.secure_url);
+            cell.className = 'pcard';
+            cell.setAttribute('data-url', data.secure_url);
             cell.innerHTML =
               '<img src="' + data.secure_url + '"/>' +
-              '<button class="rm" onclick="removePhoto(this,\'' + data.secure_url + '\')">×</button>';
+              '<input class="pcap" type="text" placeholder="Describe this photo… (e.g. roof, panel, damage)"/>' +
+              '<button class="rm" onclick="removePhoto(this)">×</button>';
           } else {
-            cell.classList.add('err');
-            cell.innerHTML = '<div class="load">FAILED</div>';
+            cell.className = 'pcard err';
+            cell.textContent = 'Upload failed';
             setTimeout(function () { cell.remove(); }, 1600);
           }
           updatePhotoUI();
         })
         .catch(function () {
           pending--;
-          cell.classList.add('err');
-          cell.innerHTML = '<div class="load">FAILED</div>';
+          cell.className = 'pcard err';
+          cell.textContent = 'Upload failed';
           setTimeout(function () { cell.remove(); }, 1600);
           updatePhotoUI();
         });
     }
 
-    function removePhoto(btn, url) {
-      photoUrls = photoUrls.filter(function (u) { return u !== url; });
-      btn.parentNode.remove();
+    function removePhoto(btn) {
+      var card = btn.closest ? btn.closest('.pcard') : btn.parentNode;
+      if (card) card.remove();
       updatePhotoUI();
     }
 
     function updatePhotoUI() {
-      var total = photoUrls.length + pending;
-      document.getElementById('photo-count').textContent = photoUrls.length + ' / ' + MAX_PHOTOS + ' uploaded' + (pending ? ' · ' + pending + ' uploading…' : '');
+      var n = photoCount();
+      var total = n + pending;
+      document.getElementById('photo-count').textContent =
+        n + ' / ' + MAX_PHOTOS + ' added' + (pending ? ' · ' + pending + ' uploading…' : '') +
+        (n ? ' — add a short note under each photo' : '');
       document.getElementById('photo-btn').classList.toggle('disabled', total >= MAX_PHOTOS);
     }
 
@@ -374,56 +396,55 @@
       btn.disabled = true;
       btn.textContent = 'Sending…';
 
-      // Best-effort: text Guild (scope + photos + instructions) via the backend.
-      // Fire-and-forget so it never blocks or breaks the email submission.
-      if (GUILD_ENDPOINT) {
-        fetch(GUILD_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            ownerName: owner, address: address, phone: phone,
-            email: document.getElementById('f-email').value.trim(),
-            workTypes: getWorkTypes(),
-            roof: document.getElementById('f-roof').value,
-            sqft: document.getElementById('f-sqft').value.trim(),
-            scope: document.getElementById('f-scope').value.trim(),
-            photos: photoUrls,
-            rep: localStorage.getItem('fxr_rep') || ''
-          })
-        }).catch(function () {});
-      }
-
-      // Submitted to Netlify Forms (no backend). Netlify emails the office on
-      // each submission once a form notification is configured for the site.
-      var fields = {
-        'form-name': 'sales-lead',
-        ownerName:   owner,
-        address:     address,
-        phone:       phone,
-        email:       document.getElementById('f-email').value.trim(),
-        workTypes:   getWorkTypes().join(', '),
-        roof:        document.getElementById('f-roof').value,
-        sqft:        document.getElementById('f-sqft').value.trim(),
-        scope:       document.getElementById('f-scope').value.trim(),
-        photos:      photoUrls.join('\n'),
-        rep:         localStorage.getItem('fxr_rep') || ''
+      var p = collectPhotos();   // { urls: [...], caps: [...] }
+      var lead = {
+        ownerName:     owner,
+        address:       address,
+        phone:         phone,
+        email:         document.getElementById('f-email').value.trim(),
+        workTypes:     getWorkTypes(),
+        roof:          document.getElementById('f-roof').value,
+        sqft:          document.getElementById('f-sqft').value.trim(),
+        scope:         document.getElementById('f-scope').value.trim(),
+        photos:        p.urls,
+        photoCaptions: p.caps,
+        rep:           localStorage.getItem('fxr_rep') || ''
       };
 
-      fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: encodeForm(fields)
-      })
-        .then(function (r) {
-          if (r.ok) {
-            document.getElementById('form-area').style.display = 'none';
-            document.getElementById('done').style.display = 'block';
-            window.scrollTo(0, 0);
-          } else {
-            fail(btn);
-          }
-        })
-        .catch(function () { fail(btn); });
+      var req;
+      if (API_ENDPOINT) {
+        // Backend: builds the PDF report and emails it to the office.
+        req = fetch(API_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(lead)
+        }).then(function (r) { return r.ok; });
+      } else {
+        // Interim (no backend yet): Netlify Forms emails the field values.
+        req = fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: encodeForm({
+            'form-name': 'sales-lead',
+            ownerName: owner, address: address, phone: phone,
+            email: lead.email, workTypes: lead.workTypes.join(', '),
+            roof: lead.roof, sqft: lead.sqft, scope: lead.scope,
+            photos: p.urls.join('\n'),
+            photoCaptions: p.caps.join('\n'),
+            rep: lead.rep
+          })
+        }).then(function (r) { return r.ok; });
+      }
+
+      req.then(function (ok) {
+        if (ok) {
+          document.getElementById('form-area').style.display = 'none';
+          document.getElementById('done').style.display = 'block';
+          window.scrollTo(0, 0);
+        } else {
+          fail(btn);
+        }
+      }).catch(function () { fail(btn); });
     }
 
     function encodeForm(data) {
@@ -443,7 +464,7 @@
       ['f-owner','f-address','f-phone','f-email','f-sqft','f-scope'].forEach(function (id) { document.getElementById(id).value = ''; });
       document.getElementById('f-roof').value = '';
       Array.prototype.slice.call(document.querySelectorAll('#work-chips .chip.on')).forEach(function (c) { c.classList.remove('on'); });
-      photoUrls = []; pending = 0;
+      pending = 0;
       document.getElementById('photo-grid').innerHTML = '';
       updatePhotoUI();
       document.getElementById('done').style.display = 'none';

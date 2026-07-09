@@ -31,14 +31,14 @@ const router = express.Router();
 // ---------------------------------------------------------------------------
 const PUBLIC_BASE_URL   = process.env.PUBLIC_BASE_URL   || 'https://fxrcon-construction.onrender.com';
 const WHATSAPP_TO       = process.env.WHATSAPP_TO        || '+19038903834';   // Guild's WhatsApp number (PDF-send route)
-const NOTIFY_EMAIL      = process.env.NOTIFY_EMAIL       || 'info@fxrcon.com';
+const NOTIFY_EMAIL      = process.env.NOTIFY_EMAIL       || 'jesus@fxrcon.com';
 
 const TWILIO_ACCOUNT_SID   = process.env.TWILIO_ACCOUNT_SID   || '';
 const TWILIO_AUTH_TOKEN    = process.env.TWILIO_AUTH_TOKEN    || '';
 const TWILIO_WHATSAPP_FROM = process.env.TWILIO_WHATSAPP_FROM || '';          // e.g. whatsapp:+14155238886 (sandbox)
 
 // --- Guild bid-request text (fires on new lead) ---
-const GUILD_PROVIDER = (process.env.GUILD_PROVIDER || 'ringcentral').toLowerCase(); // 'ringcentral' | 'twilio'
+const GUILD_PROVIDER = (process.env.GUILD_PROVIDER || 'none').toLowerCase(); // 'none' (default) | 'ringcentral' | 'twilio'
 const GUILD_TO       = process.env.GUILD_TO      || '+19038903834';            // Guild's number
 const GUILD_CHANNEL  = (process.env.GUILD_CHANNEL || 'mms').toLowerCase();      // Twilio only: 'mms' | 'whatsapp'
 const TWILIO_FROM    = process.env.TWILIO_FROM   || TWILIO_WHATSAPP_FROM || ''; // Twilio sending number
@@ -110,6 +110,7 @@ router.post('/', async (req, res) => {
       sqft:      String(b.sqft || '').trim(),
       scope:     String(b.scope || '').trim(),
       photos:    Array.isArray(b.photos) ? b.photos.slice(0, 5) : [],
+      photoCaptions: Array.isArray(b.photoCaptions) ? b.photoCaptions.slice(0, 5).map(s => String(s || '').trim()) : [],
       rep:       String(b.rep || '').trim(),
       source:    'door-to-door',            // keeps this flow separate from web /api/submit-lead
       status:    'new',                     // new | sent
@@ -121,17 +122,17 @@ router.post('/', async (req, res) => {
     list.push(lead);
     saveLeads(list);
 
-    // Best-effort email notification (never blocks the response).
-    sendEmail(
-      `New door-to-door lead — ${lead.ownerName}`,
-      newLeadEmailBody(lead)
-    ).catch(() => {});
+    // Build the PDF report and email it (with photos) to the office. This is
+    // the deliverable Jesus forwards to Guild's WhatsApp.
+    const email = await emailLeadReport(lead)
+      .then(() => ({ sent: true }))
+      .catch(e => ({ sent: false, reason: String(e.message || e) }));
 
-    // Text the lead (scope + photos + instructions) to Guild for a bid.
-    const guild = await sendGuild(lead);
+    // Optional automated text to Guild (off by default; GUILD_PROVIDER=none).
+    const guild = GUILD_PROVIDER === 'none' ? { sent: false, reason: 'disabled' } : await sendGuild(lead);
     if (guild.sent) updateLead(lead.id, { status: 'sent', sentAt: new Date().toISOString() });
 
-    res.status(201).json({ success: true, id: lead.id, guild, lead });
+    res.status(201).json({ success: true, id: lead.id, email, guild, lead });
   } catch (err) {
     console.error('[sales-leads] create error', err);
     res.status(500).json({ success: false, error: 'Server error saving lead.' });
@@ -220,6 +221,87 @@ router.get('/:id/pdf', (req, res) => {
 // ===========================================================================
 const NAVY = '#0A1628', BLUE = '#2196F3', SLATE = '#5A6B8C', GOLD = '#FF8F00';
 
+// Draw the whole report onto a pdfkit doc (shared by the file + buffer builders).
+async function renderPdf(doc, lead) {
+  const W = doc.page.width - doc.page.margins.left - doc.page.margins.right;
+  const L = doc.page.margins.left;
+
+  // Header band
+  doc.rect(0, 0, doc.page.width, 92).fill(NAVY);
+  doc.roundedRect(L, 26, 66, 40, 6).fill(BLUE);
+  doc.fillColor('#ffffff').font('Helvetica-Bold').fontSize(22).text('FXR', L, 36, { width: 66, align: 'center' });
+  doc.fillColor('#ffffff').fontSize(15).text('FIELD BID REQUEST', L + 82, 32);
+  doc.fillColor('#9FB3D6').font('Helvetica').fontSize(9)
+     .text('FXR Construction  ·  Solar & Construction  ·  For Guild takeoff / estimating', L + 82, 54);
+  doc.y = 116;
+
+  const created = new Date(lead.createdAt || Date.now());
+  doc.fillColor(SLATE).font('Helvetica').fontSize(9)
+     .text('Received: ' + created.toLocaleString('en-US') + (lead.rep ? '     ·     Rep: ' + lead.rep : ''), L, doc.y);
+  doc.moveDown(1);
+
+  function section(title) {
+    doc.moveDown(0.6);
+    doc.fillColor(BLUE).font('Helvetica-Bold').fontSize(11).text(title.toUpperCase(), L, doc.y);
+    const y = doc.y + 2;
+    doc.moveTo(L, y).lineTo(L + W, y).lineWidth(1).strokeColor('#D5DEEC').stroke();
+    doc.moveDown(0.5);
+  }
+  function field(label, value) {
+    const y = doc.y;
+    doc.fillColor(SLATE).font('Helvetica-Bold').fontSize(9).text(label.toUpperCase(), L, y, { width: 120 });
+    doc.fillColor('#0A1628').font('Helvetica').fontSize(11).text(value || '—', L + 128, y, { width: W - 128 });
+    doc.moveDown(0.55);
+  }
+
+  section('Property & Owner');
+  field('Owner', lead.ownerName);
+  field('Address', lead.address);
+  field('Phone', lead.phone);
+  if (lead.email) field('Email', lead.email);
+  field('Type of Work', (lead.workTypes && lead.workTypes.length) ? lead.workTypes.join(', ') : '—');
+  const rs = [lead.roof || '', lead.sqft ? '~' + lead.sqft + ' sq ft' : ''].filter(Boolean).join('   ·   ');
+  if (rs) field('Roof / Size', rs);
+
+  // SCOPE OF WORK — the headline of the report
+  section('Scope of Work');
+  doc.fillColor('#0A1628').font('Helvetica').fontSize(12)
+     .text(lead.scope || 'No notes provided.', L, doc.y, { width: W, align: 'left', lineGap: 2 });
+
+  // Photos, each with the rep's descriptor beneath
+  const photos = Array.isArray(lead.photos) ? lead.photos : [];
+  const caps = Array.isArray(lead.photoCaptions) ? lead.photoCaptions : [];
+  if (photos.length) {
+    section('Site Photos (' + photos.length + ')');
+    const gap = 14, cols = 2, cellW = (W - gap) / cols, imgH = 150, capH = 24, rowH = imgH + capH + gap;
+    let col = 0, rowY = doc.y;
+    for (let i = 0; i < photos.length; i++) {
+      if (rowY + rowH > doc.page.height - doc.page.margins.bottom) { doc.addPage(); rowY = doc.page.margins.top; col = 0; }
+      const x = L + col * (cellW + gap);
+      const buf = await fetchImage(photos[i]);
+      if (buf) {
+        try { doc.image(buf, x, rowY, { fit: [cellW, imgH], align: 'center', valign: 'center' }); }
+        catch (e) { drawPhotoError(doc, x, rowY, cellW, imgH); }
+      } else {
+        drawPhotoError(doc, x, rowY, cellW, imgH);
+      }
+      const cap = (caps[i] && caps[i].trim()) ? caps[i].trim() : 'Photo ' + (i + 1);
+      doc.fillColor('#0A1628').font('Helvetica-Bold').fontSize(9)
+         .text((i + 1) + '. ' + cap, x, rowY + imgH + 5, { width: cellW, align: 'left', height: capH, ellipsis: true });
+      col++;
+      if (col === cols) { col = 0; rowY += rowH; }
+    }
+  }
+
+  // Footer (on the final page). Drop the bottom margin so writing into the
+  // footer strip doesn't spill onto a fresh blank page.
+  doc.page.margins.bottom = 0;
+  doc.fontSize(8).fillColor(SLATE).font('Helvetica')
+     .text('FXR Construction  ·  CSLB #1116388  ·  408-769-9928  ·  info@fxrcon.com',
+           L, doc.page.height - 34, { width: W, align: 'center', lineBreak: false });
+}
+
+// Build the PDF to a file (used by the dashboard generate-pdf route).
 function buildPdf(lead, outPath) {
   return new Promise(async (resolve, reject) => {
     try {
@@ -228,92 +310,24 @@ function buildPdf(lead, outPath) {
       stream.on('finish', resolve);
       stream.on('error', reject);
       doc.pipe(stream);
-
-      const W = doc.page.width - doc.page.margins.left - doc.page.margins.right;
-      const L = doc.page.margins.left;
-
-      // Header band
-      doc.rect(0, 0, doc.page.width, 92).fill(NAVY);
-      doc.roundedRect(L, 26, 66, 40, 6).fill(BLUE);
-      doc.fillColor('#ffffff').font('Helvetica-Bold').fontSize(22).text('FXR', L, 36, { width: 66, align: 'center' });
-      doc.fillColor('#ffffff').fontSize(15).text('DOOR-TO-DOOR SALES LEAD', L + 82, 32);
-      doc.fillColor('#9FB3D6').font('Helvetica').fontSize(9)
-         .text('FXR Construction  ·  Solar & Construction  ·  For Guild takeoff / estimating', L + 82, 54);
-      doc.moveDown(4);
-      doc.y = 116;
-
-      // Meta line
-      doc.fillColor(SLATE).font('Helvetica').fontSize(9);
-      const created = new Date(lead.createdAt);
-      doc.text('Lead ID: ' + lead.id + '     Received: ' + created.toLocaleString('en-US') +
-               (lead.rep ? '     Rep: ' + lead.rep : ''), L, doc.y);
-      doc.moveDown(1);
-
-      // Section helper
-      function section(title) {
-        doc.moveDown(0.6);
-        doc.fillColor(BLUE).font('Helvetica-Bold').fontSize(11).text(title.toUpperCase(), L, doc.y);
-        const y = doc.y + 2;
-        doc.moveTo(L, y).lineTo(L + W, y).lineWidth(1).strokeColor('#D5DEEC').stroke();
-        doc.moveDown(0.5);
-      }
-      function field(label, value) {
-        const y = doc.y;
-        doc.fillColor(SLATE).font('Helvetica-Bold').fontSize(9).text(label.toUpperCase(), L, y, { width: 130 });
-        doc.fillColor('#0A1628').font('Helvetica').fontSize(11).text(value || '—', L + 138, y, { width: W - 138 });
-        doc.moveDown(0.55);
-      }
-
-      section('Property Owner');
-      field('Owner Name', lead.ownerName);
-      field('Phone', lead.phone);
-      field('Email', lead.email);
-
-      section('Work Requested');
-      field('Type of Work', (lead.workTypes && lead.workTypes.length) ? lead.workTypes.join(', ') : '—');
-
-      section('Property');
-      field('Address', lead.address);
-      field('Roof Condition', lead.roof);
-      field('Approx. Sq Ft', lead.sqft);
-
-      section('Scope of Work / Notes');
-      doc.fillColor('#0A1628').font('Helvetica').fontSize(11)
-         .text(lead.scope || 'No notes provided.', L, doc.y, { width: W, align: 'left' });
-
-      // Photos
-      const photos = Array.isArray(lead.photos) ? lead.photos : [];
-      if (photos.length) {
-        section('Site Photos (' + photos.length + ')');
-        const gap = 12, cols = 2, cellW = (W - gap) / cols, cellH = 150;
-        let col = 0, rowY = doc.y;
-        for (let i = 0; i < photos.length; i++) {
-          const buf = await fetchImage(photos[i]);
-          const x = L + col * (cellW + gap);
-          if (rowY + cellH > doc.page.height - doc.page.margins.bottom) {
-            doc.addPage(); rowY = doc.page.margins.top; col = 0;
-          }
-          if (buf) {
-            try { doc.image(buf, x, rowY, { fit: [cellW, cellH], align: 'center', valign: 'center' }); }
-            catch (e) { drawPhotoError(doc, x, rowY, cellW, cellH); }
-          } else {
-            drawPhotoError(doc, x, rowY, cellW, cellH, photos[i]);
-          }
-          col++;
-          if (col === cols) { col = 0; rowY += cellH + gap; }
-        }
-        doc.y = (col === 0 ? rowY : rowY + cellH + gap);
-      }
-
-      // Footer
-      doc.fontSize(8).fillColor(SLATE).font('Helvetica')
-         .text('FXR Construction  ·  CSLB #1116388  ·  408-769-9928  ·  info@fxrcon.com',
-               L, doc.page.height - 40, { width: W, align: 'center' });
-
+      await renderPdf(doc, lead);
       doc.end();
-    } catch (err) {
-      reject(err);
-    }
+    } catch (err) { reject(err); }
+  });
+}
+
+// Build the PDF into a Buffer (used for email attachments).
+function buildPdfBuffer(lead) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const doc = new PDFDocument({ size: 'LETTER', margin: 48 });
+      const chunks = [];
+      doc.on('data', d => chunks.push(d));
+      doc.on('end', () => resolve(Buffer.concat(chunks)));
+      doc.on('error', reject);
+      await renderPdf(doc, lead);
+      doc.end();
+    } catch (err) { reject(err); }
   });
 }
 
@@ -384,9 +398,12 @@ function guildMessage(lead) {
   return L.join('\n');
 }
 
-// Dispatch to the configured provider (RingCentral by default).
+// Dispatch to the configured provider. Off by default ('none') — leads are
+// delivered by the emailed PDF report, which Jesus forwards to Guild manually.
 async function sendGuild(lead) {
-  return GUILD_PROVIDER === 'twilio' ? sendGuildTwilio(lead) : sendGuildRC(lead);
+  if (GUILD_PROVIDER === 'none') return { sent: false, reason: 'disabled' };
+  if (GUILD_PROVIDER === 'twilio') return sendGuildTwilio(lead);
+  return sendGuildRC(lead);
 }
 
 // --- RingCentral: send the MMS from the FXR office line ---
@@ -484,37 +501,64 @@ function transporter() {
   });
   return _transporter;
 }
-async function sendEmail(subject, html) {
+async function sendEmail(subject, html, attachments) {
   const t = transporter();
   if (!t) throw new Error('SMTP not configured (set SMTP_HOST / SMTP_USER / SMTP_PASS).');
-  await t.sendMail({
-    from: process.env.SMTP_FROM || 'FXR Sales <info@fxrcon.com>',
+  const msg = {
+    from: process.env.SMTP_FROM || 'FXR Sales <jesus@fxrcon.com>',
     to: NOTIFY_EMAIL,
     subject,
     html
-  });
+  };
+  if (attachments && attachments.length) msg.attachments = attachments;
+  await t.sendMail(msg);
+}
+
+// Build the PDF report + attach the photos, and email it all to the office.
+// This is the deliverable Jesus forwards to Guild.
+async function emailLeadReport(lead) {
+  const safe = (lead.ownerName || 'lead').replace(/[^\w.\- ]+/g, '').trim() || 'lead';
+  const attachments = [];
+
+  // The PDF report.
+  const pdf = await buildPdfBuffer(lead);
+  attachments.push({ filename: `FXR Bid Request - ${safe}.pdf`, content: pdf, contentType: 'application/pdf' });
+
+  // The photos as individual files, named by their descriptor so the filename
+  // itself tells you what each one is.
+  const photos = Array.isArray(lead.photos) ? lead.photos : [];
+  const caps = Array.isArray(lead.photoCaptions) ? lead.photoCaptions : [];
+  for (let i = 0; i < photos.length; i++) {
+    const buf = await fetchImage(photos[i]);
+    if (!buf) continue;
+    const label = (caps[i] && caps[i].trim()) ? caps[i].trim().replace(/[^\w.\- ]+/g, '') : 'photo';
+    attachments.push({ filename: `${i + 1} - ${label}.jpg`, content: buf, contentType: 'image/jpeg' });
+  }
+
+  await sendEmail(`New lead — ${lead.ownerName} — ${lead.address}`, newLeadEmailBody(lead), attachments);
 }
 
 function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 }
 function newLeadEmailBody(lead) {
-  const photos = (lead.photos || []).map(u => `<a href="${esc(u)}">photo</a>`).join(' · ') || '—';
+  const caps = Array.isArray(lead.photoCaptions) ? lead.photoCaptions : [];
+  const photoList = (lead.photos || []).map((u, i) =>
+    `<li><a href="${esc(u)}">${esc(caps[i] && caps[i].trim() ? caps[i].trim() : 'Photo ' + (i + 1))}</a></li>`).join('');
   return `
-    <h2 style="font-family:Arial;color:#0A1628">New door-to-door lead</h2>
+    <h2 style="font-family:Arial;color:#0A1628;margin-bottom:2px">New lead — ${esc(lead.ownerName)}</h2>
+    <p style="font-family:Arial;font-size:13px;color:#5A6B8C;margin-top:0">📎 The full <b>PDF bid request</b> and the <b>photos</b> are attached — forward them to Guild's WhatsApp.</p>
     <table style="font-family:Arial;font-size:14px;border-collapse:collapse">
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Owner</td><td><b>${esc(lead.ownerName)}</b></td></tr>
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Address</td><td>${esc(lead.address)}</td></tr>
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Phone</td><td>${esc(lead.phone)}</td></tr>
-      <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Email</td><td>${esc(lead.email) || '—'}</td></tr>
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Work</td><td><b>${esc((lead.workTypes || []).join(', ')) || '—'}</b></td></tr>
-      <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Roof</td><td>${esc(lead.roof) || '—'}</td></tr>
-      <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Sq Ft</td><td>${esc(lead.sqft) || '—'}</td></tr>
+      <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Roof / Size</td><td>${esc([lead.roof, lead.sqft ? '~' + lead.sqft + ' sq ft' : ''].filter(Boolean).join(' · ')) || '—'}</td></tr>
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Rep</td><td>${esc(lead.rep) || '—'}</td></tr>
-      <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C;vertical-align:top">Scope</td><td>${esc(lead.scope) || '—'}</td></tr>
-      <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Photos</td><td>${photos}</td></tr>
     </table>
-    <p style="font-family:Arial;font-size:13px;color:#5A6B8C">Review in the sales admin dashboard, then generate the PDF and send to Guild.</p>`;
+    <p style="font-family:Arial;font-size:13px;color:#0A1628;margin-bottom:2px"><b>Scope of Work</b></p>
+    <p style="font-family:Arial;font-size:14px;color:#0A1628;margin-top:0;white-space:pre-wrap">${esc(lead.scope) || '—'}</p>
+    ${photoList ? `<p style="font-family:Arial;font-size:13px;color:#0A1628;margin-bottom:2px"><b>Photos</b></p><ul style="font-family:Arial;font-size:13px;color:#0A1628;margin-top:0">${photoList}</ul>` : ''}`;
 }
 function pdfEmailBody(lead, pdfUrl, wa) {
   const status = wa.sent
