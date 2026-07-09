@@ -56,12 +56,32 @@ a working default.
 
 | Var | Needed for | Notes |
 |-----|-----------|-------|
-| `PUBLIC_BASE_URL` | WhatsApp | Public URL of this API; used to build the PDF link Twilio fetches. |
-| `WHATSAPP_TO` | WhatsApp | Guild's WhatsApp number. Defaults to `+19038903834`. |
+| `GUILD_PROVIDER` | Guild text | `ringcentral` (default) or `twilio`. |
+| `GUILD_TO` | Guild text | Guild's number. Defaults to `+19038903834`. |
+| `RC_CLIENT_ID` / `RC_CLIENT_SECRET` / `RC_JWT` | Guild text (RingCentral) | From a RingCentral app + JWT credential with the SMS permission. |
+| `RC_FROM` | Guild text (RingCentral) | FXR office line the text is sent from. Defaults to `+14087699928`. |
+| `RC_SERVER_URL` | Guild text (RingCentral) | `https://platform.ringcentral.com` (prod) or the devtest URL for sandbox. |
+| `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_FROM` | Guild text (Twilio) | Only if `GUILD_PROVIDER=twilio`. |
+| `GUILD_CHANNEL` | Guild text (Twilio) | `mms` (default) or `whatsapp`. |
 | `NOTIFY_EMAIL` | Email | Defaults to `info@fxrcon.com`. |
-| `TWILIO_ACCOUNT_SID` / `TWILIO_AUTH_TOKEN` / `TWILIO_WHATSAPP_FROM` | WhatsApp | Leave blank until Twilio is set up. |
 | `SMTP_HOST` / `SMTP_USER` / `SMTP_PASS` (+ `SMTP_PORT`, `SMTP_SECURE`, `SMTP_FROM`) | Email | Leave blank to disable email. |
+| `PUBLIC_BASE_URL` / `WHATSAPP_TO` / `TWILIO_WHATSAPP_FROM` | Dashboard PDF→WhatsApp button | Only for the separate `generate-pdf` flow. |
 | `DATA_DIR` | Durability | Point at a Render persistent disk to survive restarts. |
+
+### Guild texting via RingCentral (recommended)
+
+The lead's scope + photos + a bid-request instruction go to Guild as an **MMS
+from the FXR office line** — no new vendor. To turn it on:
+
+1. At **developers.ringcentral.com**, create an app (REST API, server-only /
+   JWT auth) with the **SMS** permission and graduate it to Production.
+2. Copy its **Client ID** and **Client Secret**, and generate a **JWT
+   credential** for it → set `RC_CLIENT_ID`, `RC_CLIENT_SECRET`, `RC_JWT`.
+3. Make sure the office number in `RC_FROM` is SMS-enabled and A2P/10DLC
+   registered on your RingCentral account.
+
+Photos are auto-shrunk through Cloudinary to stay under RingCentral's 1.5 MB /
+10-attachment limit.
 
 ## Storage & the Render free tier
 

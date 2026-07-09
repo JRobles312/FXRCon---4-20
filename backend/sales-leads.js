@@ -38,9 +38,17 @@ const TWILIO_AUTH_TOKEN    = process.env.TWILIO_AUTH_TOKEN    || '';
 const TWILIO_WHATSAPP_FROM = process.env.TWILIO_WHATSAPP_FROM || '';          // e.g. whatsapp:+14155238886 (sandbox)
 
 // --- Guild bid-request text (fires on new lead) ---
-const GUILD_TO      = process.env.GUILD_TO      || '+19038903834';            // Guild's number
-const GUILD_CHANNEL = (process.env.GUILD_CHANNEL || 'mms').toLowerCase();      // 'mms' (picture text) | 'whatsapp'
-const TWILIO_FROM   = process.env.TWILIO_FROM   || TWILIO_WHATSAPP_FROM || ''; // your Twilio sending number
+const GUILD_PROVIDER = (process.env.GUILD_PROVIDER || 'ringcentral').toLowerCase(); // 'ringcentral' | 'twilio'
+const GUILD_TO       = process.env.GUILD_TO      || '+19038903834';            // Guild's number
+const GUILD_CHANNEL  = (process.env.GUILD_CHANNEL || 'mms').toLowerCase();      // Twilio only: 'mms' | 'whatsapp'
+const TWILIO_FROM    = process.env.TWILIO_FROM   || TWILIO_WHATSAPP_FROM || ''; // Twilio sending number
+
+// RingCentral (send the Guild MMS from the FXR office line, no new vendor).
+const RC_SERVER_URL    = process.env.RC_SERVER_URL    || 'https://platform.ringcentral.com';
+const RC_CLIENT_ID     = process.env.RC_CLIENT_ID     || '';
+const RC_CLIENT_SECRET = process.env.RC_CLIENT_SECRET || '';
+const RC_JWT           = process.env.RC_JWT           || '';
+const RC_FROM          = process.env.RC_FROM          || '+14087699928';        // FXR office RingCentral line
 
 // ---------------------------------------------------------------------------
 // Storage — flat JSON file. Simple, zero external services for v1.
@@ -376,7 +384,69 @@ function guildMessage(lead) {
   return L.join('\n');
 }
 
+// Dispatch to the configured provider (RingCentral by default).
 async function sendGuild(lead) {
+  return GUILD_PROVIDER === 'twilio' ? sendGuildTwilio(lead) : sendGuildRC(lead);
+}
+
+// --- RingCentral: send the MMS from the FXR office line ---
+// Photos are shrunk via Cloudinary so the whole message stays under
+// RingCentral's 1.5MB / 10-attachment cap.
+async function fetchSmallImage(url) {
+  try {
+    const small = url.replace('/image/upload/', '/image/upload/f_jpg,q_auto:eco,w_800/');
+    const r = await fetch(small);
+    if (!r.ok) return null;
+    return Buffer.from(await r.arrayBuffer());
+  } catch (e) {
+    return null;
+  }
+}
+
+async function sendGuildRC(lead) {
+  if (!RC_CLIENT_ID || !RC_CLIENT_SECRET || !RC_JWT || !RC_FROM) {
+    return { sent: false, reason: 'RingCentral not configured (set RC_CLIENT_ID / RC_CLIENT_SECRET / RC_JWT / RC_FROM).' };
+  }
+  try {
+    const { SDK } = require('@ringcentral/sdk');
+    const FormData = require('form-data');
+    const rcsdk = new SDK({ server: RC_SERVER_URL, clientId: RC_CLIENT_ID, clientSecret: RC_CLIENT_SECRET });
+    const platform = rcsdk.platform();
+    await platform.login({ jwt: RC_JWT });
+
+    const body = { from: { phoneNumber: RC_FROM }, to: [{ phoneNumber: GUILD_TO }], text: guildMessage(lead) };
+
+    // Collect photos as small JPEGs, staying under the 1.5MB combined cap.
+    const media = [];
+    let total = 0;
+    for (const url of (Array.isArray(lead.photos) ? lead.photos : []).slice(0, 10)) {
+      const buf = await fetchSmallImage(url);
+      if (!buf) continue;
+      if (total + buf.length > 1400000) break;   // headroom under RingCentral's 1.5MB
+      media.push(buf); total += buf.length;
+    }
+
+    let response;
+    if (media.length) {
+      const form = new FormData();
+      form.append('json', Buffer.from(JSON.stringify(body)), { filename: 'request.json', contentType: 'application/json' });
+      media.forEach(function (buf, i) {
+        form.append('attachment', buf, { filename: 'photo' + (i + 1) + '.jpg', contentType: 'image/jpeg' });
+      });
+      response = await platform.post('/restapi/v1.0/account/~/extension/~/sms', form);
+    } else {
+      response = await platform.post('/restapi/v1.0/account/~/extension/~/sms', body);
+    }
+    const json = await response.json();
+    platform.logout().catch(function () {});
+    return { sent: true, id: json.id, to: GUILD_TO, from: RC_FROM, photos: media.length, provider: 'ringcentral' };
+  } catch (err) {
+    return { sent: false, reason: String((err && err.message) || err) };
+  }
+}
+
+// --- Twilio: alternative sender (MMS or WhatsApp) ---
+async function sendGuildTwilio(lead) {
   if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_FROM) {
     return { sent: false, reason: 'Twilio not configured (set TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_FROM).' };
   }
@@ -389,7 +459,7 @@ async function sendGuild(lead) {
     const params = { from, to, body: guildMessage(lead) };
     if (media.length) params.mediaUrl = media;
     const msg = await twilio.messages.create(params);
-    return { sent: true, sid: msg.sid, channel: GUILD_CHANNEL, to: GUILD_TO, photos: media.length };
+    return { sent: true, sid: msg.sid, channel: GUILD_CHANNEL, to: GUILD_TO, photos: media.length, provider: 'twilio' };
   } catch (err) {
     return { sent: false, reason: String(err.message || err) };
   }
