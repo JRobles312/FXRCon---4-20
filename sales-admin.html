@@ -113,17 +113,19 @@
 
   <script>
     /* ---------- CONFIG ---------- */
-    var PIN      = '9928';
+    var PIN      = '7314';   // admin-only — separate from the crew form PIN (9928)
     var API_BASE = 'https://fxrcon-construction.onrender.com';
 
     /* ---------- PIN GATE ---------- */
+    // Admin dashboard uses its OWN password + session flag, separate from the
+    // field intake form, so unlocking the crew form never unlocks this.
     var pinEl = document.getElementById('pin');
-    if (sessionStorage.getItem('fxr_sales_ok') === '1') { hideGate(); load(); }
+    if (sessionStorage.getItem('fxr_admin_ok') === '1') { hideGate(); load(); }
     pinEl.addEventListener('keyup', function (e) { if (e.key === 'Enter') checkPin(); });
 
     function checkPin() {
       if (pinEl.value === PIN) {
-        sessionStorage.setItem('fxr_sales_ok', '1');
+        sessionStorage.setItem('fxr_admin_ok', '1');
         hideGate();
         load();
       } else {
