@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#0A1628"/>
+  <title>FXR Sales — Door Intake</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #0A1628; color: #E8EFF8; padding-bottom: 40px; }
+
+    /* ---- PIN GATE ---- */
+    #gate { position: fixed; inset: 0; z-index: 500; background: linear-gradient(135deg,#0A1628 0%,#0D2145 60%,#0A1E3D 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; }
+    #gate .logo-box { background: #1565C0; border-radius: 10px; padding: 10px 18px; font-weight: 900; font-size: 30px; color: #fff; letter-spacing: 3px; margin-bottom: 8px; }
+    #gate .sub { color: #8A9BC0; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 36px; }
+    #pin { width: 100%; max-width: 280px; text-align: center; font-size: 30px; letter-spacing: 12px; padding: 16px; border-radius: 12px; border: 2px solid #1E3A5F; background: #0A1628; color: #fff; outline: none; }
+    #pin:focus { border-color: #2196F3; }
+    #gate button { margin-top: 20px; width: 100%; max-width: 280px; background: #FF8F00; color: #0A1628; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; }
+    #gate-err { color: #FF6E6E; font-size: 13px; margin-top: 16px; height: 16px; }
+
+    /* ---- HEADER ---- */
+    header { background: #0A1628; border-bottom: 2px solid #1E3A5F; padding: 14px 18px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .logo-box { background: #1565C0; border-radius: 7px; padding: 5px 11px; font-weight: 900; font-size: 19px; color: #fff; letter-spacing: 2px; }
+    .htxt b { color: #fff; font-size: 14px; font-weight: 800; letter-spacing: .5px; display: block; line-height: 1.1; }
+    .htxt span { color: #2196F3; font-size: 10px; font-weight: 600; letter-spacing: 2px; }
+
+    /* ---- FORM ---- */
+    .wrap { max-width: 560px; margin: 0 auto; padding: 20px 16px; }
+    .banner { background: rgba(33,150,243,0.12); border: 1px solid #2196F3; border-radius: 12px; padding: 14px 16px; margin-bottom: 22px; }
+    .banner b { color: #2196F3; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
+    .banner p { color: #8A9BC0; font-size: 13px; margin-top: 4px; line-height: 1.5; }
+
+    label { display: block; font-size: 12px; font-weight: 700; color: #8A9BC0; letter-spacing: 1px; text-transform: uppercase; margin: 18px 0 7px; }
+    label .req { color: #FF8F00; }
+    input, select, textarea { width: 100%; padding: 14px 15px; border-radius: 10px; border: 1.5px solid #1E3A5F; font-size: 16px; background: #0F2040; color: #fff; outline: none; font-family: inherit; }
+    input:focus, select:focus, textarea:focus { border-color: #2196F3; }
+    textarea { min-height: 110px; resize: vertical; line-height: 1.5; }
+    select { appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%232196F3' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>"); background-repeat: no-repeat; background-position: right 15px center; padding-right: 40px; }
+    .row { display: flex; gap: 12px; }
+    .row > div { flex: 1; }
+
+    /* ---- PHOTOS ---- */
+    .photo-zone { margin-top: 8px; }
+    .photo-btn { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; border: 2px dashed #1E3A5F; border-radius: 12px; padding: 22px; background: #0F2040; color: #8A9BC0; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .photo-btn.disabled { opacity: .4; pointer-events: none; }
+    .grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 12px; }
+    .thumb { position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden; border: 1px solid #1E3A5F; background: #0A1628; }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .thumb .rm { position: absolute; top: 4px; right: 4px; width: 24px; height: 24px; border-radius: 50%; background: rgba(198,40,40,0.92); color: #fff; border: none; font-size: 15px; font-weight: 900; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .thumb .load { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #0F2040; color: #2196F3; font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+    .thumb.err .load { color: #FF6E6E; }
+    .photo-count { font-size: 11px; color: #8A9BC0; margin-top: 8px; letter-spacing: 1px; }
+
+    .submit { margin-top: 28px; width: 100%; background: #FF8F00; color: #0A1628; border: none; border-radius: 12px; padding: 18px; font-size: 17px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 28px rgba(255,143,0,0.35); }
+    .submit:disabled { opacity: .55; box-shadow: none; }
+
+    /* ---- SUCCESS ---- */
+    #done { display: none; text-align: center; padding: 60px 24px; }
+    #done .check { width: 84px; height: 84px; border-radius: 50%; background: rgba(27,94,32,0.25); border: 2px solid #4CAF50; display: flex; align-items: center; justify-content: center; font-size: 44px; margin: 0 auto 24px; }
+    #done h2 { color: #fff; font-size: 24px; font-weight: 900; margin-bottom: 10px; }
+    #done p { color: #8A9BC0; font-size: 15px; line-height: 1.6; max-width: 340px; margin: 0 auto 28px; }
+    #done button { background: #2196F3; color: #fff; border: none; border-radius: 10px; padding: 15px 32px; font-size: 15px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; }
+    .foot { text-align: center; color: #48597A; font-size: 11px; letter-spacing: 1px; margin-top: 34px; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== PIN GATE ===== -->
+  <div id="gate">
+    <div class="logo-box">FXR</div>
+    <div class="sub">Field Sales Access</div>
+    <input id="pin" type="tel" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off"/>
+    <button onclick="checkPin()">Unlock</button>
+    <div id="gate-err"></div>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="logo-box">FXR</div>
+    <div class="htxt"><b>Door Intake</b><span>SOLAR &amp; CONSTRUCTION</span></div>
+  </header>
+
+  <!-- ===== FORM ===== -->
+  <div class="wrap" id="form-area">
+    <div class="banner">
+      <b>New Property Lead</b>
+      <p>Fill this out on the driveway. Photos upload as you add them. Hit send before you leave the door.</p>
+    </div>
+
+    <label>Owner Name <span class="req">*</span></label>
+    <input id="f-owner" type="text" autocomplete="name" placeholder="Full name"/>
+
+    <label>Property Address <span class="req">*</span></label>
+    <input id="f-address" type="text" autocomplete="street-address" placeholder="Street, City, ZIP"/>
+
+    <div class="row">
+      <div>
+        <label>Phone <span class="req">*</span></label>
+        <input id="f-phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(408) 555-0123"/>
+      </div>
+      <div>
+        <label>Email</label>
+        <input id="f-email" type="email" inputmode="email" autocomplete="email" placeholder="Optional"/>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Roof Condition</label>
+        <select id="f-roof">
+          <option value="">Select…</option>
+          <option>Good</option>
+          <option>Fair</option>
+          <option>Poor</option>
+          <option>Needs Replacement</option>
+          <option>Unknown</option>
+        </select>
+      </div>
+      <div>
+        <label>Approx. Sq Ft</label>
+        <input id="f-sqft" type="number" inputmode="numeric" placeholder="e.g. 1800"/>
+      </div>
+    </div>
+
+    <label>Scope of Work / Notes</label>
+    <textarea id="f-scope" placeholder="What did the owner want? Solar, re-roof, additions, damage, timeline, objections… anything Guild needs for takeoff."></textarea>
+
+    <label>Photos <span style="color:#48597A;font-weight:600;text-transform:none;letter-spacing:0">(up to 5)</span></label>
+    <div class="photo-zone">
+      <label class="photo-btn" id="photo-btn" for="photo-input">📷 &nbsp;Add Photos</label>
+      <input id="photo-input" type="file" accept="image/*" capture="environment" multiple style="display:none" onchange="handleFiles(this.files)"/>
+      <div class="grid" id="photo-grid"></div>
+      <div class="photo-count" id="photo-count">0 / 5 uploaded</div>
+    </div>
+
+    <button class="submit" id="submit-btn" onclick="submitLead()">Send Lead to Office</button>
+    <div class="foot">FXR Construction · CSLB #1116388 · Confidential — field use only</div>
+  </div>
+
+  <!-- ===== SUCCESS ===== -->
+  <div id="done">
+    <div class="check">✓</div>
+    <h2>Lead Sent</h2>
+    <p>The office has it. Selene or Jesus will review and push it to Guild for takeoff. Nice work.</p>
+    <button onclick="resetForm()">+ Add Another Lead</button>
+  </div>
+
+  <script>
+    /* ---------- CONFIG ---------- */
+    var PIN            = '9928';
+    var API_BASE       = 'https://fxrcon-construction.onrender.com';
+    var CLOUD_NAME     = 'dj18slpap';
+    var UPLOAD_PRESET  = 'fxr_portfolio';
+    var MAX_PHOTOS     = 5;
+
+    /* ---------- PIN GATE ---------- */
+    var pinEl = document.getElementById('pin');
+    if (sessionStorage.getItem('fxr_sales_ok') === '1') hideGate();
+    pinEl.addEventListener('keyup', function (e) { if (e.key === 'Enter') checkPin(); });
+
+    function checkPin() {
+      if (pinEl.value === PIN) {
+        sessionStorage.setItem('fxr_sales_ok', '1');
+        hideGate();
+      } else {
+        document.getElementById('gate-err').textContent = 'Wrong PIN — try again.';
+        pinEl.value = '';
+        pinEl.focus();
+      }
+    }
+    function hideGate() { document.getElementById('gate').style.display = 'none'; }
+
+    /* ---------- PHOTO UPLOAD (direct to Cloudinary) ---------- */
+    var photoUrls = [];           // successfully uploaded secure URLs
+    var pending   = 0;            // in-flight uploads
+
+    function handleFiles(fileList) {
+      var files = Array.prototype.slice.call(fileList);
+      for (var i = 0; i < files.length; i++) {
+        if (photoUrls.length + pending >= MAX_PHOTOS) {
+          alert('Max ' + MAX_PHOTOS + ' photos.');
+          break;
+        }
+        uploadOne(files[i]);
+      }
+      document.getElementById('photo-input').value = '';
+    }
+
+    function uploadOne(file) {
+      pending++;
+      updatePhotoUI();
+
+      // placeholder thumbnail while uploading
+      var grid = document.getElementById('photo-grid');
+      var cell = document.createElement('div');
+      cell.className = 'thumb';
+      cell.innerHTML = '<div class="load">UPLOADING…</div>';
+      grid.appendChild(cell);
+
+      var fd = new FormData();
+      fd.append('file', file);
+      fd.append('upload_preset', UPLOAD_PRESET);
+
+      fetch('https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/image/upload', { method: 'POST', body: fd })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          pending--;
+          if (data.secure_url) {
+            photoUrls.push(data.secure_url);
+            cell.innerHTML =
+              '<img src="' + data.secure_url + '"/>' +
+              '<button class="rm" onclick="removePhoto(this,\'' + data.secure_url + '\')">×</button>';
+          } else {
+            cell.classList.add('err');
+            cell.innerHTML = '<div class="load">FAILED</div>';
+            setTimeout(function () { cell.remove(); }, 1600);
+          }
+          updatePhotoUI();
+        })
+        .catch(function () {
+          pending--;
+          cell.classList.add('err');
+          cell.innerHTML = '<div class="load">FAILED</div>';
+          setTimeout(function () { cell.remove(); }, 1600);
+          updatePhotoUI();
+        });
+    }
+
+    function removePhoto(btn, url) {
+      photoUrls = photoUrls.filter(function (u) { return u !== url; });
+      btn.parentNode.remove();
+      updatePhotoUI();
+    }
+
+    function updatePhotoUI() {
+      var total = photoUrls.length + pending;
+      document.getElementById('photo-count').textContent = photoUrls.length + ' / ' + MAX_PHOTOS + ' uploaded' + (pending ? ' · ' + pending + ' uploading…' : '');
+      document.getElementById('photo-btn').classList.toggle('disabled', total >= MAX_PHOTOS);
+    }
+
+    /* ---------- SUBMIT ---------- */
+    function submitLead() {
+      var owner   = document.getElementById('f-owner').value.trim();
+      var address = document.getElementById('f-address').value.trim();
+      var phone   = document.getElementById('f-phone').value.trim();
+
+      if (!owner || !address || !phone) {
+        alert('Owner name, property address, and phone are required.');
+        return;
+      }
+      if (pending > 0) {
+        alert('Hang on — photos are still uploading.');
+        return;
+      }
+
+      var btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+
+      var payload = {
+        ownerName:  owner,
+        address:    address,
+        phone:      phone,
+        email:      document.getElementById('f-email').value.trim(),
+        roof:       document.getElementById('f-roof').value,
+        sqft:       document.getElementById('f-sqft').value.trim(),
+        scope:      document.getElementById('f-scope').value.trim(),
+        photos:     photoUrls,
+        source:     'door-to-door',
+        rep:        localStorage.getItem('fxr_rep') || ''
+      };
+
+      fetch(API_BASE + '/api/sales-leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+        .then(function (r) { return r.json().catch(function () { return {}; }).then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          if (res.ok && res.d && res.d.success !== false) {
+            document.getElementById('form-area').style.display = 'none';
+            document.getElementById('done').style.display = 'block';
+            window.scrollTo(0, 0);
+          } else {
+            fail(btn);
+          }
+        })
+        .catch(function () { fail(btn); });
+    }
+
+    function fail(btn) {
+      alert('Could not reach the office. Check signal and try again — or call it in to 408-769-9928.');
+      btn.disabled = false;
+      btn.textContent = 'Send Lead to Office';
+    }
+
+    function resetForm() {
+      ['f-owner','f-address','f-phone','f-email','f-sqft','f-scope'].forEach(function (id) { document.getElementById(id).value = ''; });
+      document.getElementById('f-roof').value = '';
+      photoUrls = []; pending = 0;
+      document.getElementById('photo-grid').innerHTML = '';
+      updatePhotoUI();
+      document.getElementById('done').style.display = 'none';
+      document.getElementById('form-area').style.display = 'block';
+      var btn = document.getElementById('submit-btn');
+      btn.disabled = false; btn.textContent = 'Send Lead to Office';
+      window.scrollTo(0, 0);
+    }
+  </script>
+</body>
+</html>
