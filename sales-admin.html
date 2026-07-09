@@ -45,6 +45,8 @@
     .lead-name { font-size: 16px; font-weight: 800; color: #fff; }
     .lead-addr { font-size: 13px; color: #8A9BC0; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .lead-meta { font-size: 11px; color: #48597A; margin-top: 4px; letter-spacing: .5px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag { font-size: 11px; font-weight: 700; letter-spacing: .5px; padding: 3px 9px; border-radius: 14px; background: rgba(33,150,243,0.13); color: #7FC0FF; border: 1px solid #1E3A5F; white-space: nowrap; }
     .badge { font-size: 10px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; padding: 5px 10px; border-radius: 20px; white-space: nowrap; }
     .badge.new { background: rgba(255,143,0,0.15); color: #FF8F00; border: 1px solid #FF8F00; }
     .badge.sent { background: rgba(76,175,80,0.15); color: #4CAF50; border: 1px solid #4CAF50; }
@@ -184,6 +186,10 @@
       var photos = (l.photos || []).map(function (u) {
         return '<a href="' + esc(u) + '" target="_blank" rel="noopener"><img src="' + esc(u) + '" alt="site photo"/></a>';
       }).join('');
+      var work = l.workTypes || [];
+      var tags = work.length
+        ? '<div class="tags">' + work.map(function (w) { return '<span class="tag">' + esc(w) + '</span>'; }).join('') + '</div>'
+        : '';
 
       return '' +
       '<div class="lead" id="lead-' + esc(l.id) + '">' +
@@ -193,11 +199,14 @@
             '<div class="lead-addr">' + esc(l.address) + '</div>' +
             '<div class="lead-meta">' + when(l.createdAt) + (l.rep ? ' · ' + esc(l.rep) : '') +
               (l.sqft ? ' · ' + esc(l.sqft) + ' sqft' : '') + '</div>' +
+            tags +
           '</div>' +
           '<span class="badge ' + (isSent ? 'sent' : 'new') + '">' + (isSent ? '✓ Sent' : 'New') + '</span>' +
           '<span class="chev">›</span>' +
         '</div>' +
         '<div class="lead-body">' +
+          (work.length ? '<div class="detail full" style="margin-top:16px"><div class="k">Work Requested</div>' +
+            '<div class="tags">' + work.map(function (w) { return '<span class="tag">' + esc(w) + '</span>'; }).join('') + '</div></div>' : '') +
           '<div class="detail-grid">' +
             detail('Phone', '<a href="tel:' + esc(l.phone) + '">' + esc(l.phone) + '</a>') +
             detail('Email', l.email ? '<a href="mailto:' + esc(l.email) + '">' + esc(l.email) + '</a>' : '—') +

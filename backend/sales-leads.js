@@ -92,6 +92,7 @@ router.post('/', async (req, res) => {
       address:   String(b.address).trim(),
       phone:     String(b.phone).trim(),
       email:     String(b.email || '').trim(),
+      workTypes: Array.isArray(b.workTypes) ? b.workTypes.slice(0, 20).map(s => String(s).trim()).filter(Boolean) : [],
       roof:      String(b.roof || '').trim(),
       sqft:      String(b.sqft || '').trim(),
       scope:     String(b.scope || '').trim(),
@@ -226,6 +227,9 @@ function buildPdf(lead, outPath) {
       field('Phone', lead.phone);
       field('Email', lead.email);
 
+      section('Work Requested');
+      field('Type of Work', (lead.workTypes && lead.workTypes.length) ? lead.workTypes.join(', ') : '—');
+
       section('Property');
       field('Address', lead.address);
       field('Roof Condition', lead.roof);
@@ -302,6 +306,7 @@ async function sendWhatsApp(lead, pdfUrl) {
     const from = TWILIO_WHATSAPP_FROM.startsWith('whatsapp:') ? TWILIO_WHATSAPP_FROM : 'whatsapp:' + TWILIO_WHATSAPP_FROM;
     const to   = 'whatsapp:' + WHATSAPP_TO;
     const body = `FXR door-to-door lead\n${lead.ownerName}\n${lead.address}\n${lead.phone}` +
+                 ((lead.workTypes && lead.workTypes.length) ? `\nWork: ${lead.workTypes.join(', ')}` : '') +
                  (lead.roof ? `\nRoof: ${lead.roof}` : '') +
                  `\n\nPDF attached — forward to Guild for takeoff.`;
     const msg = await twilio.messages.create({ from, to, body, mediaUrl: [pdfUrl] });
@@ -353,6 +358,7 @@ function newLeadEmailBody(lead) {
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Address</td><td>${esc(lead.address)}</td></tr>
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Phone</td><td>${esc(lead.phone)}</td></tr>
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Email</td><td>${esc(lead.email) || '—'}</td></tr>
+      <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Work</td><td><b>${esc((lead.workTypes || []).join(', ')) || '—'}</b></td></tr>
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Roof</td><td>${esc(lead.roof) || '—'}</td></tr>
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Sq Ft</td><td>${esc(lead.sqft) || '—'}</td></tr>
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Rep</td><td>${esc(lead.rep) || '—'}</td></tr>

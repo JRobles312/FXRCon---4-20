@@ -54,6 +54,11 @@
     .submit { margin-top: 28px; width: 100%; background: #FF8F00; color: #0A1628; border: none; border-radius: 12px; padding: 18px; font-size: 17px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; box-shadow: 0 8px 28px rgba(255,143,0,0.35); }
     .submit:disabled { opacity: .55; box-shadow: none; }
 
+    /* ---- WORK-TYPE CHIPS ---- */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+    .chip { background: #0F2040; border: 1.5px solid #1E3A5F; color: #8A9BC0; border-radius: 22px; padding: 11px 16px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: inherit; user-select: none; -webkit-user-select: none; }
+    .chip.on { background: rgba(33,150,243,0.16); border-color: #2196F3; color: #fff; }
+
     /* ---- SUCCESS ---- */
     #done { display: none; text-align: center; padding: 60px 24px; }
     #done .check { width: 84px; height: 84px; border-radius: 50%; background: rgba(27,94,32,0.25); border: 2px solid #4CAF50; display: flex; align-items: center; justify-content: center; font-size: 44px; margin: 0 auto 24px; }
@@ -104,9 +109,23 @@
       </div>
     </div>
 
+    <label>Type of Work <span style="color:#48597A;font-weight:600;text-transform:none;letter-spacing:0">(tap all that apply)</span></label>
+    <div class="chips" id="work-chips">
+      <button type="button" class="chip" onclick="toggleChip(this)">Solar</button>
+      <button type="button" class="chip" onclick="toggleChip(this)">Roofing</button>
+      <button type="button" class="chip" onclick="toggleChip(this)">Concrete / Flatwork</button>
+      <button type="button" class="chip" onclick="toggleChip(this)">Framing</button>
+      <button type="button" class="chip" onclick="toggleChip(this)">ADU / Addition</button>
+      <button type="button" class="chip" onclick="toggleChip(this)">New Construction</button>
+      <button type="button" class="chip" onclick="toggleChip(this)">Remodel</button>
+      <button type="button" class="chip" onclick="toggleChip(this)">Code / Permits</button>
+      <button type="button" class="chip" onclick="toggleChip(this)">Maintenance</button>
+      <button type="button" class="chip" onclick="toggleChip(this)">Other</button>
+    </div>
+
     <div class="row">
       <div>
-        <label>Roof Condition</label>
+        <label>Roof Condition <span style="color:#48597A;font-weight:600;text-transform:none;letter-spacing:0">(if roofing)</span></label>
         <select id="f-roof">
           <option value="">Select…</option>
           <option>Good</option>
@@ -169,6 +188,13 @@
       }
     }
     function hideGate() { document.getElementById('gate').style.display = 'none'; }
+
+    /* ---------- WORK-TYPE CHIPS ---------- */
+    function toggleChip(el) { el.classList.toggle('on'); }
+    function getWorkTypes() {
+      return Array.prototype.slice.call(document.querySelectorAll('#work-chips .chip.on'))
+        .map(function (c) { return c.textContent.trim(); });
+    }
 
     /* ---------- PHOTO UPLOAD (direct to Cloudinary) ---------- */
     var photoUrls = [];           // successfully uploaded secure URLs
@@ -262,6 +288,7 @@
         address:    address,
         phone:      phone,
         email:      document.getElementById('f-email').value.trim(),
+        workTypes:  getWorkTypes(),
         roof:       document.getElementById('f-roof').value,
         sqft:       document.getElementById('f-sqft').value.trim(),
         scope:      document.getElementById('f-scope').value.trim(),
@@ -297,6 +324,7 @@
     function resetForm() {
       ['f-owner','f-address','f-phone','f-email','f-sqft','f-scope'].forEach(function (id) { document.getElementById(id).value = ''; });
       document.getElementById('f-roof').value = '';
+      Array.prototype.slice.call(document.querySelectorAll('#work-chips .chip.on')).forEach(function (c) { c.classList.remove('on'); });
       photoUrls = []; pending = 0;
       document.getElementById('photo-grid').innerHTML = '';
       updatePhotoUI();
