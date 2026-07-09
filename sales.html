@@ -204,6 +204,10 @@
     var CLOUD_NAME     = 'dj18slpap';
     var UPLOAD_PRESET  = 'fxr_portfolio';
     var MAX_PHOTOS     = 5;
+    // Once the backend is deployed, set this to its notify-guild URL to also
+    // text Guild (scope + photos) on Send. Leave '' and only the email fires.
+    // e.g. 'https://fxrcon-construction.onrender.com/api/sales-leads/notify-guild'
+    var GUILD_ENDPOINT = '';
 
     /* ---------- PIN GATE ---------- */
     var pinEl = document.getElementById('pin');
@@ -369,6 +373,25 @@
       var btn = document.getElementById('submit-btn');
       btn.disabled = true;
       btn.textContent = 'Sending…';
+
+      // Best-effort: text Guild (scope + photos + instructions) via the backend.
+      // Fire-and-forget so it never blocks or breaks the email submission.
+      if (GUILD_ENDPOINT) {
+        fetch(GUILD_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ownerName: owner, address: address, phone: phone,
+            email: document.getElementById('f-email').value.trim(),
+            workTypes: getWorkTypes(),
+            roof: document.getElementById('f-roof').value,
+            sqft: document.getElementById('f-sqft').value.trim(),
+            scope: document.getElementById('f-scope').value.trim(),
+            photos: photoUrls,
+            rep: localStorage.getItem('fxr_rep') || ''
+          })
+        }).catch(function () {});
+      }
 
       // Submitted to Netlify Forms (no backend). Netlify emails the office on
       // each submission once a form notification is configured for the site.

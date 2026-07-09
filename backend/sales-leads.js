@@ -30,12 +30,17 @@ const router = express.Router();
 // Config (all secrets come from Render environment variables — none hardcoded)
 // ---------------------------------------------------------------------------
 const PUBLIC_BASE_URL   = process.env.PUBLIC_BASE_URL   || 'https://fxrcon-construction.onrender.com';
-const WHATSAPP_TO       = process.env.WHATSAPP_TO        || '+19038903834';   // Guild's WhatsApp number
+const WHATSAPP_TO       = process.env.WHATSAPP_TO        || '+19038903834';   // Guild's WhatsApp number (PDF-send route)
 const NOTIFY_EMAIL      = process.env.NOTIFY_EMAIL       || 'info@fxrcon.com';
 
 const TWILIO_ACCOUNT_SID   = process.env.TWILIO_ACCOUNT_SID   || '';
 const TWILIO_AUTH_TOKEN    = process.env.TWILIO_AUTH_TOKEN    || '';
 const TWILIO_WHATSAPP_FROM = process.env.TWILIO_WHATSAPP_FROM || '';          // e.g. whatsapp:+14155238886 (sandbox)
+
+// --- Guild bid-request text (fires on new lead) ---
+const GUILD_TO      = process.env.GUILD_TO      || '+19038903834';            // Guild's number
+const GUILD_CHANNEL = (process.env.GUILD_CHANNEL || 'mms').toLowerCase();      // 'mms' (picture text) | 'whatsapp'
+const TWILIO_FROM   = process.env.TWILIO_FROM   || TWILIO_WHATSAPP_FROM || ''; // your Twilio sending number
 
 // ---------------------------------------------------------------------------
 // Storage — flat JSON file. Simple, zero external services for v1.
@@ -114,11 +119,40 @@ router.post('/', async (req, res) => {
       newLeadEmailBody(lead)
     ).catch(() => {});
 
-    res.status(201).json({ success: true, id: lead.id, lead });
+    // Text the lead (scope + photos + instructions) to Guild for a bid.
+    const guild = await sendGuild(lead);
+    if (guild.sent) updateLead(lead.id, { status: 'sent', sentAt: new Date().toISOString() });
+
+    res.status(201).json({ success: true, id: lead.id, guild, lead });
   } catch (err) {
     console.error('[sales-leads] create error', err);
     res.status(500).json({ success: false, error: 'Server error saving lead.' });
   }
+});
+
+// ===========================================================================
+// POST /notify-guild  — stateless: text Guild the lead (scope + photos +
+// instructions) WITHOUT storing it. Use this when email is handled elsewhere
+// (e.g. Netlify Forms) and you only want the Guild bid-request text.
+// ===========================================================================
+router.post('/notify-guild', async (req, res) => {
+  const b = req.body || {};
+  if (!b.ownerName || !b.address || !b.phone) {
+    return res.status(400).json({ success: false, error: 'ownerName, address, and phone are required.' });
+  }
+  const lead = {
+    ownerName: String(b.ownerName).trim(),
+    address:   String(b.address).trim(),
+    phone:     String(b.phone).trim(),
+    workTypes: Array.isArray(b.workTypes) ? b.workTypes.map(s => String(s).trim()).filter(Boolean) : [],
+    roof:      String(b.roof || '').trim(),
+    sqft:      String(b.sqft || '').trim(),
+    scope:     String(b.scope || '').trim(),
+    photos:    Array.isArray(b.photos) ? b.photos.slice(0, 10) : [],
+    rep:       String(b.rep || '').trim()
+  };
+  const guild = await sendGuild(lead);
+  res.status(guild.sent ? 200 : 502).json({ success: guild.sent, guild });
 });
 
 // ===========================================================================
@@ -311,6 +345,51 @@ async function sendWhatsApp(lead, pdfUrl) {
                  `\n\nPDF attached — forward to Guild for takeoff.`;
     const msg = await twilio.messages.create({ from, to, body, mediaUrl: [pdfUrl] });
     return { sent: true, sid: msg.sid, to: WHATSAPP_TO };
+  } catch (err) {
+    return { sent: false, reason: String(err.message || err) };
+  }
+}
+
+// ===========================================================================
+// Guild bid-request text — fires on each new lead.
+// Sends the field rep's scope + property details + photos to Guild so they can
+// price the job. Channel is MMS (picture text) by default, or WhatsApp if the
+// GUILD_CHANNEL env var is set to "whatsapp".
+// ===========================================================================
+function guildMessage(lead) {
+  const L = [];
+  L.push('FXR — NEW BID REQUEST');
+  L.push('Please prepare a takeoff / estimate for this property.');
+  L.push('');
+  L.push('Owner: ' + lead.ownerName);
+  L.push('Property: ' + lead.address);
+  L.push('Phone: ' + lead.phone);
+  if (lead.workTypes && lead.workTypes.length) L.push('Work: ' + lead.workTypes.join(', '));
+  const rs = [lead.roof ? 'Roof: ' + lead.roof : '', lead.sqft ? '~' + lead.sqft + ' sq ft' : ''].filter(Boolean).join(' · ');
+  if (rs) L.push(rs);
+  if (lead.rep) L.push('Field rep: ' + lead.rep);
+  L.push('');
+  L.push('Scope (from rep): ' + (lead.scope || '—'));
+  const n = (lead.photos || []).length;
+  L.push('');
+  L.push(n ? ('📸 ' + n + ' photo' + (n > 1 ? 's' : '') + ' attached. Reply here with the bid.') : 'Reply here with the bid.');
+  return L.join('\n');
+}
+
+async function sendGuild(lead) {
+  if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_FROM) {
+    return { sent: false, reason: 'Twilio not configured (set TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_FROM).' };
+  }
+  try {
+    const twilio = require('twilio')(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN);
+    const wa   = GUILD_CHANNEL === 'whatsapp';
+    const from = wa ? (TWILIO_FROM.startsWith('whatsapp:') ? TWILIO_FROM : 'whatsapp:' + TWILIO_FROM) : TWILIO_FROM;
+    const to   = wa ? 'whatsapp:' + GUILD_TO : GUILD_TO;
+    const media = (Array.isArray(lead.photos) ? lead.photos : []).slice(0, 10); // MMS/WhatsApp media cap
+    const params = { from, to, body: guildMessage(lead) };
+    if (media.length) params.mediaUrl = media;
+    const msg = await twilio.messages.create(params);
+    return { sent: true, sid: msg.sid, channel: GUILD_CHANNEL, to: GUILD_TO, photos: media.length };
   } catch (err) {
     return { sent: false, reason: String(err.message || err) };
   }
