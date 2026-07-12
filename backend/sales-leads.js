@@ -541,13 +541,24 @@ async function emailLeadReport(lead) {
 function esc(s) {
   return String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]));
 }
+// Turn a Cloudinary URL into a reasonably sized inline-embeddable JPEG.
+function inlineImg(url) {
+  return String(url).replace('/image/upload/', '/image/upload/f_jpg,q_auto,w_640/');
+}
 function newLeadEmailBody(lead) {
   const caps = Array.isArray(lead.photoCaptions) ? lead.photoCaptions : [];
-  const photoList = (lead.photos || []).map((u, i) =>
-    `<li><a href="${esc(u)}">${esc(caps[i] && caps[i].trim() ? caps[i].trim() : 'Photo ' + (i + 1))}</a></li>`).join('');
+  // Photos embedded inline (not links) so the report is grab-and-go.
+  const photoBlocks = (lead.photos || []).map((u, i) => {
+    const cap = caps[i] && caps[i].trim() ? caps[i].trim() : 'Photo ' + (i + 1);
+    return `
+      <div style="margin:0 0 16px">
+        <div style="font-family:Arial;font-size:13px;font-weight:bold;color:#0A1628;margin-bottom:4px">${i + 1}. ${esc(cap)}</div>
+        <img src="${esc(inlineImg(u))}" alt="${esc(cap)}" width="560" style="width:100%;max-width:560px;height:auto;border-radius:8px;border:1px solid #D5DEEC;display:block"/>
+      </div>`;
+  }).join('');
   return `
     <h2 style="font-family:Arial;color:#0A1628;margin-bottom:2px">New lead — ${esc(lead.ownerName)}</h2>
-    <p style="font-family:Arial;font-size:13px;color:#5A6B8C;margin-top:0">📎 The full <b>PDF bid request</b> and the <b>photos</b> are attached — forward them to Guild's WhatsApp.</p>
+    <p style="font-family:Arial;font-size:13px;color:#5A6B8C;margin-top:0">Field bid request — forward to Guild's WhatsApp. Photos are below; the same report is also attached as a PDF.</p>
     <table style="font-family:Arial;font-size:14px;border-collapse:collapse">
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Owner</td><td><b>${esc(lead.ownerName)}</b></td></tr>
       <tr><td style="padding:4px 12px 4px 0;color:#5A6B8C">Address</td><td>${esc(lead.address)}</td></tr>
@@ -558,7 +569,7 @@ function newLeadEmailBody(lead) {
     </table>
     <p style="font-family:Arial;font-size:13px;color:#0A1628;margin-bottom:2px"><b>Scope of Work</b></p>
     <p style="font-family:Arial;font-size:14px;color:#0A1628;margin-top:0;white-space:pre-wrap">${esc(lead.scope) || '—'}</p>
-    ${photoList ? `<p style="font-family:Arial;font-size:13px;color:#0A1628;margin-bottom:2px"><b>Photos</b></p><ul style="font-family:Arial;font-size:13px;color:#0A1628;margin-top:0">${photoList}</ul>` : ''}`;
+    ${photoBlocks ? `<p style="font-family:Arial;font-size:13px;color:#0A1628;margin:14px 0 8px"><b>Photos</b></p>${photoBlocks}` : ''}`;
 }
 function pdfEmailBody(lead, pdfUrl, wa) {
   const status = wa.sent
