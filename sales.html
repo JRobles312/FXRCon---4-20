@@ -96,6 +96,8 @@
     <textarea name="scope"></textarea>
     <textarea name="photos"></textarea>
     <textarea name="photoCaptions"></textarea>
+    <input type="text" name="photo1"/><input type="text" name="photo2"/><input type="text" name="photo3"/><input type="text" name="photo4"/><input type="text" name="photo5"/>
+    <input type="text" name="caption1"/><input type="text" name="caption2"/><input type="text" name="caption3"/><input type="text" name="caption4"/><input type="text" name="caption5"/>
     <input type="text" name="rep"/>
     <input type="text" name="leadType"/>
     <input type="text" name="subject"/>
@@ -427,21 +429,28 @@
         var photoLines = p.urls.map(function (u, i) {
           return (p.caps[i] ? p.caps[i] + ': ' : '') + u;
         }).join('\n');
+        var body = {
+          'form-name': 'sales-lead',
+          // Tags the email so it's identifiable in the inbox / FXR Bridge.
+          leadType: 'Sales Lead to Bid',
+          subject: 'SALES LEAD TO BID — ' + (address || owner),
+          ownerName: owner, address: address, phone: phone,
+          email: lead.email, workTypes: lead.workTypes.join(', '),
+          roof: lead.roof, sqft: lead.sqft, scope: lead.scope,
+          photos: photoLines,
+          photoCaptions: p.caps.join('\n'),
+          rep: lead.rep
+        };
+        // Also send each photo + caption as its own field (photo1..photo5),
+        // so a Zapier "Send Email" step can embed them with no code step.
+        for (var pi = 0; pi < MAX_PHOTOS; pi++) {
+          body['photo' + (pi + 1)] = p.urls[pi] || '';
+          body['caption' + (pi + 1)] = p.caps[pi] || '';
+        }
         req = fetch('/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: encodeForm({
-            'form-name': 'sales-lead',
-            // Tags the email so it's identifiable in the inbox / FXR Bridge.
-            leadType: 'Sales Lead to Bid',
-            subject: 'SALES LEAD TO BID — ' + (address || owner),
-            ownerName: owner, address: address, phone: phone,
-            email: lead.email, workTypes: lead.workTypes.join(', '),
-            roof: lead.roof, sqft: lead.sqft, scope: lead.scope,
-            photos: photoLines,
-            photoCaptions: p.caps.join('\n'),
-            rep: lead.rep
-          })
+          body: encodeForm(body)
         }).then(function (r) { return r.ok; });
       }
 
