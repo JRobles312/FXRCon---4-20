@@ -98,6 +98,7 @@
     <textarea name="photoCaptions"></textarea>
     <input type="text" name="photo1"/><input type="text" name="photo2"/><input type="text" name="photo3"/><input type="text" name="photo4"/><input type="text" name="photo5"/>
     <input type="text" name="caption1"/><input type="text" name="caption2"/><input type="text" name="caption3"/><input type="text" name="caption4"/><input type="text" name="caption5"/>
+    <textarea name="photosHtml"></textarea>
     <input type="text" name="rep"/>
     <input type="text" name="leadType"/>
     <input type="text" name="subject"/>
@@ -429,6 +430,19 @@
         var photoLines = p.urls.map(function (u, i) {
           return (p.caps[i] ? p.caps[i] + ': ' : '') + u;
         }).join('\n');
+        // Pre-built HTML block of embedded (inline) photos with captions. Drop
+        // this one field into a Zapier "Send Email" HTML body and the photos
+        // show in the email — no code step, works on Zapier's free plan.
+        var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c]; }); };
+        var photosHtml = p.urls.map(function (u, i) {
+          var cap = p.caps[i] && p.caps[i].trim() ? p.caps[i].trim() : 'Photo ' + (i + 1);
+          var img = u.replace('/image/upload/', '/image/upload/f_jpg,q_auto,w_640/');
+          return '<div style="margin:0 0 16px">' +
+                   '<div style="font-family:Arial;font-size:13px;font-weight:bold;color:#0A1628;margin-bottom:4px">' + (i + 1) + '. ' + esc(cap) + '</div>' +
+                   '<img src="' + esc(img) + '" width="560" style="width:100%;max-width:560px;height:auto;border-radius:8px;border:1px solid #d5deec;display:block"/>' +
+                 '</div>';
+        }).join('');
+
         var body = {
           'form-name': 'sales-lead',
           // Tags the email so it's identifiable in the inbox / FXR Bridge.
@@ -439,6 +453,7 @@
           roof: lead.roof, sqft: lead.sqft, scope: lead.scope,
           photos: photoLines,
           photoCaptions: p.caps.join('\n'),
+          photosHtml: photosHtml,
           rep: lead.rep
         };
         // Also send each photo + caption as its own field (photo1..photo5),
