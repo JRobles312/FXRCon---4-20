@@ -217,6 +217,10 @@
     // Netlify email (field values only, no PDF) in the meantime.
     // e.g. 'https://fxrcon-construction.onrender.com/api/sales-leads'
     var API_ENDPOINT = '';
+    // Set this to the backend's push-jobtread URL to ALSO push each lead into
+    // JobTread (with photos) on Send, while keeping the Netlify email.
+    // e.g. 'https://fxrcon-construction.onrender.com/api/sales-leads/push-jobtread'
+    var JT_ENDPOINT = '';
 
     /* ---------- PIN GATE ---------- */
     var pinEl = document.getElementById('pin');
@@ -425,6 +429,16 @@
           body: JSON.stringify(lead)
         }).then(function (r) { return r.ok; });
       } else {
+        // Push the lead into JobTread (with photos) via the backend, best-effort.
+        // Fire-and-forget so it never blocks or breaks the email submission.
+        if (JT_ENDPOINT) {
+          fetch(JT_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(lead)
+          }).catch(function () {});
+        }
+
         // Interim (no backend yet): Netlify Forms emails the field values.
         // Photos paired with their descriptors, one per line, for the email.
         var photoLines = p.urls.map(function (u, i) {

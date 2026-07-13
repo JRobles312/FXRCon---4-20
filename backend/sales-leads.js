@@ -50,6 +50,10 @@ const RC_CLIENT_SECRET = process.env.RC_CLIENT_SECRET || '';
 const RC_JWT           = process.env.RC_JWT           || '';
 const RC_FROM          = process.env.RC_FROM          || '+14087699928';        // FXR office RingCentral line
 
+// --- JobTread (push the lead into the CRM on submit) ---
+const JT_GRANT_KEY = process.env.JT_GRANT_KEY || '';                 // secret; server-side only
+const JT_ORG_ID    = process.env.JT_ORG_ID    || '22PKKRUxRtz8';     // FXR organization id
+
 // ---------------------------------------------------------------------------
 // Storage — flat JSON file. Simple, zero external services for v1.
 //
@@ -128,11 +132,14 @@ router.post('/', async (req, res) => {
       .then(() => ({ sent: true }))
       .catch(e => ({ sent: false, reason: String(e.message || e) }));
 
+    // Push the lead into JobTread (CRM) with photos attached.
+    const jobtread = await pushToJobTread(lead);
+
     // Optional automated text to Guild (off by default; GUILD_PROVIDER=none).
     const guild = GUILD_PROVIDER === 'none' ? { sent: false, reason: 'disabled' } : await sendGuild(lead);
     if (guild.sent) updateLead(lead.id, { status: 'sent', sentAt: new Date().toISOString() });
 
-    res.status(201).json({ success: true, id: lead.id, email, guild, lead });
+    res.status(201).json({ success: true, id: lead.id, email, jobtread, guild, lead });
   } catch (err) {
     console.error('[sales-leads] create error', err);
     res.status(500).json({ success: false, error: 'Server error saving lead.' });
@@ -162,6 +169,33 @@ router.post('/notify-guild', async (req, res) => {
   };
   const guild = await sendGuild(lead);
   res.status(guild.sent ? 200 : 502).json({ success: guild.sent, guild });
+});
+
+// ===========================================================================
+// POST /push-jobtread  — stateless: create the lead in JobTread (with photos)
+// WITHOUT storing/emailing. Use this when email is handled elsewhere (Netlify)
+// and you just want the lead pushed into the CRM on Send.
+// ===========================================================================
+router.post('/push-jobtread', async (req, res) => {
+  const b = req.body || {};
+  if (!b.ownerName || !b.address || !b.phone) {
+    return res.status(400).json({ success: false, error: 'ownerName, address, and phone are required.' });
+  }
+  const lead = {
+    ownerName: String(b.ownerName).trim(),
+    address:   String(b.address).trim(),
+    phone:     String(b.phone).trim(),
+    email:     String(b.email || '').trim(),
+    workTypes: Array.isArray(b.workTypes) ? b.workTypes.map(s => String(s).trim()).filter(Boolean) : [],
+    roof:      String(b.roof || '').trim(),
+    sqft:      String(b.sqft || '').trim(),
+    scope:     String(b.scope || '').trim(),
+    photos:    Array.isArray(b.photos) ? b.photos.slice(0, 10) : [],
+    photoCaptions: Array.isArray(b.photoCaptions) ? b.photoCaptions.map(s => String(s || '').trim()) : [],
+    rep:       String(b.rep || '').trim()
+  };
+  const jt = await pushToJobTread(lead);
+  res.status(jt.pushed ? 200 : 502).json({ success: jt.pushed, jobtread: jt });
 });
 
 // ===========================================================================
@@ -479,6 +513,62 @@ async function sendGuildTwilio(lead) {
     return { sent: true, sid: msg.sid, channel: GUILD_CHANNEL, to: GUILD_TO, photos: media.length, provider: 'twilio' };
   } catch (err) {
     return { sent: false, reason: String(err.message || err) };
+  }
+}
+
+// ===========================================================================
+// JobTread — push the lead into the CRM (Pave API). Best effort.
+// Creates a customer (lead) Account, attaches each photo (JobTread pulls it
+// straight from the public Cloudinary URL), and adds the scope as a message.
+// ===========================================================================
+async function pave(ops) {
+  const r = await fetch('https://api.jobtread.com/pave', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: Object.assign({ $: { grantKey: JT_GRANT_KEY } }, ops) })
+  });
+  const j = await r.json().catch(() => ({}));
+  return j;
+}
+
+async function pushToJobTread(lead) {
+  if (!JT_GRANT_KEY) return { pushed: false, reason: 'JobTread not configured (set JT_GRANT_KEY).' };
+  try {
+    // 1) Create the lead as a customer Account.
+    const acctName = (lead.ownerName || 'Lead') + (lead.address ? ' — ' + lead.address : '');
+    const created = await pave({
+      createAccount: {
+        $: { organizationId: JT_ORG_ID, name: acctName, type: 'customer', suffixIfNecessary: true },
+        createdAccount: { id: {} }
+      }
+    });
+    const accountId = created && created.createAccount && created.createAccount.createdAccount && created.createAccount.createdAccount.id;
+    if (!accountId) throw new Error('createAccount failed: ' + JSON.stringify(created).slice(0, 300));
+
+    // 2) Attach photos — JobTread fetches each from its public Cloudinary URL.
+    const photos = Array.isArray(lead.photos) ? lead.photos.slice(0, 10) : [];
+    const caps = Array.isArray(lead.photoCaptions) ? lead.photoCaptions : [];
+    let attached = 0;
+    for (let i = 0; i < photos.length; i++) {
+      try {
+        const jpg = String(photos[i]).replace('/image/upload/', '/image/upload/f_jpg,q_auto/');
+        const ur = await pave({ createUploadRequest: { $: { organizationId: JT_ORG_ID, url: jpg }, createdUploadRequest: { id: {} } } });
+        const urid = ur && ur.createUploadRequest && ur.createUploadRequest.createdUploadRequest && ur.createUploadRequest.createdUploadRequest.id;
+        if (!urid) continue;
+        const nm = ((caps[i] && caps[i].trim()) ? caps[i].trim().replace(/[^\w.\- ]+/g, '') : 'photo-' + (i + 1)) + '.jpg';
+        await pave({ createFile: { $: { uploadRequestId: urid, targetType: 'account', targetId: accountId, name: nm } } });
+        attached++;
+      } catch (e) { /* skip a bad photo, keep going */ }
+    }
+
+    // 3) Add the field details (scope, contact, work) as a message on the account.
+    try {
+      await pave({ createComment: { $: { targetType: 'account', targetId: accountId, name: 'Field intake — Sales Lead to Bid', message: guildMessage(lead) } } });
+    } catch (e) { /* non-fatal */ }
+
+    return { pushed: true, accountId, photos: attached };
+  } catch (err) {
+    return { pushed: false, reason: String((err && err.message) || err) };
   }
 }
 
