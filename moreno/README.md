@@ -31,11 +31,13 @@ const CONFIG = {
 };
 ```
 
-## Still open
+## Files
 
-- **Gallery photos** — the plan is to use photos from the brand's Facebook page
-  (facebook.com/morenorf); drop them into `assets/` and list them in
-  `CONFIG.gallery`.
+| Path | Purpose |
+|------|---------|
+| `index.html` | The site (HTML + CSS + JS in one file; gallery images from `assets/`) |
+| `assets/*.jpg` | Product photos (resized, EXIF stripped) |
+| `deploy/index.html` | Generated self-contained bundle — same page with images inlined as data URIs, for single-file Netlify imports. Regenerate after editing `index.html` (see below). |
 
 ## Preview locally
 
@@ -47,7 +49,29 @@ python3 -m http.server 8080
 
 ## Deploy
 
-Any static host — Netlify, GitHub Pages, Vercel, Cloudflare Pages. Note the
-repo's existing `netlify.toml` and Pages workflow publish the
-`cayetano-mobile-mechanic/` folder only; give Moreno its own Netlify site
-(publish dir `moreno`) or extend the workflow when it's ready to go live.
+**Live at https://morenorf.netlify.app** (Netlify site `morenorf`).
+
+The repo's `netlify.toml` and Pages workflow publish only the
+`cayetano-mobile-mechanic/` folder, and this environment can't upload to
+Netlify directly, so the site was deployed by having Netlify's Claude-Design
+importer fetch the self-contained bundle from this repo's public raw URL.
+
+To ship an update:
+
+1. Edit `index.html`, then regenerate the bundle (inlines `assets/*.jpg` as
+   data URIs):
+   ```bash
+   cd moreno && python3 - <<'EOF'
+   import base64, re
+   html = open("index.html").read()
+   inline = lambda m: '"data:image/jpeg;base64,' + base64.b64encode(open(m.group(1),'rb').read()).decode() + '"'
+   open("deploy/index.html","w").write(re.sub(r'"(assets/[a-z-]+\.jpg)"', inline, html))
+   EOF
+   ```
+2. Commit + push, then re-import the raw URL of `moreno/deploy/index.html`
+   via the Netlify MCP `import-claude-design-from-url` tool.
+3. Quirk: each re-import lands on a **new** site named
+   `moreno-cowboy-apparel-cd-…` instead of updating `morenorf` — rename the
+   old `morenorf` away, rename the new site to `morenorf`, and delete the
+   leftovers. (Alternative anytime: drag-and-drop the `moreno/` folder onto
+   the site in the Netlify dashboard — no rename dance.)
