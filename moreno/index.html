@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MORENO | Long Live Cowboys — Since 2012</title>
-  <meta name="description" content="MORENO — Long Live Cowboys. Since 2012. Follow us on Instagram @moreno.rf2012 and Facebook Moreno RF."/>
+  <title>MORENO | Cowboy Apparel — Long Live Cowboys</title>
+  <meta name="description" content="MORENO — cowboy apparel since 2012. Long Live Cowboys. Follow us on Instagram @moreno.rf2012 and Facebook, or message us on WhatsApp."/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Rye&family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
@@ -71,8 +71,9 @@
 
     /* GALLERY */
     .gal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-top: 36px; }
-    .gal-tile { aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: linear-gradient(145deg, var(--navy) 0%, var(--navy-dark) 100%); border: 1.5px solid #34357E; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #6E70AE; }
+    .gal-tile { aspect-ratio: 1; border-radius: 10px; overflow: hidden; background: linear-gradient(145deg, var(--navy) 0%, var(--navy-dark) 100%); border: 1.5px solid #34357E; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #6E70AE; position: relative; }
     .gal-tile img { width: 100%; height: 100%; object-fit: cover; }
+    .gal-cap { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(transparent, rgba(18,18,56,.92)); color: var(--gold); font-family: 'Oswald', sans-serif; font-size: 12px; letter-spacing: 2.5px; text-transform: uppercase; padding: 26px 14px 12px; text-align: left; }
     .gal-tile .ph-icon { font-size: 34px; }
     .gal-tile .ph-text { font-family: 'Oswald', sans-serif; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; }
 
@@ -162,14 +163,14 @@
       <div>
         <div class="sec-label" data-i18n-es="La Marca">The Brand</div>
         <h2 class="sec-title" data-i18n-es="Que Viva El Vaquero">Long Live Cowboys</h2>
-        <p class="sec-text" data-i18n-es="MORENO es orgullo vaquero desde el 2012. Síguenos en redes para lo más nuevo, y escríbenos por WhatsApp para cualquier pregunta.">
-          MORENO is cowboy pride, since 2012. Follow us on social media for the latest, and message us on WhatsApp with any questions.
+        <p class="sec-text" data-i18n-es="MORENO es ropa y artículos vaqueros desde el 2012 — sombreros, gorras, cintos y piel labrada a mano. Lo más nuevo sale primero en nuestras redes, y por WhatsApp nos encuentras para pedidos y preguntas.">
+          MORENO is cowboy apparel and gear, since 2012 — hats, caps, belts, and hand-tooled leather. The newest drops hit our social media first, and we're on WhatsApp for orders and questions.
         </p>
       </div>
       <div class="about-stats">
         <div class="stat">
           <div class="stat-big" data-i18n-es="DESDE 2012">SINCE 2012</div>
-          <div class="stat-small" data-i18n-es="Más de una década de vida vaquera">Over a decade of the cowboy life</div>
+          <div class="stat-small" data-i18n-es="Más de una década de ropa vaquera">Over a decade of cowboy apparel</div>
         </div>
         <div class="stat">
           <div class="stat-big">@moreno.rf2012</div>
@@ -188,8 +189,8 @@
   <div class="wrap">
     <div class="sec-label" data-i18n-es="Galería">Gallery</div>
     <h2 class="sec-title" data-i18n-es="El Estilo MORENO">The MORENO Style</h2>
-    <p class="sec-text" data-i18n-es="Fotos muy pronto — mientras tanto, todo lo nuevo está en nuestro Instagram.">
-      Photos coming soon — in the meantime, everything new is on our Instagram.
+    <p class="sec-text" data-i18n-es="Sombreros, gorras, cintos y piel labrada a mano — y todo lo nuevo está primero en nuestro Instagram.">
+      Hats, caps, belts, and hand-tooled leather — and everything new hits our Instagram first.
     </p>
     <div class="gal-grid" id="galGrid"></div>
   </div>
@@ -247,7 +248,7 @@
   // ===== All editable values live here =====
   const CONFIG = {
     name: "MORENO",
-    // Phone from the card: 646 116 8651 (Mexico country code +52 assumed — verify before launch)
+    // Phone from the card: 646 116 8651, Mexico +52 (confirmed by Jesus 2026-07-18)
     phoneDisplay: "646 116 8651",
     phoneRaw: "+526461168651",
     whatsapp: "526461168651",
@@ -255,8 +256,14 @@
     facebook: "Moreno RF",
     facebookUrl: "https://www.facebook.com/morenorf",
     defaultLang: "en",          // "en" or "es"
-    galleryCount: 6,            // placeholder tiles until real photos go in
-    gallery: []                 // e.g. ["assets/photo1.jpg", "assets/photo2.jpg"]
+    galleryCount: 6,            // placeholder tiles shown only if gallery is empty
+    gallery: [                  // {src, en caption, es caption}
+      { src: "assets/hat-moreno.jpg",         en: "Hats",                es: "Sombreros" },
+      { src: "assets/caps.jpg",               en: "Caps",                es: "Gorras" },
+      { src: "assets/belts.jpg",              en: "Belts",               es: "Cintos" },
+      { src: "assets/leather-sheaths.jpg",    en: "Hand-tooled leather", es: "Piel labrada a mano" },
+      { src: "assets/leather-collection.jpg", en: "Knife sheaths",       es: "Fundas de navaja" }
+    ]
   };
 
   // Wire up links
@@ -278,10 +285,11 @@
   // Gallery: real photos if provided, placeholder tiles otherwise
   const gal = document.getElementById("galGrid");
   if (CONFIG.gallery.length) {
-    CONFIG.gallery.forEach(src => {
+    CONFIG.gallery.forEach(g => {
       const d = document.createElement("div");
       d.className = "gal-tile";
-      d.innerHTML = '<img src="' + src + '" alt="MORENO" loading="lazy"/>';
+      d.innerHTML = '<img src="' + g.src + '" alt="MORENO — ' + g.en + '" loading="lazy"/>' +
+                    '<div class="gal-cap" data-i18n-es="' + g.es + '">' + g.en + '</div>';
       gal.appendChild(d);
     });
   } else {

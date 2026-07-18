@@ -1,7 +1,8 @@
 # MORENO — Brand Landing Page
 
-A single-page website for **MORENO** ("Long Live Cowboys" — since 2012), built
-from the brand's business card. Static, no build step, everything in one file.
+A single-page website for **MORENO**, a cowboy apparel brand ("Long Live
+Cowboys" — since 2012), built from the brand's business card. Static, no build
+step, everything in one file.
 
 ## What's on it
 
@@ -21,7 +22,7 @@ in `index.html`:
 ```js
 const CONFIG = {
   phoneDisplay: "646 116 8651",
-  phoneRaw: "+526461168651",   // ⚠ +52 (Mexico) assumed from the 646 format — verify
+  phoneRaw: "+526461168651",   // Mexico +52 — confirmed
   whatsapp: "526461168651",
   instagram: "moreno.rf2012",
   facebookUrl: "https://www.facebook.com/morenorf",
@@ -30,13 +31,11 @@ const CONFIG = {
 };
 ```
 
-## Before launch — needs confirmation from the client
+## Still open
 
-1. **Phone country code** — the card shows `646 116 8651`; the site assumes
-   Mexico (+52, Ensenada). If it's meant differently, fix `phoneRaw`/`whatsapp`.
-2. **What Moreno sells** — the page deliberately makes no product/price claims.
-   Add an offer section once the client says what to put on it.
-3. **Real photos** for the gallery.
+- **Gallery photos** — the plan is to use photos from the brand's Facebook page
+  (facebook.com/morenorf); drop them into `assets/` and list them in
+  `CONFIG.gallery`.
 
 ## Preview locally
 
