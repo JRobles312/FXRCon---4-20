@@ -24,7 +24,7 @@ const CONFIG = {
   phoneRaw: "+526461168651",   // ⚠ +52 (Mexico) assumed from the 646 format — verify
   whatsapp: "526461168651",
   instagram: "moreno.rf2012",
-  facebookUrl: "…",            // ⚠ currently a Facebook search link — replace with the real page URL
+  facebookUrl: "https://www.facebook.com/morenorf",
   defaultLang: "en",           // flip to "es" for Spanish-first
   gallery: []                  // add photo paths, e.g. ["assets/1.jpg", …]
 };
@@ -34,11 +34,9 @@ const CONFIG = {
 
 1. **Phone country code** — the card shows `646 116 8651`; the site assumes
    Mexico (+52, Ensenada). If it's meant differently, fix `phoneRaw`/`whatsapp`.
-2. **Facebook page URL** — the card only names the page ("Moreno RF"), so the
-   button currently opens a Facebook search. Paste the real page URL.
-3. **What Moreno sells** — the page deliberately makes no product/price claims.
+2. **What Moreno sells** — the page deliberately makes no product/price claims.
    Add an offer section once the client says what to put on it.
-4. **Real photos** for the gallery.
+3. **Real photos** for the gallery.
 
 ## Preview locally
 
