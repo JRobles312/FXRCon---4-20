@@ -146,6 +146,11 @@
     .foot-word { font-family: 'Rye', serif; color: var(--gold); font-size: 28px; letter-spacing: 2px; }
     .foot-tag { color: var(--smoke); font-family: 'Oswald', sans-serif; letter-spacing: 4px; font-size: 11px; text-transform: uppercase; margin-top: 8px; }
     .foot-note { color: #4E4436; font-size: 11px; margin-top: 20px; }
+    .foot-powered { margin: 28px auto 0; padding-top: 22px; border-top: 1px solid rgba(232,163,61,.22); max-width: 420px; font-family: 'Oswald', sans-serif; letter-spacing: 2px; font-size: 11px; color: var(--smoke); text-transform: uppercase; }
+    .dot-brand { color: var(--gold); font-weight: 700; letter-spacing: 3px; text-decoration: none; display: inline-flex; align-items: center; gap: 7px; }
+    .dot-brand::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 10px rgba(242,194,48,.8); }
+    a.dot-brand:hover { text-shadow: 0 0 14px rgba(242,194,48,.6); }
+    .foot-powered-sub { display: block; margin-top: 7px; font-size: 10px; letter-spacing: 2.5px; color: #6E6250; }
 
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
@@ -297,6 +302,11 @@
 <footer>
   <div class="foot-word">MORENO</div>
   <div class="foot-tag" data-i18n-es="Que Viva El Vaquero · Desde 2012">Long Live Cowboys · Since 2012</div>
+  <div class="foot-powered">
+    <span data-i18n-es="Impulsado por">Powered by</span>&nbsp;
+    <span id="poweredBy"></span>
+    <span class="foot-powered-sub" data-i18n-es="Sitios Web · Automatizaciones · Apps">Websites · Automations · Apps</span>
+  </div>
   <div class="foot-note" id="footNote"></div>
 </footer>
 
@@ -312,6 +322,7 @@
     facebook: "Moreno RF",
     facebookUrl: "https://www.facebook.com/morenorf",
     defaultLang: "en",
+    poweredBy: { name: "THA DOT COMPANY", url: "" },  // set url when Tha Dot has a site
     // Catalog: each item gets a pre-filled WhatsApp message per language
     catalog: [
       { src: "assets/hat-moreno.jpg",         en: "Hats",                es: "Sombreros",
@@ -347,6 +358,14 @@
   document.getElementById("igHandle").textContent = "@" + CONFIG.instagram;
   document.getElementById("fbName").textContent = CONFIG.facebook;
   document.getElementById("footNote").textContent = "© " + new Date().getFullYear() + " " + CONFIG.name;
+  (function () {
+    const holder = document.getElementById("poweredBy");
+    const el = document.createElement(CONFIG.poweredBy.url ? "a" : "span");
+    el.className = "dot-brand";
+    el.textContent = CONFIG.poweredBy.name;
+    if (CONFIG.poweredBy.url) { el.href = CONFIG.poweredBy.url; el.target = "_blank"; el.rel = "noopener"; }
+    holder.appendChild(el);
+  })();
 
   // ===== Want-it catalog =====
   let lang = localStorage.getItem("moreno-lang") || CONFIG.defaultLang;
