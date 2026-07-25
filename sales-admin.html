@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#0A1628"/>
+  <title>FXR Sales — Lead Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #0A1628; color: #E8EFF8; padding-bottom: 60px; }
+
+    /* ---- PIN GATE ---- */
+    #gate { position: fixed; inset: 0; z-index: 500; background: linear-gradient(135deg,#0A1628 0%,#0D2145 60%,#0A1E3D 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; }
+    #gate .logo-box { background: #1565C0; border-radius: 10px; padding: 10px 18px; font-weight: 900; font-size: 30px; color: #fff; letter-spacing: 3px; margin-bottom: 8px; }
+    #gate .sub { color: #8A9BC0; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 36px; }
+    #pin { width: 100%; max-width: 280px; text-align: center; font-size: 30px; letter-spacing: 12px; padding: 16px; border-radius: 12px; border: 2px solid #1E3A5F; background: #0A1628; color: #fff; outline: none; }
+    #pin:focus { border-color: #2196F3; }
+    #gate button { margin-top: 20px; width: 100%; max-width: 280px; background: #FF8F00; color: #0A1628; border: none; border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; }
+    #gate-err { color: #FF6E6E; font-size: 13px; margin-top: 16px; height: 16px; }
+
+    /* ---- HEADER ---- */
+    header { background: #0A1628; border-bottom: 2px solid #1E3A5F; padding: 14px 18px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    .logo-box { background: #1565C0; border-radius: 7px; padding: 5px 11px; font-weight: 900; font-size: 19px; color: #fff; letter-spacing: 2px; }
+    .htxt b { color: #fff; font-size: 14px; font-weight: 800; letter-spacing: .5px; display: block; line-height: 1.1; }
+    .htxt span { color: #2196F3; font-size: 10px; font-weight: 600; letter-spacing: 2px; }
+    header .spacer { flex: 1; }
+    .refresh { background: transparent; border: 1px solid #1E3A5F; color: #8A9BC0; border-radius: 8px; padding: 9px 14px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; }
+    .refresh:hover { border-color: #2196F3; color: #fff; }
+
+    .wrap { max-width: 760px; margin: 0 auto; padding: 20px 16px; }
+
+    /* ---- STAT STRIP ---- */
+    .stats { display: flex; gap: 12px; margin-bottom: 20px; }
+    .stat { flex: 1; background: #0F2040; border: 1px solid #1E3A5F; border-radius: 12px; padding: 14px 16px; }
+    .stat .n { font-size: 26px; font-weight: 900; color: #fff; line-height: 1; }
+    .stat .l { font-size: 10px; color: #8A9BC0; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 6px; }
+    .stat.new .n { color: #FF8F00; }
+    .stat.sent .n { color: #4CAF50; }
+
+    /* ---- LEAD CARD ---- */
+    .lead { background: #0F2040; border: 1px solid #1E3A5F; border-radius: 12px; margin-bottom: 12px; overflow: hidden; }
+    .lead-head { display: flex; align-items: center; gap: 12px; padding: 16px 18px; cursor: pointer; }
+    .lead-head:hover { background: #12274A; }
+    .lead-main { flex: 1; min-width: 0; }
+    .lead-name { font-size: 16px; font-weight: 800; color: #fff; }
+    .lead-addr { font-size: 13px; color: #8A9BC0; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .lead-meta { font-size: 11px; color: #48597A; margin-top: 4px; letter-spacing: .5px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .tag { font-size: 11px; font-weight: 700; letter-spacing: .5px; padding: 3px 9px; border-radius: 14px; background: rgba(33,150,243,0.13); color: #7FC0FF; border: 1px solid #1E3A5F; white-space: nowrap; }
+    .badge { font-size: 10px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; padding: 5px 10px; border-radius: 20px; white-space: nowrap; }
+    .badge.new { background: rgba(255,143,0,0.15); color: #FF8F00; border: 1px solid #FF8F00; }
+    .badge.sent { background: rgba(76,175,80,0.15); color: #4CAF50; border: 1px solid #4CAF50; }
+    .chev { color: #48597A; font-size: 18px; transition: transform .2s; }
+    .lead.open .chev { transform: rotate(90deg); }
+
+    .lead-body { display: none; padding: 0 18px 18px; border-top: 1px solid #1E3A5F; }
+    .lead.open .lead-body { display: block; }
+    .detail-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 12px 18px; margin: 16px 0; }
+    .detail { min-width: 0; }
+    .detail .k { font-size: 10px; color: #8A9BC0; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 3px; }
+    .detail .v { font-size: 14px; color: #E8EFF8; word-break: break-word; }
+    .detail .v a { color: #2196F3; text-decoration: none; }
+    .detail.full { grid-column: 1 / -1; }
+    .scope-box { background: #0A1628; border: 1px solid #1E3A5F; border-radius: 8px; padding: 12px 14px; font-size: 14px; line-height: 1.55; color: #E8EFF8; white-space: pre-wrap; }
+
+    .photos { display: grid; grid-template-columns: repeat(auto-fill,minmax(90px,1fr)); gap: 8px; margin-top: 8px; }
+    .photos a { display: block; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid #1E3A5F; }
+    .photos img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .actions { display: flex; align-items: center; gap: 12px; margin-top: 18px; flex-wrap: wrap; }
+    .send-btn { background: #FF8F00; color: #0A1628; border: none; border-radius: 10px; padding: 14px 22px; font-size: 14px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; }
+    .send-btn:disabled { opacity: .55; cursor: default; }
+    .send-btn.resend { background: transparent; color: #4CAF50; border: 1.5px solid #4CAF50; }
+    .act-note { font-size: 12px; color: #8A9BC0; flex: 1; min-width: 140px; }
+    .act-note.err { color: #FF8F6E; }
+    .act-note.ok { color: #4CAF50; }
+    .act-note a { color: #2196F3; }
+
+    .empty { text-align: center; padding: 60px 20px; color: #48597A; }
+    .empty .big { font-size: 40px; margin-bottom: 12px; }
+    .loading { text-align: center; padding: 50px; color: #8A9BC0; }
+    .foot { text-align: center; color: #48597A; font-size: 11px; letter-spacing: 1px; margin-top: 30px; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== PIN GATE ===== -->
+  <div id="gate">
+    <div class="logo-box">FXR</div>
+    <div class="sub">Sales Dashboard Access</div>
+    <input id="pin" type="tel" inputmode="numeric" maxlength="4" placeholder="••••" autocomplete="off"/>
+    <button onclick="checkPin()">Unlock</button>
+    <div id="gate-err"></div>
+  </div>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="logo-box">FXR</div>
+    <div class="htxt"><b>Lead Dashboard</b><span>DOOR-TO-DOOR</span></div>
+    <div class="spacer"></div>
+    <button class="refresh" onclick="load()">↻ Refresh</button>
+  </header>
+
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><div class="n" id="s-total">–</div><div class="l">Total</div></div>
+      <div class="stat new"><div class="n" id="s-new">–</div><div class="l">Awaiting</div></div>
+      <div class="stat sent"><div class="n" id="s-sent">–</div><div class="l">Sent</div></div>
+    </div>
+    <div id="list"><div class="loading">Loading leads…</div></div>
+    <div class="foot">FXR Construction · Confidential — reviewed by Jesus / Selene</div>
+  </div>
+
+  <script>
+    /* ---------- CONFIG ---------- */
+    var PIN      = '7314';   // admin-only — separate from the crew form PIN (9928)
+    var API_BASE = 'https://fxrcon-construction.onrender.com';
+
+    /* ---------- PIN GATE ---------- */
+    // Admin dashboard uses its OWN password + session flag, separate from the
+    // field intake form, so unlocking the crew form never unlocks this.
+    var pinEl = document.getElementById('pin');
+    if (sessionStorage.getItem('fxr_admin_ok') === '1') { hideGate(); load(); }
+    pinEl.addEventListener('keyup', function (e) { if (e.key === 'Enter') checkPin(); });
+
+    function checkPin() {
+      if (pinEl.value === PIN) {
+        sessionStorage.setItem('fxr_admin_ok', '1');
+        hideGate();
+        load();
+      } else {
+        document.getElementById('gate-err').textContent = 'Wrong PIN — try again.';
+        pinEl.value = ''; pinEl.focus();
+      }
+    }
+    function hideGate() { document.getElementById('gate').style.display = 'none'; }
+
+    /* ---------- LOAD LEADS ---------- */
+    var LEADS = [];
+
+    function load() {
+      document.getElementById('list').innerHTML = '<div class="loading">Loading leads…</div>';
+      fetch(API_BASE + '/api/sales-leads')
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          LEADS = (data && data.leads) ? data.leads : [];
+          render();
+        })
+        .catch(function () {
+          document.getElementById('list').innerHTML =
+            '<div class="empty"><div class="big">⚠️</div>Could not reach the server.<br>Check the Render service and try Refresh.</div>';
+          setStats(0, 0, 0);
+        });
+    }
+
+    function setStats(t, n, s) {
+      document.getElementById('s-total').textContent = t;
+      document.getElementById('s-new').textContent = n;
+      document.getElementById('s-sent').textContent = s;
+    }
+
+    function render() {
+      var sent = LEADS.filter(function (l) { return l.status === 'sent'; }).length;
+      setStats(LEADS.length, LEADS.length - sent, sent);
+
+      if (!LEADS.length) {
+        document.getElementById('list').innerHTML =
+          '<div class="empty"><div class="big">📭</div>No leads yet.<br>They\'ll show up here the moment the crew submits one.</div>';
+        return;
+      }
+      document.getElementById('list').innerHTML = LEADS.map(cardHtml).join('');
+    }
+
+    function esc(s) {
+      return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+        return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;' }[c];
+      });
+    }
+    function when(iso) {
+      try {
+        var d = new Date(iso);
+        return d.toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' });
+      } catch (e) { return iso || ''; }
+    }
+
+    function cardHtml(l) {
+      var isSent = l.status === 'sent';
+      var photos = (l.photos || []).map(function (u) {
+        return '<a href="' + esc(u) + '" target="_blank" rel="noopener"><img src="' + esc(u) + '" alt="site photo"/></a>';
+      }).join('');
+      var work = l.workTypes || [];
+      var tags = work.length
+        ? '<div class="tags">' + work.map(function (w) { return '<span class="tag">' + esc(w) + '</span>'; }).join('') + '</div>'
+        : '';
+
+      return '' +
+      '<div class="lead" id="lead-' + esc(l.id) + '">' +
+        '<div class="lead-head" onclick="toggle(\'' + esc(l.id) + '\')">' +
+          '<div class="lead-main">' +
+            '<div class="lead-name">' + esc(l.ownerName) + '</div>' +
+            '<div class="lead-addr">' + esc(l.address) + '</div>' +
+            '<div class="lead-meta">' + when(l.createdAt) + (l.rep ? ' · ' + esc(l.rep) : '') +
+              (l.sqft ? ' · ' + esc(l.sqft) + ' sqft' : '') + '</div>' +
+            tags +
+          '</div>' +
+          '<span class="badge ' + (isSent ? 'sent' : 'new') + '">' + (isSent ? '✓ Sent' : 'New') + '</span>' +
+          '<span class="chev">›</span>' +
+        '</div>' +
+        '<div class="lead-body">' +
+          (work.length ? '<div class="detail full" style="margin-top:16px"><div class="k">Work Requested</div>' +
+            '<div class="tags">' + work.map(function (w) { return '<span class="tag">' + esc(w) + '</span>'; }).join('') + '</div></div>' : '') +
+          '<div class="detail-grid">' +
+            detail('Phone', '<a href="tel:' + esc(l.phone) + '">' + esc(l.phone) + '</a>') +
+            detail('Email', l.email ? '<a href="mailto:' + esc(l.email) + '">' + esc(l.email) + '</a>' : '—') +
+            detail('Roof Condition', esc(l.roof) || '—') +
+            detail('Approx. Sq Ft', esc(l.sqft) || '—') +
+          '</div>' +
+          '<div class="detail full"><div class="k">Scope of Work / Notes</div>' +
+            '<div class="scope-box">' + (esc(l.scope) || 'No notes provided.') + '</div></div>' +
+          (photos ? '<div class="detail full" style="margin-top:14px"><div class="k">Photos (' + l.photos.length + ')</div>' +
+            '<div class="photos">' + photos + '</div></div>' : '') +
+          '<div class="actions">' +
+            '<button class="send-btn ' + (isSent ? 'resend' : '') + '" id="btn-' + esc(l.id) + '" ' +
+              'onclick="generate(\'' + esc(l.id) + '\')">' +
+              (isSent ? '↻ Re-send to WhatsApp' : '📄 Generate PDF &amp; Send to WhatsApp') + '</button>' +
+            '<div class="act-note" id="note-' + esc(l.id) + '">' +
+              (isSent && l.sentAt ? 'Last sent ' + when(l.sentAt) : '') + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }
+    function detail(k, v) {
+      return '<div class="detail"><div class="k">' + k + '</div><div class="v">' + v + '</div></div>';
+    }
+
+    function toggle(id) {
+      document.getElementById('lead-' + id).classList.toggle('open');
+    }
+
+    /* ---------- GENERATE PDF + SEND ---------- */
+    function generate(id) {
+      var btn  = document.getElementById('btn-' + id);
+      var note = document.getElementById('note-' + id);
+      btn.disabled = true;
+      var original = btn.innerHTML;
+      btn.textContent = 'Generating & sending…';
+      note.className = 'act-note';
+      note.textContent = '';
+
+      fetch(API_BASE + '/api/sales-leads/' + id + '/generate-pdf', { method: 'POST' })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || res.success === false) {
+            note.className = 'act-note err';
+            note.textContent = 'Failed: ' + ((res && (res.detail || res.error)) || 'unknown error');
+            btn.disabled = false; btn.innerHTML = original;
+            return;
+          }
+          var link = res.pdfUrl ? ' · <a href="' + esc(res.pdfUrl) + '" target="_blank" rel="noopener">open PDF</a>' : '';
+          if (res.whatsapp && res.whatsapp.sent) {
+            note.className = 'act-note ok';
+            note.innerHTML = '✓ Sent to WhatsApp' + link;
+          } else {
+            // Fallback path — PDF built + emailed, WhatsApp needs manual forward.
+            note.className = 'act-note err';
+            var reason = (res.whatsapp && res.whatsapp.reason) ? res.whatsapp.reason : 'WhatsApp not sent';
+            note.innerHTML = 'PDF ready — WhatsApp auto-send off (' + esc(reason) + '). Emailed to the office' + link + ' — forward it into WhatsApp.';
+          }
+          // Update local state + badge without a full reload.
+          var lead = LEADS.filter(function (x) { return x.id === id; })[0];
+          if (lead && res.whatsapp && res.whatsapp.sent) { lead.status = 'sent'; lead.sentAt = new Date().toISOString(); }
+          refreshBadge(id);
+          btn.disabled = false;
+          btn.innerHTML = '↻ Re-send to WhatsApp';
+          btn.classList.add('resend');
+        })
+        .catch(function () {
+          note.className = 'act-note err';
+          note.textContent = 'Could not reach the server. Try again.';
+          btn.disabled = false; btn.innerHTML = original;
+        });
+    }
+
+    function refreshBadge(id) {
+      var lead = LEADS.filter(function (x) { return x.id === id; })[0];
+      if (!lead) return;
+      var card = document.getElementById('lead-' + id);
+      var badge = card.querySelector('.badge');
+      if (lead.status === 'sent') { badge.className = 'badge sent'; badge.textContent = '✓ Sent'; }
+      var sent = LEADS.filter(function (l) { return l.status === 'sent'; }).length;
+      setStats(LEADS.length, LEADS.length - sent, sent);
+    }
+  </script>
+</body>
+</html>
